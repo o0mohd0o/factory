@@ -1,0 +1,169 @@
+body, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cairo', sans-serif !important;
+}
+
+th{text-align: center}
+
+.message{
+    margin-top: 15px
+}
+.message button{
+    float:left;
+}
+
+/**************************** start selectbox ****************************/
+.selectboxit-container{ width:100% !important}
+.selectboxit-container .selectboxit{width:100% !important;height: 38px;}
+.selectboxit-arrow-container{left:0 !important; right: auto !important}
+.selectboxit-text{float: right !important}
+.selectboxit-container .selectboxit-options{text-align: right !important}
+/*
+.selectboxit-arrow-container {left: 5px; right: auto}
+.selectboxit-text{float: right; padding-right: 6px; padding-top: 4px;}
+.selectboxit-option{text-align: right; }
+*/
+/**************************** End selectbox ****************************/
+
+.edit-modal{
+    margin-top: 30px
+}
+.modal-body.body-edit{
+    padding-bottom: 0
+}
+.info-box-number{
+    margin: 10px !important
+}
+select.form-control{
+    height: 36px 
+}
+.cont-td{
+    max-height: 45px;
+    overflow-y: hidden;
+}
+.loading {
+    display: inline-block;
+    position: fixed;
+    width: 64px;
+    height: 64px;
+    top: 50%;
+    left: 50%;
+    z-index: 99999;
+}
+.loading div {
+    display: inline-block;
+    position: absolute;
+    left: 6px;
+    width: 13px;
+    background: #0fadce;
+    animation: loading 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+.loading div:nth-child(1) {
+    left: 6px;
+    animation-delay: -0.24s;
+}
+.loading div:nth-child(2) {
+    left: 26px;
+    animation-delay: -0.12s;
+}
+.loading div:nth-child(3) {
+    left: 45px;
+    animation-delay: 0s;
+}
+@keyframes loading {
+    0% {
+        top: 6px;
+        height: 51px;
+    }
+    50%, 100% {
+        top: 19px;
+        height: 26px;
+    }
+}
+
+/* End loader */
+
+/* Start overlay */
+.overlay{
+    background: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 8888;
+}
+
+
+.img_content{
+    margin-bottom:15px;
+}
+
+.img_content img{max-width: 250px;  border-radius: 5px;}
+
+.delete_img{
+    float: left;
+}
+
+.navbar-nav>.user-menu>.dropdown-menu{
+    width: 325px;}
+
+
+
+/* datatable */
+.dattable .col-sm-12{margin-top: 10px !important}
+.table-bordered{border-color: #d1dfec !important}
+
+.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td{border-color: #d1dfec !important}
+
+.table-bordered>thead>tr>th, .table-bordered>thead>tr>td {
+    border-bottom-width: 1px !important;
+}
+
+
+/* normal table */
+.center-vc{vertical-align: middle !important}
+
+.content-table-cont{
+    width:255px;  border: 1px solid #cecece; margin-right: auto; margin-left: auto;
+}
+
+.content-table{
+    width:245px; height: 100px; word-wrap: break-word; overflow-y: auto; padding: 3px 0px; 
+    text-align: right; margin-right: auto;
+}
+
+.fit.box-body{
+    overflow-x:auto;
+    padding-left: 0
+}
+/*
+.content-table textarea{
+    width: 98%; height: 100px; resize: none
+}
+*/
+
+
+.ellipsis{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

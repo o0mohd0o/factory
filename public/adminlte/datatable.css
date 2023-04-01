@@ -1,0 +1,42 @@
+    .box{border-top:none; box-shadow:none}
+    .dataTables_length{text-align: left}
+/*
+    table.dataTable thead .sorting:after {
+        opacity: 0.2;
+        content: "\21d1";
+
+    }
+*/
+    
+    table.dataTable thead .sorting_asc:after {
+        opacity: 0.7;
+        content: "\2191";
+        padding-right: 10px;
+        color: #337ab7;
+    }
+    
+    table.dataTable thead .sorting_desc:after {
+        opacity: 0.7;
+        content: "\2193";
+        padding-right: 10px;
+        color: #337ab7;
+    }
+    
+    .dataTables_info{
+        position: absolute;
+        left: 15px;
+    }
+    .pagination{
+        margin: 0 0;
+        margin-bottom: 20px
+    }
+.panel{width : 98%; margin : 0 auto; border-color: #d1dfec !important}
+.panel-heading{font-size: 16px; background-color: #FFF !important; color: #443636 !important; font-weight: bold; border-bottom: 1px solid #d1dfec !important}
+    .dattable{
+/*        margin-top: 35px;*/
+        margin-bottom: 45px;
+    }
+    .box-body{padding-top: 20px}
+    .dattable select{margin: 5px; margin-top: 0}
+    .dattable input[type=search]{margin: 5px; margin-top: 0}
+    .dattable .panel-body{padding-bottom:0}

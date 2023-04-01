@@ -1,0 +1,10 @@
+.department-btn{
+    width: calc(50% - 10px);
+    background-color: black;
+    border-color: white;
+    color: white;
+    margin: 3px;
+}
+.department-btn:hover{
+    color: white;
+}
