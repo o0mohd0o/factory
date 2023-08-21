@@ -96,7 +96,7 @@
                 })
                 .catch(function(error) {
                     let errors = error.response.data;
-                    if (errors.status == 422) {
+                    if (error.response.status == 422) {
                         $.each(errors.errors, function(key, value) {
                             toastr.error(key + ":" + errors.message);
                         });

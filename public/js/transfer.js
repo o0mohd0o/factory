@@ -175,6 +175,7 @@ $(document).ready(function () {
                     $("#kind-name").val(data.kind_name);
                     $("#kind-karat").val(data.karat);
                     $("#shares").val(data.shares);
+                    $("#shares-to-transfer").val(data.shares);
                     $("#itemWeightBeforeTransfer").val(data.current_weight);
                 }
             },

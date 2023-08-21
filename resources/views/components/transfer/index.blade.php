@@ -256,9 +256,11 @@
                  }
              }).catch((error) => {
                  let errors = error.response.data;
-                 if (errors.status == 422) {
+                 if (error.response.status == 422) {
+                    console.log(error.response.data);
                      $.each(errors.errors, function(key, value) {
-                         toastr.error(key + ":" + errors.message);
+                         toastr.error( value);
+                        //  toastr.error(key + ":" + value);
                      });
                  } else {
                      toastr.error(error.response.data.message);
@@ -290,7 +292,7 @@
          $('#shares-to-transfer').on('change', function(e) {
              let shares = parseInt($('#shares').val());
              let sharesToTransfer = parseInt($(this).val());
-             $('#shares-difference').val(shares - sharesToTransfer);
+             $('#shares-difference').val(sharesToTransfer - shares);
          })
 
          $('.total-loss, .total-gain, .weight-to-transfer').on('change', function(e) {

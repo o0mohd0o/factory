@@ -172,5 +172,6 @@
     "Depts Statements": "كشف الحساب",
     "Daily Journal": "الحركة اليومية",
     "Qrcode Print": "طباعة Qrcode",
-    "General Settings": "اعدادات عامة"
+    "General Settings": "اعدادات عامة",
+    "Person on charge is required.": "يرجى ادخال حقل الشخص المسئول"
 }
