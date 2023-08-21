@@ -21,7 +21,7 @@
             </a>
             <a  id="item-card-a" class="dropdown-item" href="{{route("items.cardItem")}}">
                 <i class="fas fa-fw fa-folder"></i>
-                <span>بطاقة صنف</span>
+                <span>{{__('Item Card')}}</span>
             </a>
         </div>
 
