@@ -1,7 +1,7 @@
 {
     "en": "ar",
     "Home": "الرئيسية",
-    "Items Card": "الأصناف",
+    "Items Card": "كارت الأصناف",
     "Departments": "الأقسام",
     "QR Code Print": "طباعة Qr Code",
     "Transfer": "تحويل",
@@ -166,5 +166,11 @@
     "Sorry you can't delete. This Department Has been used Before": "عذرا لا يمكنك حذف هذا القسم. هذا القسم تم استخدامة من قبل.",
     "Print Document": "طباعة السند",
     "Default Karat": "العيار الافتراضى",
-    "Logout": "تسجيل خروج"
+    "Item Card Settings": "اعدادات كارت الصنف",
+    "Purity Differnces" : "فرق العيار",
+    "Balance Summary": "كشف أرصدة مجمع",
+    "Depts Statements": "كشف الحساب",
+    "Daily Journal": "الحركة اليومية",
+    "Qrcode Print": "طباعة Qrcode",
+    "General Settings": "اعدادات عامة"
 }
