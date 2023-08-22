@@ -279,16 +279,6 @@ $(document).ready(function () {
 
     // Add New row
     function registerEvents() {
-        $("body")
-            .off()
-            .on("keydown", ".addrow", function (e) {
-                if (e.keyCode == 40 || e.keyCode == 13) {
-                    if (e.keyCode == 13) {
-                        e.preventDefault();
-                    }
-                    addNewRow();
-                }
-            });
         $(document).on("focus", ".autocomplete_txt", handleAutocomplete);
         // $(document).on('focus','.autocomplete_department', handleDeptTo);
     }
@@ -354,8 +344,7 @@ $(document).ready(function () {
         // Total sum 18
         $("#qrcode-autocomplete-table .weight").each(function () {
             let carat = $(this).closest("tr").find(".carat").val();
-            console.log(carat);
-            if (carat == 18) {
+            if (carat == 750) {
                 var wight18 = $(this).val();
                 if ($.isNumeric(wight18)) {
                     calculated_total_sum_18 += parseFloat(wight18);
@@ -363,7 +352,7 @@ $(document).ready(function () {
                     convert_to_24_sum += (parseFloat(wight18) * 18) / 24;
                     $('input[name="gold18"]').val(calculated_total_sum_18);
                 }
-            } else if (carat == 21) {
+            } else if (carat == 875) {
                 var weight21 = $(this).val();
                 if ($.isNumeric(weight21)) {
                     calculated_total_sum_21 += parseFloat(weight21);
@@ -371,7 +360,7 @@ $(document).ready(function () {
                     convert_to_24_sum += (parseFloat(weight21) * 18) / 24;
                     $('input[name="gold21"]').val(calculated_total_sum_21);
                 }
-            } else if (carat == 22) {
+            } else if (carat >= 916 || carat <= 916) {
                 var weight22 = $(this).val();
                 if ($.isNumeric(weight22)) {
                     calculated_total_sum_22 += parseFloat(weight22);
@@ -379,7 +368,7 @@ $(document).ready(function () {
                     convert_to_24_sum += (parseFloat(weight22) * 22) / 24;
                     $('input[name="gold22"]').val(calculated_total_sum_22);
                 }
-            } else if (carat == 24) {
+            } else if (carat >= 1000) {
                 var weight24 = $(this).val();
                 if ($.isNumeric(weight24)) {
                     calculated_total_sum_24 += parseFloat(weight24);

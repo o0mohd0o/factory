@@ -133,9 +133,9 @@ $(document).ready(function () {
                             result = $.map(res, function (obj) {
                                 let label = '';
                                 if (obj['shares']=='null' || !obj['shares'] || obj['shares'] == undefined) {
-                                     label = obj[fieldName];
+                                     label = obj['kind']+ '-' +obj['kind_name'];
                                 } else {
-                                     label = obj[fieldName] + ' عيار ( ' + obj['shares'] + ')';
+                                     label = obj['kind']+ '-' +obj['kind_name'] + ' عيار ( ' + obj['shares'] + ')';
                                 }
                                 return {
                                     label: label,

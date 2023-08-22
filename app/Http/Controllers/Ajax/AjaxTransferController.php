@@ -97,7 +97,8 @@ class AjaxTransferController extends Controller
     public function fetchDepartments(Request $request)
     {
 
-        $departments = Department::where('id', 'like', '%' . $request->value . '%')
+        $departments = Department::query()
+            ->where('id', 'like', '%' . $request->value . '%')
             ->orWhere('name', 'like', '%' . $request->value . '%')
             ->get()
             ->except($request->department);

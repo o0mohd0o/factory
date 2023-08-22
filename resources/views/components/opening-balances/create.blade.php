@@ -104,6 +104,7 @@
 
 <script src="{{ asset('js/opening-balance.js') }}"></script>
 <script>
+
     $(document).ready(function() {
         $('#opening-balance-form').on('submit', function(e) {
             e.preventDefault();
