@@ -59,7 +59,6 @@ class PrintQrcodeController extends Controller
 
     public function fetchitems(Request $request)
     {
-        dd($request);
         $items = Items::where('name', 'like', '%' . $request->value . '%')
             ->orWhere('karat', 'like', '%' . $request->value . '%')
             ->get();

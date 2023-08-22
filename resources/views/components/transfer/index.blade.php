@@ -257,7 +257,6 @@
              }).catch((error) => {
                  let errors = error.response.data;
                  if (error.response.status == 422) {
-                    console.log(error.response.data);
                      $.each(errors.errors, function(key, value) {
                          toastr.error( value);
                         //  toastr.error(key + ":" + value);
