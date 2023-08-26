@@ -187,8 +187,8 @@ class AjaxItemCardController extends Controller
     {
         $items = Items::query()
             ->where(function ($query) use ($request) {
-                $query->where($request->field_name, 'like', '%' . $request->value . '%')
-                    ->orWhere();
+                $query->where('code', 'like', '%' . $request->value . '%')
+                    ->orWhere('name', 'like', '%' . $request->value . '%');
             })
             ->doesntHave('childs')
             ->get();
