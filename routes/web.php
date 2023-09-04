@@ -27,7 +27,17 @@ Route::get('lang/{lang}', ['as' => 'lang.switch', 'uses' => 'App\Http\Controller
 Route::get('/', function () {
     return view('home-page');
 });
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/dashboard', function () {
+    if(auth()->user()->hasPermissionTo('manage_users')) {
+        return view('dashboard');
+    }
+    return view('home-page');
+})->name('dashboard')->middleware('auth');
+
+
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('main');
 //Route::resource('items', 'App\Http\Controllers\ItemsCardController');
 //Route::resource('depart', 'App\Http\Controllers\DepartmentController');
 Route::get('fetch-items', 'App\Http\Controllers\PrintQrcodeController@fetchitems');

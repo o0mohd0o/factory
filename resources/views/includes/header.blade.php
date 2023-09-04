@@ -83,8 +83,6 @@
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top" style="height: 56px;">
 
-        <!-- Navbar -->
-
         <a class="color-white {{app()->getLocale() == 'ar' ? 'align-ar' : 'align-en'}}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">{{ __('Logout') }}</a>
         <li class="nav-item dropdown" style="display: inline-block; position: absolute; left: 0;">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -103,15 +101,22 @@
                 @endforeach
             </div>
         </li>
+
+        <!-- Navbar -->
+        @if(auth()->user()->hasPermissionTo('manage_users'))
+        <li class="nav-item">
+            <a style="color: #fff;text-decoration: none;" href="{{ route('dashboard') }}"> {{ __("Dashboard") }} </a>
+        </li>
+        @endif
     </nav>
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('js/jquery-ui.js') }}"></script>
-   <script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-<script src="{{asset('vendor/bootstrap/js/bootstrap.js')}}"></script>
+{{--    <script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>--}}
+    <script src="{{asset('vendor/bootstrap/js/bootstrap.js')}}"></script>
 
-<!-- Core plugin JavaScript-->
-<script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
     <!-- Page level plugin JavaScript-->
     <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
@@ -130,4 +135,3 @@
 
     <!-- Demo scripts for this page-->
     <script src="{{ asset('js/demo/datatables-demo.js') }}"></script>
-    <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>

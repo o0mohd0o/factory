@@ -4,7 +4,7 @@
      <div class="row">
          <div class="col-12">
              <a href="{{ route('ajax.openingBalances.index', $department) }}"
-                 class="btn btn-success w-100 opening-balance">{{ __('Opening Balance') }}</a>
+                 class="btn btn-success w-100 opening-balance">{{ __('Opening Balance + Office Transfers') }}</a>
          </div>
      </div>
  @endif
@@ -53,7 +53,7 @@
              </div>
          </div>
          <input autocomplete="false" name="hidden" type="text" style="display:none;">
-         <table id="autocomplete_table" class="printForm create-form autocomplete_table transfers-table">
+         <table id="autocomplete_table" class="printForm create-form autocomplete_table">
              <thead>
                  <tr>
                      <th>{{ __('Document ID') }}</th>
@@ -68,6 +68,7 @@
                      <th>{{ __('Total Loss') }}</th>
                      <th>{{ __('Total Gain') }}</th>
                      <th>{{ __('Net Weight') }}</th>
+                     <th>{{ __('To Department ID') }}</th>
                      <th>{{ __('To Department') }}</th>
                      <th>{{ __('Person On Charge') }}</th>
                      <th>{{ __('Confirm Transfer') }}</th>
@@ -91,11 +92,12 @@
                          <td>{{ $transfer->total_loss }}</td>
                          <td>{{ $transfer->total_gain }}</td>
                          <td>{{ $transfer->net_weight }}</td>
+                         <td>{{ $transfer->transfer_to }}</td>
                          <td>{{ $transfer->transfer_to_name }}</td>
                          <td>{{ $transfer->person_on_charge }}</td>
                          <td></td>
                          <td>
-                             <a href="#" class="print_transfer" id="print_{{ $transfer->id }}">
+                             <a href="#" class="print_transfer" id="print_{{$transfer->id}}">
                                  <i class="fas fa-print" style="color: #0d6efd;"></i>
                              </a>
                          </td>
@@ -105,8 +107,6 @@
                  <tr>
                      <input type="hidden" name="item_id" id="transfered-item-id">
                      <input type="hidden" name="transfered_from" id="transfered-item-department-id">
-                     <input type="hidden" id="transfer_to" data-department={{ $department->id }}
-                             data-field-name="id" class="form-control" name="transfer_to">
                      <td>-</td>
                      <td><input type="text" data-department="{{ $department->id }}" id="kind-code"
                              data-field-name="kind" class="form-control autocomplete_txt" autofill="off"
@@ -122,8 +122,8 @@
                              autocomplete="off" name="shares"></td>
                      <td><input type="text" id="shares-to-transfer" class="form-control " autofill="off"
                              data-field-name="shares-to-transfer" name="shares_to_transfer"></td>
-                     <td><input type="text" id="shares-difference" class="form-control text-danger"
-                             autofill="off" data-field-name="shares-difference" readonly></td>
+                     <td><input type="text" id="shares-difference" class="form-control text-danger" autofill="off"
+                             data-field-name="shares-difference" readonly></td>
                      <td><input type="text" id="itemWeightBeforeTransfer" class="form-control"
                              name="item_weight_before_transfer" readonly></td>
                      <td><input type="text" class="form-control weight-to-transfer" name="weight_to_transfer"
@@ -135,14 +135,15 @@
                      </td>
                      <td><input type="text" class="form-control net-weight" name="net_weight" value="0"
                              readonly></td>
-                             <td><input type="text" id="transfer_to_name" data-department={{ $department->id }}
-                                data-field-name="name" class="form-control autocomplete_department" autofill="off"
-                                autocomplete="off" name="transfer_to_name"></td>
-                       
+                     <td><input type="text" id="transfer_to" data-department={{ $department->id }}
+                             data-field-name="id" class="form-control autocomplete_department" autofill="off"
+                             autocomplete="off" name="transfer_to"></td>
+                     <td><input type="text" id="transfer_to_name" data-department={{ $department->id }}
+                             data-field-name="name" class="form-control autocomplete_department" autofill="off"
+                             autocomplete="off" name="transfer_to_name"></td>
                      <td><input type="text" class="form-control" name="person_on_charge"
                              value="{{ session('person_on_charge', '') }}"></td>
-                     <td><button type="submit"
-                             class="btn btn-primary confirm-transfer">{{ __('Confirm Transfer') }}</button></td>
+                     <td><button type="submit" class="btn btn-primary confirm-transfer">{{ __('Confirm Transfer') }}</button></td>
                      <td></td>
                  </tr>
                  <tr>
@@ -151,6 +152,7 @@
                      <td class="bg-success">{{ $outcomingTransfers->sum('total_loss') }} </td>
                      <td class="bg-success">{{ $outcomingTransfers->sum('total_gain') }}</td>
                      <td class="bg-success">{{ $outcomingTransfers->sum('net_weight') }}</td>
+                     <td></td>
                      <td></td>
                      <td></td>
                      <td></td>
@@ -234,26 +236,6 @@
 
          $('.date-picker').datepicker({});
 
-         $(".transfers-table")
-             .off()
-             .on("keydown", "input", function(e) {
-                 if ($(this).attr('type') != 'submit') {
-                     if (e.which == 40 || e.which == 13) {
-                         if (e.which == 13) {
-                             $(this).closest('td').next().find('input, button, select').focus();
-                             $(this).closest('td').next().find('input').select();
-                             e.preventDefault();
-                         }
-                     }
-                 }
-
-             });
-
-         $(".transfers-table")
-             .on("click", "input", function(e) {
-                $(this).select();
-             });
-
          $('#transfer-create-form').on('submit', function(e) {
              e.preventDefault();
              let data = new FormData(this);
@@ -274,10 +256,9 @@
                  }
              }).catch((error) => {
                  let errors = error.response.data;
-                 if (error.response.status == 422) {
+                 if (errors.status == 422) {
                      $.each(errors.errors, function(key, value) {
-                         toastr.error(value);
-                         //  toastr.error(key + ":" + value);
+                         toastr.error(key + ":" + errors.message);
                      });
                  } else {
                      toastr.error(error.response.data.message);
@@ -309,7 +290,7 @@
          $('#shares-to-transfer').on('change', function(e) {
              let shares = parseInt($('#shares').val());
              let sharesToTransfer = parseInt($(this).val());
-             $('#shares-difference').val(sharesToTransfer - shares);
+             $('#shares-difference').val(shares - sharesToTransfer);
          })
 
          $('.total-loss, .total-gain, .weight-to-transfer').on('change', function(e) {
@@ -341,9 +322,9 @@
 
  <script>
      if (typeof basePathTransfer === 'undefined') {
-         var basePathTransfer = $("#base_path").val();
+        var basePathTransfer = $("#base_path").val();
      }
-     $(".print_transfer").on("click", function(e) {
+     $(".print_transfer").on("click", function (e) {
          // e.preventDefault();
          let id = $(this).attr('id');
          let idArr = id.split("_");
@@ -358,7 +339,7 @@
                      transferId
                  ),
              },
-             success: function(response) {
+             success: function (response) {
                  // Log response
                  window.open(basePathTransfer + "/print-transfer", "_blank");
              },

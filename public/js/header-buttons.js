@@ -28,6 +28,33 @@ $(document).ready(function () {
             });
     });
 
+    $("#manage-users").on("click", function (e) {
+        e.preventDefault();
+        let url = $(this).data("url");
+        axios
+            .get(url)
+            .then((response) => {
+                $("#pageContent").html(response.data);
+            })
+            .catch((error) => {
+                toastr.error(error.response.data.message);
+            });
+    });
+
+    $("#addNewUser").on("click", function (e) {
+        console.log('new user')
+        e.preventDefault();
+        let url = $(this).data("url");
+        axios
+            .get(url)
+            .then((response) => {
+                $("#pageContent").html(response.data);
+            })
+            .catch((error) => {
+                toastr.error(error.response.data.message);
+            });
+    });
+
     $("#item-card-settings").on("click", function (e) {
         e.preventDefault();
         let url = $(this).data("url");

@@ -1,6 +1,6 @@
 
+@if(auth()->user()->hasPermissionTo('view_sections'))
 <h1 class="text-center bg-white rounded py-1">{{__("Departments")}}</h1>
-
 <div style="direction: rtl;">
     @foreach ($departments as $department)
         <a href="{{ route('ajax.departments.edit', $department) }}" class="btn btn-primay department-btn fs-3"
@@ -8,15 +8,19 @@
             data-transfer-url={{route('ajax.transfers.index', $department)}}>{{ $department->name }}</a>
     @endforeach
 </div>
+@endif
 
+@if(auth()->user()->hasPermissionTo('add_department'))
 <div class="text-center my-3">
     <a href="" class="btn btn-danger w-100 add-department fs-3">{{ __('Add Department') }}</a>
 </div>
-
 @include('components.department.create')
+@endif
 <div id="department-edit">
 
 </div>
+
+
 
 
 <script>

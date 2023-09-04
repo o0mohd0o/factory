@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 
 class SuperAdminSeeder extends Seeder
 {
@@ -25,5 +26,13 @@ class SuperAdminSeeder extends Seeder
             'allowed_branches' => 0,
             'default_branch' => 0
         ]);
+
+        $permissions = config("roles.permissions");
+
+        foreach ($permissions as $permission) {
+            $permissionData = Permission::where('name', $permission)->first();
+            $superAdmin->givePermissionTo($permissionData);
+        }
+
     }
 }

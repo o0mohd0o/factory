@@ -23,12 +23,22 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+
+    protected function authenticated(Request $request, $user)
+    {
+        if (auth()->user()->hasRole('accountant')) { // do your magic here
+            return redirect()->route('dashboard');
+        }
+
+        return redirect('/');
+    }
+
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    // protected $redirectTo = '/';
 
     /**
      * Get the login username to be used by the controller.
@@ -39,6 +49,7 @@ class LoginController extends Controller
     {
         return 'user_code';
     }
+
 
     /**
      * Create a new controller instance.

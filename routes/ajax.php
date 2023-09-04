@@ -8,6 +8,7 @@ use App\Http\Controllers\Ajax\AjaxOpeningBalanceController;
 use App\Http\Controllers\Ajax\AjaxQrcodeController;
 use App\Http\Controllers\Ajax\AjaxReportController;
 use App\Http\Controllers\Ajax\AjaxTransferController;
+use App\Http\Controllers\Ajax\AjaxManageUsersController;
 use Illuminate\Support\Facades\Route;
 
 //Important Note: All this routes prefixed with /ajax
@@ -96,8 +97,18 @@ Route::post('departments/daily-reports-in-total/show', [AjaxReportController::cl
 Route::post('departments/karat-difference-reports/show', [AjaxReportController::class, 'karatDifferenceReports'])->name('departments.karatDifferenceReports.show');
 
 
-//General settings 
+//General settings
 Route::post('general-settings', [AjaxGeneralSettingsController::class, 'index'])->name('ajax.gereralSettings.index');
-//item card settings 
+//item card settings
 Route::get('/item-card-settings', [AjaxItemCardSettingsController::class, 'show'])->name('ajax.itemCardSettings.show');
 Route::post('/item-card-settings', [AjaxItemCardSettingsController::class, 'update'])->name('ajax.itemCardSettings.update');
+
+
+// manage users
+
+Route::get('/manageusers', [AjaxManageUsersController::class, 'index'])->name('ajax.manageUsers.index');
+Route::get('/getusers', [AjaxManageUsersController::class, 'getUsersData'])->name('ajax.manageUsers.users');
+Route::post('/updateRoles', [AjaxManageUsersController::class, 'update'])->name('ajax.manageUsers.update');
+Route::get('/user-roles', [AjaxManageUsersController::class, 'userRole'])->name('ajax.manageUsers.userRole');
+Route::get('/add-new-user', [AjaxManageUsersController::class, 'newUser'])->name('ajax.newUser.index');
+Route::post('/add-new-user', [AjaxManageUsersController::class, 'addNewUser'])->name('ajax.newUser.add');

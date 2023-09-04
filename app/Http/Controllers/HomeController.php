@@ -23,6 +23,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if(auth()->user()->hasRole('accountant')) {
+            return redirect()->route('dashboard');
+        }
         return view('home-page');
     }
 }

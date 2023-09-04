@@ -133,9 +133,9 @@ $(document).ready(function () {
                             result = $.map(res, function (obj) {
                                 let label = '';
                                 if (obj['shares']=='null' || !obj['shares'] || obj['shares'] == undefined) {
-                                     label = obj['kind']+ '-' +obj['kind_name'];
+                                     label = obj[fieldName];
                                 } else {
-                                     label = obj['kind']+ '-' +obj['kind_name'] + ' عيار ( ' + obj['shares'] + ')';
+                                     label = obj[fieldName] + ' عيار ( ' + obj['shares'] + ')';
                                 }
                                 return {
                                     label: label,
@@ -175,7 +175,6 @@ $(document).ready(function () {
                     $("#kind-name").val(data.kind_name);
                     $("#kind-karat").val(data.karat);
                     $("#shares").val(data.shares);
-                    $("#shares-to-transfer").val(data.shares);
                     $("#itemWeightBeforeTransfer").val(data.current_weight);
                 }
             },

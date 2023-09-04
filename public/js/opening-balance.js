@@ -153,36 +153,16 @@ $(document).ready(function () {
 
     // Add New row
     function registerEvents() {
-        $(".opening-balance-autocomplete-table")
+        $("body")
             .off()
-            .on("keydown", "input", function (e) {
-                if ($(this).attr("type") != "submit") {
-                    if (e.which == 40 || e.which == 13) {
-                        if (e.which == 13) {
-                            $(this)
-                                .closest("td")
-                                .next()
-                                .find("input, button, select")
-                                .focus();
-                            $(this).closest("td").next().find("input").select();
-                            e.preventDefault();
-                            if ($(this).closest("td").next().is('td:last-of-type')) {
-                                addNewRow();
-                                $('#row' + rowcount).closest('input, select').focus();
-                            }
-                        }
+            .on("keydown", ".addrow", function (e) {
+                if (e.keyCode == 40 || e.keyCode == 13) {
+                    if (e.keyCode == 13) {
+                        e.preventDefault();
                     }
+                    addNewRow();
                 }
             });
-
-        $(".opening-balance-autocomplete-table").on(
-            "click",
-            "input",
-            function (e) {
-                $(this).select();
-            }
-        );
-
         $(document).on("focus", ".autocomplete_txt", handleAutocomplete);
         // $(document).on('focus','.autocomplete_department', handleDeptTo);
     }

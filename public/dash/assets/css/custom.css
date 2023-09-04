@@ -1,0 +1,22 @@
+.navbar-brand-box {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.navbar-brand-box h3 {
+    color: #fff;
+}
+
+#sidebar-menu ul li a,
+.btn {
+    font-family: 'Noto Sans Arabic', sans-serif !important;
+}
+
+.btn {
+    font-size: 14px;
+}
+
+body {
+    font-family: 'Noto Sans Arabic', sans-serif !important;
+}

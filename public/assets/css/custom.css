@@ -16,6 +16,7 @@
     padding: 7px;
     display: inline-block;
     box-shadow: 2px 2px 5px black;
+    margin-bottom: 20px;
 }
 
 #reports > ul > li:hover{
@@ -36,4 +37,8 @@
 .ui-menu-item-wrapper{
     text-align: right;
     direction: rtl;
+}
+
+.mr-32 {
+    margin-right: 32px;
 }

@@ -85,10 +85,7 @@ class AjaxTransferController extends Controller
         ]);
 
         $items = DepartmentItem::whereDepartmentId($request->department)
-            ->where(function ($query) use ($request) {
-                $query->where('kind', 'like', '%' . $request->value . '%')
-                    ->orWhere('kind_name',  'like', '%' . $request->value . '%');
-            })
+            ->where($request->field_name, 'like', '%' . $request->value . '%')
             ->where('current_weight', '>', 0)
             ->get();
         return $items;
@@ -97,8 +94,7 @@ class AjaxTransferController extends Controller
     public function fetchDepartments(Request $request)
     {
 
-        $departments = Department::query()
-            ->where('id', 'like', '%' . $request->value . '%')
+        $departments = Department::where('id', 'like', '%' . $request->value . '%')
             ->orWhere('name', 'like', '%' . $request->value . '%')
             ->get()
             ->except($request->department);
@@ -172,8 +168,8 @@ class AjaxTransferController extends Controller
     public function print(Request $request)
     {
         $settings = GeneralSettings::all();
-        $transferId = json_decode($request->input('transferId'));
-        $transferId = intVal($transferId);
+        $transferId= json_decode($request->input('transferId'));
+        $transferId= intVal($transferId);
         if (!empty($transferId)) {
             Storage::disk('local')->put('printTransfer.txt', $transferId);
         }
@@ -184,6 +180,6 @@ class AjaxTransferController extends Controller
         $transferDateArr = explode(" ", $transferItem->created_at);
         $date = $transferDateArr[0];
         $time = $transferDateArr[1];
-        return view('components.transfer.print', compact('transferItem', 'settings', 'date', 'time'));
+        return view('components.transfer.print', compact('transferItem', 'settings', 'date','time'));
     }
 }
