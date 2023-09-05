@@ -24,7 +24,7 @@ class StoreOpeningBalanceRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'item_id' => 'required',
+            'department_id' => 'required|exists:departments,id',
             'date' => 'required|date_format:Y-m-d',
             'inventory_record_date' => 'required|date_format:Y-m-d',
             'person_on_charge' => 'required|string',

@@ -13,19 +13,21 @@ use App\Models\DepartmentItem;
 use App\Models\OpeningBalance;
 use App\Models\OpeningBalanceReport;
 use Carbon\Carbon;
-use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AjaxOpeningBalanceController extends Controller
 {
     use WeightTrait, OpeningBalanceTrait;
 
-    public function index(Request $request, Department $department)
+    public function index(Request $request)
     {
         try {
             $openingBalance = OpeningBalance::with(['details'])
-                ->where('department_id', $department->id)
+                ->when($request->department_id, function ($query) use($request) {
+                    return $query->where('department_id', $request->department_id);
+                })
                 ->when($request->ordering == 'last', function ($query) {
                     return $query->latest();
                 })
@@ -50,28 +52,27 @@ class AjaxOpeningBalanceController extends Controller
         return response()->json([
             view('components.opening-balances.index', [
                 'openingBalance' => $openingBalance,
-                'department' => $department,
+                // 'department' => $department,
             ])->render()
         ]);
     }
 
-    public function create(Department $department)
+    public function create()
     {
         $lastId = DB::table('opening_balances')->max('id');
 
         return response()->json([
             view('components.opening-balances.create', [
-                'department' => $department,
                 'lastId' => $lastId + 1 ?? '1',
             ])->render()
         ]);
     }
 
 
-    public function store(StoreOpeningBalanceRequest $request, Department $department)
+    public function store(StoreOpeningBalanceRequest $request)
     {
-        abort_if(!$department->main_department, 403, __('Error: This is not the main department.'));
 
+        $department = Department::findOrFail($request->department_id);
         $data = $request->validated();
 
         try {

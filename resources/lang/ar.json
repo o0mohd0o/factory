@@ -3,6 +3,7 @@
     "Home": "الرئيسية",
     "Items Card": "كارت الأصناف",
     "Departments": "الأقسام",
+    "Department": "القسم",
     "QR Code Print": "طباعة Qr Code",
     "Transfer": "تحويل",
     "Material ID": "رمز الصنف",
@@ -173,5 +174,7 @@
     "Daily Journal": "الحركة اليومية",
     "Qrcode Print": "طباعة Qrcode",
     "General Settings": "اعدادات عامة",
-    "Person on charge is required.": "يرجى ادخال حقل الشخص المسئول"
+    "Person on charge is required.": "يرجى ادخال حقل الشخص المسئول",
+    "Settings": "الاعدادات",
+    "Reports": "التقارير"
 }
