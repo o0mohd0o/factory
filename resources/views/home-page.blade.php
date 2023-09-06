@@ -64,7 +64,7 @@
                         @endif
                         @if (auth()->user()->can('opening_balance'))
                         <li class="me-4" data-type="opening-balance"
-                            data-url="{{ route('ajax.openingBalances.index') }}" data-create-url="{{('ajax.openingBalances.create')}}" id="opening-balance">
+                            data-url="{{ route('ajax.openingBalances.index') }}" data-create-url="{{route('ajax.openingBalances.create')}}" id="opening-balance">
                             {{ __('Opening Balance') }}</li>
                                                 @endif
 
