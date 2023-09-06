@@ -14,7 +14,7 @@ class AjaxManageUsersController extends Controller
     {
         $permissions = Permission::all();
         $users = User::select(['id', 'name_ar', 'name_en', 'email', 'user_code', 'created_at'])->get();
-        if (auth()->user()->hasPermissionTo('manage_users')) {
+        if (auth()->user()->can('manage_users')) {
             return response()->json([
                 view('components.dash.users.index', ['roles' => $permissions, 'users' => $users])->render()
             ]);

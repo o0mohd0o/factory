@@ -3,6 +3,7 @@
     "Home": "الرئيسية",
     "Items Card": "كارت الأصناف",
     "Departments": "الأقسام",
+    "Department": "القسم",
     "QR Code Print": "طباعة Qr Code",
     "Transfer": "تحويل",
     "Material ID": "رمز الصنف",
@@ -191,5 +192,8 @@
     "User Code": "رقم المستخدم",
     "View Sections": "عرض الأقسام",
     "Permissions": "الصلحيات",
-    "Action":"أجراءات"
+    "Action":"أجراءات",
+    "Person on charge is required.": "يرجى ادخال حقل الشخص المسئول",
+    "Settings": "الاعدادات",
+    "Reports": "التقارير"
 }

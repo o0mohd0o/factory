@@ -1,5 +1,5 @@
 
-@if(auth()->user()->hasPermissionTo('view_sections'))
+@if(auth()->user()->can('view_sections'))
 <h1 class="text-center bg-white rounded py-1">{{__("Departments")}}</h1>
 <div style="direction: rtl;">
     @foreach ($departments as $department)
@@ -10,7 +10,7 @@
 </div>
 @endif
 
-@if(auth()->user()->hasPermissionTo('add_department'))
+@if(auth()->user()->can('add_department'))
 <div class="text-center my-3">
     <a href="" class="btn btn-danger w-100 add-department fs-3">{{ __('Add Department') }}</a>
 </div>

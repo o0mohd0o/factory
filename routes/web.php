@@ -29,7 +29,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    if(auth()->user()->hasPermissionTo('manage_users')) {
+    if(auth()->user()->can('manage_users')) {
         return view('dashboard');
     }
     return view('home-page');

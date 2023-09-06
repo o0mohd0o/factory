@@ -22,8 +22,6 @@ class UsersSeeder extends Seeder
             'email' => 'admin@web.com',
             'password' => bcrypt('1234admin'),
             'user_code' => '0001',
-            'allowed_branches' => 0,
-            'default_branch' => 0
         ]);
         User::create([
             'name_ar' => 'مسؤل الخزنة',
@@ -31,8 +29,6 @@ class UsersSeeder extends Seeder
             'email' => 'storekeeper@web.com',
             'password' => bcrypt('1234keeper'),
             'user_code' => '0002',
-            'allowed_branches' => 0,
-            'default_branch' => 0
         ]);
         User::create([
             'name_ar' => 'المكود',
@@ -40,8 +36,6 @@ class UsersSeeder extends Seeder
             'email' => 'coder@web.com',
             'password' => bcrypt('1234coder'),
             'user_code' => '0003',
-            'allowed_branches' => 0,
-            'default_branch' => 0
         ]);
         User::create([
             'name_ar' => 'المحاسب',
@@ -49,8 +43,6 @@ class UsersSeeder extends Seeder
             'email' => 'accountant@web.com',
             'password' => bcrypt('1234acc'),
             'user_code' => '0004',
-            'allowed_branches' => 0,
-            'default_branch' => 0
         ]);
     }
 }

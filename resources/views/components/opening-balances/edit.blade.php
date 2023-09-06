@@ -1,4 +1,4 @@
-<h1 class="text-center bg-white rounded py-1">{{ __('Opening Balance + Office Transfers') }}</h1>
+<h1 class="text-center bg-white rounded py-1">{{ __('Opening Balance') }}</h1>
 
 
 <div class="form-background">
@@ -42,6 +42,17 @@
                     <label for="person_on_charge">{{ __('Person On Charge') }}</label>
                     <input value="{{ $openingBalance->person_on_charge }}" type="text" name="person_on_charge"
                         class="form-control">
+                </div>
+               
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="person_on_charge">{{ __('Department') }}</label>
+                    <select class="form-select text-center" name="department_id" aria-label="Default select example">
+                    @foreach ($departments as $department)
+                        <option value="{{$department->id}}" {{$openingBalance->department_id==$department->id?"selected":""}}>{{$department->name}}</option>
+                    @endforeach
+                    </select>   
                 </div>
             </div>
         </div>
@@ -122,7 +133,7 @@
             let data = new FormData(this);
             axios.post(url, data).then((response) => {
                 toastr.success(response.data.message);
-                axios.get("{{ route('ajax.openingBalances.index', $department) }}").then((
+                axios.get("{{ route('ajax.openingBalances.index') }}").then((
                     response) => {
                     $('#main-content').html(response.data);
                 });
@@ -141,7 +152,7 @@
 
         $('#undo').on('click', function(e) {
             e.preventDefault();
-            axios.get("{{ route('ajax.openingBalances.index', $department) }}").then((
+            axios.get("{{ route('ajax.openingBalances.index') }}").then((
                 response) => {
                 $('#main-content').html(response.data);
             });

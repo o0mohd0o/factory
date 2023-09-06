@@ -19,7 +19,7 @@ class PermissionSeeder extends Seeder
         $permissions = config("roles.permissions");
         // create and insert permission
         foreach($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
     }
 }

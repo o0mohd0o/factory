@@ -14,7 +14,7 @@ trait OpeningBalanceTrait
             return [$item->kind . '-' . $item->shares => $this->unitToGram($item->unit, $item->quantity)];
         });
         $items = [];
-        //Check if the kinds are still in the main department
+        //Check if the kinds are still in the  department
         foreach ($kinds as $item => $weights) {
             // dd('cast(current_weight as signed) >= '. $weights->sum());
             try {

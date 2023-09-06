@@ -103,7 +103,7 @@
         </li>
 
         <!-- Navbar -->
-        @if(auth()->user()->hasPermissionTo('manage_users'))
+        @if(auth()->user()->can('manage_users'))
         <li class="nav-item">
             <a style="color: #fff;text-decoration: none;" href="{{ route('dashboard') }}"> {{ __("Dashboard") }} </a>
         </li>

@@ -1,14 +1,5 @@
  <h1 class="text-center bg-white rounded py-1">{{ $department->name }}</h1>
 
- @if ($department->main_department)
-     <div class="row">
-         <div class="col-12">
-             <a href="{{ route('ajax.openingBalances.index', $department) }}"
-                 class="btn btn-success w-100 opening-balance">{{ __('Opening Balance + Office Transfers') }}</a>
-         </div>
-     </div>
- @endif
-
  @if (session('message'))
      <div style="    padding: 0.75rem 1.25rem !important;"
          class="alert alert-{{ session('alert-type') }} alert-dismissible " role="alert" id="session-alert">

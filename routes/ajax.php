@@ -34,11 +34,11 @@ Route::get('/departments/{department}/transfers/index', [AjaxTransferController:
 Route::get('/departments/{department}/transfers-navigator/index', [AjaxTransferController::class, 'navigator'])->name('ajax.transfers.navigator');
 
 //Get opening balances for the department on a specified day
-Route::get('/departments/{department}/opening-balances/index', [AjaxOpeningBalanceController::class, 'index'])->name('ajax.openingBalances.index');
+Route::get('/departments/opening-balances/index', [AjaxOpeningBalanceController::class, 'index'])->name('ajax.openingBalances.index');
 //create opening balances for the department
-Route::get('/departments/{department}/opening-balances/create', [AjaxOpeningBalanceController::class, 'create'])->name('ajax.openingBalances.create');
+Route::get('/departments/opening-balances/create', [AjaxOpeningBalanceController::class, 'create'])->name('ajax.openingBalances.create');
 //Store the openeing balance for the department
-Route::post('/departments/{department}/opening-balances/store', [AjaxOpeningBalanceController::class, 'store'])->name('ajax.openingBalances.store');
+Route::post('/departments/opening-balances/store', [AjaxOpeningBalanceController::class, 'store'])->name('ajax.openingBalances.store');
 //get the openeing balance for the department
 Route::get('/opening-balances/{openingBalance}/edit', [AjaxOpeningBalanceController::class, 'edit'])->name('ajax.openingBalances.edit');
 //update the openeing balance for the department

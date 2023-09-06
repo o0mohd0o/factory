@@ -12,5 +12,6 @@ return [
         'item_card_settings' => 'item_card_settings',
         'view_sections' => 'view_sections',
         'add_department' => 'add_department',
+        'opening_balance' => 'opening_balance'
     ]
 ];

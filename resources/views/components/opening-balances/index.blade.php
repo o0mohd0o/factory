@@ -1,4 +1,4 @@
-<h1 class="text-center bg-white rounded py-1">{{ __('Opening Balance + Office Transfers') }}</h1>
+<h1 class="text-center bg-white rounded py-1">{{ __('Opening Balance') }}</h1>
 
 
 <div class="row p-1" style="direction: rtl;">
@@ -21,7 +21,7 @@
 
 </div>
 <div class="form-background">
-    <form id="opening-balance-form" action="{{ route('ajax.openingBalances.store', $department) }}" autocomplete="off"
+    <form id="opening-balance-form" action="{{ route('ajax.openingBalances.store') }}" autocomplete="off"
         method="post">
         <div id="print-section" class="col-12">
             <div class="row">
@@ -61,6 +61,16 @@
                         <label for="person_on_charge">{{ __('Person On Charge') }}</label>
                         <input value="{{ $openingBalance->person_on_charge }}" type="text" name="person_on_charge"
                             class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="person_on_charge">{{ __('Department') }}</label>
+                        <select disabled class="form-select text-center" name="department_id" aria-label="Default select example">
+                        @foreach ($departments as $department)
+                            <option value="{{$department->id}}" {{$openingBalance->department_id==$department->id?"selected":""}}>{{$department->name}}</option>
+                        @endforeach
+                        </select>   
                     </div>
                 </div>
             </div>
@@ -109,7 +119,7 @@
         </div>
 
         <button type="button" id="new-opening-balance"
-            data-href="{{ route('ajax.openingBalances.create', $department) }}" class="btn btn-primary">
+            data-href="{{ route('ajax.openingBalances.create') }}" class="btn btn-primary">
             {{ __('New') }}
         </button>
         <button type="button" id="edit-opening-balance"
@@ -140,7 +150,7 @@
             e.preventDefault();
             let id = $(this).data('id');
             let ordering = $(this).data('ordering');
-            axios.get("{{ route('ajax.openingBalances.index', $department) }}", {
+            axios.get("{{ route('ajax.openingBalances.index') }}", {
                 params: {
                     id: id,
                     ordering: ordering,
@@ -167,13 +177,13 @@
             let url = $(this).data('href');
             axios.post(url).then((response) => {
                 toastr.success(response.data.message);
-                axios.get("{{ route('ajax.openingBalances.index', $department) }}").then((
+                axios.get("{{ route('ajax.openingBalances.index') }}").then((
                     response) => {
                     $('#main-content').html(response.data);
                 }).catch((error) => {
                     toastr.error(error.response.data.message);
                     axios.get(
-                        "{{ route('ajax.openingBalances.create', $department) }}"
+                        "{{ route('ajax.openingBalances.create') }}"
                     ).then((
                         response) => {
                         $('#main-content').html(response.data);
