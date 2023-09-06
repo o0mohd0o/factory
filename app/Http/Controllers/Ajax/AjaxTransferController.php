@@ -86,7 +86,7 @@ class AjaxTransferController extends Controller
 
         $items = DepartmentItem::whereDepartmentId($request->department)
             ->where($request->field_name, 'like', '%' . $request->value . '%')
-            ->where('current_weight', '>', 0)
+            // ->where('current_weight', '>', 0)
             ->get();
         return $items;
     }
