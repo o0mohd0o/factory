@@ -88,8 +88,6 @@ class AjaxManageUsersController extends Controller
         $user->email = $req->email;
         $user->user_code = $req->user_code;
         $user->password = bcrypt($req->password);
-        $user->allowed_branches = 0;
-        $user->default_branch = 0;
         $user->save();
 
         return response()->json([

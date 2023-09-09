@@ -7,6 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class AddSuperAdminRoleToSpatieRoles extends Migration
 {
@@ -19,6 +20,12 @@ class AddSuperAdminRoleToSpatieRoles extends Migration
     {
             Role::firstOrCreate(['name'=>'Super Admin']);
 
+            $permissions = config("roles.permissions");
+            // create and insert permission
+            foreach($permissions as $permission) {
+                Permission::firstOrCreate(['name' => $permission]);
+            }
+
             $superAdmin = User::firstOrCreate(['user_code' => '0000'],
             [
                 'email' => 'khabeer@khabeer.com',
@@ -29,7 +36,13 @@ class AddSuperAdminRoleToSpatieRoles extends Migration
             ]);
 
             $superAdmin->assignRole('Super Admin');
-        
+            $permissions = config("roles.permissions");
+
+            foreach ($permissions as $permission) {
+                $permissionData = Permission::where('name', $permission)->first();
+                $superAdmin->givePermissionTo($permissionData);
+            }
+
     }
 
     /**
