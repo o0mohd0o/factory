@@ -15,6 +15,18 @@ $(document).ready(function () {
                 });
             });
     });
+    $("#inner-departments-Transfers").on("click", function (e) {
+        e.preventDefault();
+        let url = $(this).data("url");
+        axios
+            .get(url)
+            .then((response) => {
+                $("#main-content").html(response.data);
+            })
+            .catch((error) => {
+               
+            });
+    });
     $("#opening-balance").on("click", function (e) {
         e.preventDefault();
         let url = $(this).data("url");

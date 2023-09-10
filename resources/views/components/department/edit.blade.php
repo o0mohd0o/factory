@@ -1,5 +1,5 @@
 {{-- Delete Modal --}}
-<div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="Department-Delete-Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -109,7 +109,7 @@
         $(document).on('click', '.delete-department', function (e) {
             e.preventDefault();
             // $('#dept-id-model').html(" " + deptName + " <span class='ltr'> " +  " " + deptID + " </span> " );
-            $('#DeleteModal').modal('show');
+            $('#Department-Delete-Modal').modal('show');
         });
 
         $('.delete_department').on("click", function(e) {
@@ -121,7 +121,7 @@
             }).then(function(response) {
                 if (response.data.status == 'success') {
                     $(this).text(yesDeletePhrase);
-                    $('#DeleteModal').modal('hide');
+                    $('#Department-Delete-Modal').modal('hide');
                     toastr.success(response.data.message);
                     axios.get('{{ route('ajax.departments.index') }}').then((response) => {
                         $("#departments-section").html(response.data);

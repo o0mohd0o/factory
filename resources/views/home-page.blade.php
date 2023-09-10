@@ -63,14 +63,21 @@
                                 {{ __('Items Card') }}</li>
                         @endif
                         @if (auth()->user()->can('opening_balance'))
-                        <li class="me-4" data-type="opening-balance"
-                            data-url="{{ route('ajax.openingBalances.index') }}" data-create-url="{{route('ajax.openingBalances.create')}}" id="opening-balance">
-                            {{ __('Opening Balance') }}</li>
-                                                @endif
+                            <li class="me-4" data-type="opening-balance"
+                                data-url="{{ route('ajax.openingBalances.index') }}"
+                                data-create-url="{{ route('ajax.openingBalances.create') }}" id="opening-balance">
+                                {{ __('Opening Balance') }}</li>
+                        @endif
+                        {{-- @if (auth()->user()->can('opening_balance')) --}}
+                            <li class="me-4" data-type="inner-departments-Transfers"
+                                data-url="{{ route('ajax.transfers.index', $departments->first()) }}" id="inner-departments-Transfers">
+                                {{ __('Inner Transfers') }}</li>
+                        {{-- @endif --}}
 
-                            @if (auth()->user()->can('manage_users'))
+                        @if (auth()->user()->can('manage_users'))
                             <li class="me-4">
-                                <a style="color: inherit;text-decoration: none;" href="{{ route('dashboard') }}" target="blank">
+                                <a style="color: inherit;text-decoration: none;" href="{{ route('dashboard') }}"
+                                    target="blank">
                                     {{ __('Manage Users') }}</a>
                             </li>
                         @endif
@@ -78,13 +85,8 @@
                 </div>
             </div>
             <div class="row" style="margin-bottom: 10px;">
-                <div class="col-8" id="main-content">
+                <div class="col-12" id="main-content">
                     @yield('content')
-                </div>
-                <div class="col-4">
-                    <div id="departments-section">
-                        @include('components.department.index')
-                    </div>
                 </div>
             </div>
 

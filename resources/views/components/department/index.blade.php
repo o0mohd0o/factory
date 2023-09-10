@@ -46,7 +46,7 @@
                 $('#main-content').html(response.data);
             })
             axios.get(editUrl).then(function(response) {
-                $('#department-edit').html(response.data);
+                $('#main-content #departments-section #department-edit').html(response.data);
             });
         });
 
