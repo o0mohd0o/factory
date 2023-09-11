@@ -68,12 +68,16 @@
                                 data-create-url="{{ route('ajax.openingBalances.create') }}" id="opening-balance">
                                 {{ __('Opening Balance') }}</li>
                         @endif
-                        {{-- @if (auth()->user()->can('opening_balance')) --}}
-                            <li class="me-4" data-type="inner-departments-Transfers"
+                        <li class="dropdown" class="text-center" data-flip="false">
+                            {{ __('Departments and Transfers') }}
+                            <ul class="dropdown-menu">
+                                <li class="me-4" data-type="inner-departments-Transfers"
                                 data-url="{{ route('ajax.transfers.index', $departments->first()) }}" id="inner-departments-Transfers">
                                 {{ __('Inner Transfers') }}</li>
-                        {{-- @endif --}}
 
+                            </ul>
+
+                        </li>
                         @if (auth()->user()->can('manage_users'))
                             <li class="me-4">
                                 <a style="color: inherit;text-decoration: none;" href="{{ route('dashboard') }}"
