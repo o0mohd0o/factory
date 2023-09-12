@@ -198,6 +198,7 @@
     "Reports": "التقارير",
     "Departments and Transfers": "الأقسام والتحويلات",
     "Inner Transfers": "التحويلات الداخلية",
-    "To Office Transfers": "تحويلات الى المكتب",
-    "From Office Transfers": "التحويلات من المكتب"
+    "Transfers To Office": "تحويلات الى المكتب",
+    "Transfers From Office": "التحويلات من المكتب",
+    "Office Transfers": "تحويلات المكتب"
 }

@@ -74,9 +74,10 @@
                                 <li class="me-4" data-type="inner-departments-Transfers"
                                 data-url="{{ route('ajax.transfers.index', $departments->first()) }}" id="inner-departments-Transfers">
                                 {{ __('Inner Transfers') }}</li>
-
+                                <li class="me-4" data-type="office-transfers"
+                                data-url="{{ route('ajax.officeTransfers.index') }}" id="office-transfers">
+                                {{ __('Office Transfers') }}</li>
                             </ul>
-
                         </li>
                         @if (auth()->user()->can('manage_users'))
                             <li class="me-4">

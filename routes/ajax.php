@@ -33,6 +33,11 @@ Route::get('/departments/{department}/transfers/index', [AjaxTransferController:
 //Get all department transfers using navigator
 Route::get('/departments/{department}/transfers-navigator/index', [AjaxTransferController::class, 'navigator'])->name('ajax.transfers.navigator');
 
+Route::prefix('office-transfers')->group(function () {
+    Route::get('/', [AjaxTransferController::class, 'navigator'])->name('ajax.officeTransfers.index');
+
+});
+
 //Get opening balances for the department on a specified day
 Route::get('/departments/opening-balances/index', [AjaxOpeningBalanceController::class, 'index'])->name('ajax.openingBalances.index');
 //create opening balances for the department
