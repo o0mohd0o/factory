@@ -41,6 +41,6 @@ trait OpeningBalanceTrait
         return [
             'used' => false,
             'items' => $items
-        ];;
+        ];
     }
 }

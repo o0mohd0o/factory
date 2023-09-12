@@ -1,8 +1,8 @@
 <h2 class=" text-center p-2 m-2  text-danger border border-danger rounded">
-    {{ __('Opening Balance') }}
+    {{ __('Office Transfers') }}
 </h2>
 
-@forelse ($openingBalancesReports as $day => $reports)
+@forelse ($officeTransfersReports as $day => $reports)
     <h3 class="transfer-day text-center  m-2  text-info border border-info rounded">
         {{ __('Day') . '  ' . $day }}
     </h3>
@@ -58,10 +58,10 @@
                         {{ $report->weight_in_24 }}
                     </td>
                     <td>
-                        {{ $report->transfer_to_previous_balance }}
+                        {{ $report->department_previous_balance }}
                     </td>
                     <td>
-                        {{ $report->transfer_to_current_balance }}
+                        {{ $report->department_current_balance }}
                     </td>
 
                     <td>{{ $report->date }}</td>
@@ -69,19 +69,36 @@
                     <td>{{ $report->doc_num }}</td>
 
                     @if ($report->type == 'create')
-                        <td class="text-success">
-                            {{ __('Transfer From Office Or Create New Opening Balance') }}
-                        </td>
+                        @if ($report->transfer_type == 'to')
+                            <td class="text-success">
+                                {{ __('Transfer To Office') }}
+                            </td>
+                        @else
+                            <td class="text-success">
+                                {{ __('Transfer From Office') }}
+                            </td>
+                        @endif
                     @elseif($report->type == 'edit')
-                        <td class="text-danger">
-                            {{ __('Delete Of Transfer From Office Or Opening Balance For Editing') }}
-                        </td>
+                        @if ($report->transfer_type == 'to')
+                            <td class="text-danger">
+                                {{ __('Delete Of Transfer To Office For Editing') }}
+                            </td>
+                        @else
+                            <td class="text-danger">
+                                {{ __('Delete Of Transfer From Office For Editing') }}
+                            </td>
+                        @endif
                     @else
-                        <td class="text-danger">
-                            {{ __('Delete Of Transfer From Office Or Opening Balance') }}
-                        </td>
+                        @if ($report->transfer_type == 'to')
+                            <td class="text-danger">
+                                {{ __('Delete Of Transfer To Office') }}
+                            </td>
+                        @else
+                            <td class="text-danger">
+                                {{ __('Delete Of Transfer From Office') }}
+                            </td>
+                        @endif
                     @endif
-
                 </tr>
             @endforeach
 

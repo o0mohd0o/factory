@@ -75,8 +75,13 @@
                                 data-url="{{ route('ajax.transfers.index', $departments->first()) }}" id="inner-departments-Transfers">
                                 {{ __('Inner Transfers') }}</li>
                                 <li class="me-4" data-type="office-transfers"
+                                data-create-url="{{ route('ajax.officeTransfers.create') }}" 
                                 data-url="{{ route('ajax.officeTransfers.index') }}" id="office-transfers">
                                 {{ __('Office Transfers') }}</li>
+                                <li class="me-4" data-type="gold-transform"
+                                data-create-url="" 
+                                data-url="" id="gold-transform">
+                                {{ __('Gold Transform') }}</li>
                             </ul>
                         </li>
                         @if (auth()->user()->can('manage_users'))

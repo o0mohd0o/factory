@@ -27,6 +27,10 @@ class AjaxReportController extends Controller
             $department = Department::with(['openingBalancesReports' => function ($query) use ($data) {
                 return $query->datePeriod($data['from'], $data['to'])
                     ->orderBy('date', 'desc');
+            }],
+            ['officeTransfersReports' => function ($query) use ($data) {
+                return $query->datePeriod($data['from'], $data['to'])
+                    ->orderBy('date', 'desc');
             }])->findOrFail($data['department_id']);
         } catch (ModelNotFoundException $e) {
             return response()->json([
@@ -45,6 +49,7 @@ class AjaxReportController extends Controller
         //Load department opening balances reports if it is the main department
         if ($department->main_department) {
             $openingBalancesReports = $department->openingBalancesReports->groupBy('date');
+            $officeTransfersReports = $department->officeTransfersReports->groupBy('date');
         }
 
         return response()->json([
@@ -52,6 +57,7 @@ class AjaxReportController extends Controller
                 'department' => $department,
                 'transferReports' => $transferReports,
                 'openingBalancesReports' => $openingBalancesReports ?? null,
+                'officeTransfersReports' => $officeTransfersReports ?? null,
                 'to' => $data['to'],
                 'from' => $data['from'],
             ])->render()

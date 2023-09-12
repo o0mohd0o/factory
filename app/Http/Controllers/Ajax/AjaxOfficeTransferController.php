@@ -2,30 +2,31 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Events\OpeningBalanceCreateEvent;
-use App\Events\OpeningBalanceDeleteEvent;
+use App\Events\OfficeTransferCreateEvent;
+use App\Events\OfficeTransferDeleteEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOpeningBalanceRequest;
+use App\Http\Requests\StoreOfficeTransferRequest;
 use App\Http\Traits\OpeningBalanceTrait;
 use App\Http\Traits\WeightTrait;
 use App\Models\Department;
 use App\Models\DepartmentItem;
-use App\Models\OpeningBalance;
-use App\Models\OpeningBalanceReport;
+use App\Models\OfficeTransfer;
+use App\Models\OfficeTransferReport;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class AjaxOpeningBalanceController extends Controller
+class AjaxOfficeTransferController extends Controller
 {
     use WeightTrait, OpeningBalanceTrait;
 
     public function index(Request $request)
     {
         try {
-            $openingBalance = OpeningBalance::with(['details'])
-                ->when($request->department_id, function ($query) use($request) {
+            $officeTransfer = OfficeTransfer::with(['details'])
+                ->when($request->department_id, function ($query) use ($request) {
                     return $query->where('department_id', $request->department_id);
                 })
                 ->when($request->ordering == 'last', function ($query) {
@@ -50,8 +51,8 @@ class AjaxOpeningBalanceController extends Controller
 
 
         return response()->json([
-            view('components.opening-balances.index', [
-                'openingBalance' => $openingBalance,
+            view('components.office-transfers.index', [
+                'officeTransfer' => $officeTransfer,
                 // 'department' => $department,
             ])->render()
         ]);
@@ -59,29 +60,29 @@ class AjaxOpeningBalanceController extends Controller
 
     public function create()
     {
-        $lastId = DB::table('opening_balances')->max('id');
+        $lastId = DB::table('office_transfers')->max('id');
 
         return response()->json([
-            view('components.opening-balances.create', [
+            view('components.office-transfers.create', [
                 'lastId' => $lastId + 1 ?? '1',
             ])->render()
         ]);
     }
 
 
-    public function store(StoreOpeningBalanceRequest $request)
+    public function store(StoreOfficeTransferRequest $request)
     {
 
-        $department = Department::findOrFail($request->department_id);
+        $department = Department::first();
         $data = $request->validated();
 
         try {
             DB::beginTransaction();
 
-            $openingBalance = $department->openingBalances()->create($data);
+            $officeTransfer = $department->officeTransfers()->create($data);
 
             $dataDetails = [];
-            
+
             //End of remove duplicate kinds from input to use it to sum its weights
             //Loop through the input using the count of kinds
             for ($i = 0; $i < count($data['kind']); $i++) {
@@ -99,30 +100,37 @@ class AjaxOpeningBalanceController extends Controller
             for ($i = 0; $i < count($data['kind']); $i++) {
                 try {
                     $item = $department->items()->where('kind', $dataDetails[$i]['kind'])
-                    ->where('shares', $dataDetails[$i]['shares'])
+                        ->where('shares', $dataDetails[$i]['shares'])
                         ->firstOrFail();
+
+                    if ($request->type == 'to' && $item->current_weight < $dataDetails[$i]['weight']) {
+                        throw new Exception(__("Insuficient Balance"), 403);
+                    }
 
                     $item->update([
                         'previous_weight' => $item->current_weight,
-                        'current_weight' => $item->current_weight + $dataDetails[$i]['weight'],
+                        'current_weight' => $request->type == 'from' ? $item->current_weight + $dataDetails[$i]['weight'] : $item->current_weight - $dataDetails[$i]['weight'],
                     ]);
                 } catch (ModelNotFoundException $e) {
-                    $item = $department->items()->create([
-                        'kind' => $dataDetails[$i]['kind'],
-                        'shares' => $dataDetails[$i]['shares'],
-                        'karat' => $dataDetails[$i]['karat'],
-                        'kind_name' => $dataDetails[$i]['kind_name'],
-                        'previous_weight' => 0,
-                        'current_weight' =>  $dataDetails[$i]['weight'],
-                    ]);
+                    if ($request->type == 'from') {
+                        $item = $department->items()->create([
+                            'kind' => $dataDetails[$i]['kind'],
+                            'shares' => $dataDetails[$i]['shares'],
+                            'karat' => $dataDetails[$i]['karat'],
+                            'kind_name' => $dataDetails[$i]['kind_name'],
+                            'previous_weight' => 0,
+                            'current_weight' =>  $dataDetails[$i]['weight'],
+                        ]);
+                    }else{
+                        throw new Exception(__("Insuficient Balance"), 403);
+                    }
                 }
-                //Fire opening balance create event
-                OpeningBalanceCreateEvent::dispatch($item, 'create', $dataDetails[$i]['weight'], $openingBalance->id, $department);
-            
+                //Fire office transfer create event
+                OfficeTransferCreateEvent::dispatch($item, 'create', $dataDetails[$i]['weight'], $officeTransfer->id, $department, $request->type);
             }
-            
 
-            $openingBalance->details()->createMany($dataDetails);
+
+            $officeTransfer->details()->createMany($dataDetails);
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -138,56 +146,57 @@ class AjaxOpeningBalanceController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => __('Opening balance created successfully.')
+            'message' => __('office transfer created successfully.')
         ]);
     }
 
 
-    public function edit(OpeningBalance $openingBalance)
+    public function edit(OfficeTransfer $officeTransfer)
     {
-        $openingBalance->load(['department', 'details']);
-        $lastId = DB::table('opening_balances')->max('id');
+        $officeTransfer->load(['department', 'details']);
+        $lastId = DB::table('office_transfers')->max('id');
         return response()->json([
-            view('components.opening-balances.edit', [
-                'openingBalance' => $openingBalance,
-                'department' => $openingBalance->department,
+            view('components.office-transfers.edit', [
+                'officeTransfer' => $officeTransfer,
+                'department' => $officeTransfer->department,
                 'lastId' => $lastId + 1,
             ])->render()
         ]);
     }
 
-    public function update(StoreOpeningBalanceRequest $request, OpeningBalance $openingBalance)
+    public function update(StoreOfficeTransferRequest $request, OfficeTransfer $officeTransfer)
     {
-        $openingBalance->load(['department', 'details']);
+        $officeTransfer->load(['department', 'details']);
 
-        //Check if the opening balance used before
+        //Check if the office transfer used before
         //If it is used before we can not edit or delete it.
-        $openingBalanceMovementReport = $this->checkIfTheOpeningBalanceUsed($openingBalance);
-        if ($openingBalanceMovementReport['used']) {
+        $officeTransferMovementReport = $this->checkIfTheOpeningBalanceUsed($officeTransfer);
+        if ($officeTransferMovementReport['used'] && $officeTransfer->type == 'from') {
             return response()->json([
                 'status' => 'error',
-                'message' => __('Sorry, This opening balance has been used.You can not edit or delete it.')
+                'message' => __('Sorry, This document has been used.You can not edit or delete it.')
             ], 404);
         }
 
 
         try {
             DB::beginTransaction();
-            //Delete opening balance and their details
-            $openingBalance->details()->delete();
-            $openingBalance->delete();
+            //Delete office transfer and their details
+            $officeTransfer->details()->delete();
+            $officeTransfer->delete();
 
-            //Remove the opening balance credits
-            foreach ($openingBalanceMovementReport['items'] as $item) {
+            //Remove the office transfer credits
+            foreach ($officeTransferMovementReport['items'] as $item) {
                 $item['kind']->previous_weight = $item['kind']->current_weight;
-                $item['kind']->current_weight -= $item['removedWeight'];
+                $itemWeightToRemoveOrAdd = $officeTransfer->type == 'from'?- $item['removedWeight']: $item['removedWeight'];
+                $item['kind']->current_weight += $itemWeightToRemoveOrAdd;
                 $item['kind']->save();
-                //Fire opening balance delete event
-                OpeningBalanceDeleteEvent::dispatch($item['kind'], 'edit', $item['removedWeight'], $openingBalance->id, $openingBalance->department);
+                //Fire office transfer delete event
+                OfficeTransferDeleteEvent::dispatch($item['kind'], 'edit', $itemWeightToRemoveOrAdd, $officeTransfer->id, $officeTransfer->department, $officeTransfer->type);
             }
 
             //Call store function and passing nesseccary arguments to it.
-            $this->store($request, $openingBalance->department);
+            $this->store($request, $officeTransfer->department);
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -200,37 +209,38 @@ class AjaxOpeningBalanceController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => __('Opening balance created successfully.')
+            'message' => __('office transfer created successfully.')
         ]);
     }
 
-    public function delete(OpeningBalance $openingBalance)
+    public function delete(OfficeTransfer $officeTransfer)
     {
-        $openingBalance->load(['department', 'details']);
+        $officeTransfer->load(['department', 'details']);
 
-        //Check if the opening balance used before
+        //Check if the office transfer used before
         //If it is used before we can not edit or delete it.
-        $openingBalanceMovementReport = $this->checkIfTheOpeningBalanceUsed($openingBalance);
-        if ($openingBalanceMovementReport['used']) {
+        $officeTransferMovementReport = $this->checkIfTheOpeningBalanceUsed($officeTransfer);
+        if ($officeTransferMovementReport['used']&& $officeTransfer->type == 'from') {
             return response()->json([
                 'status' => 'error',
-                'message' => __('Sorry, This opening balance has been used.You can not edit or delete it.')
+                'message' => __('Sorry, This office transfer has been used.You can not edit or delete it.')
             ], 404);
         }
 
 
         try {
             DB::beginTransaction();
-            //Delete opening balance and their details
-            $openingBalance->details()->delete();
-            $openingBalance->delete();
-            //Remove the opening balance credits
-            foreach ($openingBalanceMovementReport['items'] as $item) {
+            //Delete office transfer and their details
+            $officeTransfer->details()->delete();
+            $officeTransfer->delete();
+            //Remove the office transfer credits
+            foreach ($officeTransferMovementReport['items'] as $item) {
                 $item['kind']->previous_weight = $item['kind']->current_weight;
-                $item['kind']->current_weight -= $item['removedWeight'];
+                $itemWeightToRemoveOrAdd = $officeTransfer->type == 'from'?- $item['removedWeight']: $item['removedWeight'];
+                $item['kind']->current_weight += $itemWeightToRemoveOrAdd;
                 $item['kind']->save();
-                //Fire opening balance delete event
-                OpeningBalanceDeleteEvent::dispatch($item['kind'], 'delete', $item['removedWeight'], $openingBalance->id, $openingBalance->department);
+                //Fire office transfer delete event
+                OfficeTransferDeleteEvent::dispatch($item['kind'], 'delete', $itemWeightToRemoveOrAdd, $officeTransfer->id, $officeTransfer->department, $officeTransfer->type);
             }
 
             DB::commit();
@@ -244,7 +254,7 @@ class AjaxOpeningBalanceController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => __('Opening balance deleted successfully.')
+            'message' => __('office transfer deleted successfully.')
         ]);
     }
 }

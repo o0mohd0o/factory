@@ -9,6 +9,7 @@ use App\Http\Controllers\Ajax\AjaxQrcodeController;
 use App\Http\Controllers\Ajax\AjaxReportController;
 use App\Http\Controllers\Ajax\AjaxTransferController;
 use App\Http\Controllers\Ajax\AjaxManageUsersController;
+use App\Http\Controllers\Ajax\AjaxOfficeTransferController;
 use Illuminate\Support\Facades\Route;
 
 //Important Note: All this routes prefixed with /ajax
@@ -34,7 +35,17 @@ Route::get('/departments/{department}/transfers/index', [AjaxTransferController:
 Route::get('/departments/{department}/transfers-navigator/index', [AjaxTransferController::class, 'navigator'])->name('ajax.transfers.navigator');
 
 Route::prefix('office-transfers')->group(function () {
-    Route::get('/', [AjaxTransferController::class, 'navigator'])->name('ajax.officeTransfers.index');
+    Route::get('/', [AjaxOfficeTransferController::class, 'index'])->name('ajax.officeTransfers.index');
+//create opening balances for the department
+Route::get('/create', [AjaxOfficeTransferController::class, 'create'])->name('ajax.officeTransfers.create');
+//Store the office transfer for the department
+Route::post('/store', [AjaxOfficeTransferController::class, 'store'])->name('ajax.officeTransfers.store');
+//get the office transfer for the department
+Route::get('/{officeTransfer}/edit', [AjaxOfficeTransferController::class, 'edit'])->name('ajax.officeTransfers.edit');
+//update the office transfer for the department
+Route::post('/{officeTransfer}/update', [AjaxOfficeTransferController::class, 'update'])->name('ajax.officeTransfers.update');
+//delete the office transfer for the department
+Route::post('/{officeTransfer}/delete', [AjaxOfficeTransferController::class, 'delete'])->name('ajax.officeTransfers.delete');
 
 });
 

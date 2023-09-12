@@ -109,4 +109,43 @@ class Department extends Model
         return $this->hasMany(DepartmentDailyReport::class, 'department_id', 'id');
     }
 
+/**
+     * Get all of the OfficeTransferReport for the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function officeTransfersReports()
+    {
+        return $this->hasMany(OfficeTransferReport::class, 'department_id', 'id');
+    }
+     /**
+     * Get all of the incoming Office transfers for the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function officeTransfers()
+    {
+        return $this->hasMany(OfficeTransfer::class, 'department_id', 'id');
+    }
+
+      /**
+     * Get all of the incoming Office transfers for the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function incomingOfficeTransfers()
+    {
+        return $this->hasMany(OfficeTransfer::class, 'department_id', 'id')->where('type', 'from');
+    }
+
+    /**
+     * Get all of the outcoming Office transfers for the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function outcomingOfficeTransfers()
+    {
+        return $this->hasMany(OfficeTransfer::class, 'department_id', 'id')->where('type', 'to');
+    }
+
 }

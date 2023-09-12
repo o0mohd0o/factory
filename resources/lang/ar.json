@@ -200,5 +200,15 @@
     "Inner Transfers": "التحويلات الداخلية",
     "Transfers To Office": "تحويلات الى المكتب",
     "Transfers From Office": "التحويلات من المكتب",
-    "Office Transfers": "تحويلات المكتب"
+    "Transfer To Office": "تحويل الى المكتب",
+    "Transfer From Office": "تحويل من المكتب",
+    "Office Transfers": "تحويلات المكتب",
+    "Transfer Type": "نوع التحويل",
+    "Sorry, This document has been used.You can not edit or delete it.": "عذراً,لقد تمت حركة على هذا السند لا يمكنك تعديله أو حذفه",
+    "Gold Transform":"معالجة الذهب",
+    "Delete Of Transfer To Office": "حذف تحويل الى المكتب",
+    "Delete Of Transfer From Office": "حذف تحويل من المكتب",
+    "Delete Of Transfer From Office For Editing": "حذف تحويل من المكتب للتعديل",
+    "Delete Of Transfer To Office For Editing": "حذف تحويل الى المكتب للتعديل"
+
 }

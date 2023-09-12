@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OpeningBalanceDetails extends Model
+class OfficeTransferDetails extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'opening_balance_details';
+    protected $table = 'office_transfers_details';
 
     protected $fillable = [
         'kind',
@@ -21,7 +21,7 @@ class OpeningBalanceDetails extends Model
         'quantity',
         'total_cost',
         'salary',
-        'opening_balance_id',
+        'office_transfer_id ',
     ];
 
     /**
@@ -29,8 +29,8 @@ class OpeningBalanceDetails extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function openingBalance()
+    public function officeTransfer()
     {
-        return $this->belongsTo(openingBalance::class, 'opening_balance_id', 'id');
+        return $this->belongsTo(OfficeTransfer::class, 'office_transfer_id', 'id');
     }
 }

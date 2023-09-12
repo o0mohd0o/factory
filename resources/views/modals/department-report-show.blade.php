@@ -25,6 +25,13 @@
                     ])
                 @endif
 
+                @if ($department->main_department)
+                    @include('modals.components.office-transfer-report', [
+                        'officeTransfersReports' => $officeTransfersReports,
+                        'department' => $department,
+                    ])
+                @endif
+
                 @include('modals.components.transfer-report', [
                     'transferReports' => $transferReports,
                     'department' => $department,

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\TransferEvent;
+use App\Listeners\OfficeTransferSubscriber;
 use App\Listeners\OpeningBalanceSubscriber;
 use App\Listeners\TransferListener;
 use Illuminate\Auth\Events\Registered;
@@ -33,6 +34,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $subscribe = [
         OpeningBalanceSubscriber::class,
+        OfficeTransferSubscriber::class,
     ];
 
     /**

@@ -39,7 +39,7 @@ class OfficeTransfer extends Model
      */
     public function details()
     {
-        return $this->hasMany(OfficeTransfersDetails::class, 'office_transfer_id', 'id');
+        return $this->hasMany(OfficeTransferDetails::class, 'office_transfer_id', 'id');
     }
 
     /**
