@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Ajax\AjaxDepartmentController;
 use App\Http\Controllers\Ajax\AjaxGeneralSettingsController;
+use App\Http\Controllers\Ajax\AjaxGoldTransformController;
 use App\Http\Controllers\Ajax\AjaxItemCardController;
 use App\Http\Controllers\Ajax\AjaxItemCardSettingsController;
 use App\Http\Controllers\Ajax\AjaxOpeningBalanceController;
@@ -36,17 +37,29 @@ Route::get('/departments/{department}/transfers-navigator/index', [AjaxTransferC
 
 Route::prefix('office-transfers')->group(function () {
     Route::get('/', [AjaxOfficeTransferController::class, 'index'])->name('ajax.officeTransfers.index');
-//create opening balances for the department
-Route::get('/create', [AjaxOfficeTransferController::class, 'create'])->name('ajax.officeTransfers.create');
-//Store the office transfer for the department
-Route::post('/store', [AjaxOfficeTransferController::class, 'store'])->name('ajax.officeTransfers.store');
-//get the office transfer for the department
-Route::get('/{officeTransfer}/edit', [AjaxOfficeTransferController::class, 'edit'])->name('ajax.officeTransfers.edit');
-//update the office transfer for the department
-Route::post('/{officeTransfer}/update', [AjaxOfficeTransferController::class, 'update'])->name('ajax.officeTransfers.update');
-//delete the office transfer for the department
-Route::post('/{officeTransfer}/delete', [AjaxOfficeTransferController::class, 'delete'])->name('ajax.officeTransfers.delete');
-
+    //create opening balances for the department
+    Route::get('/create', [AjaxOfficeTransferController::class, 'create'])->name('ajax.officeTransfers.create');
+    //Store the office transfer for the department
+    Route::post('/store', [AjaxOfficeTransferController::class, 'store'])->name('ajax.officeTransfers.store');
+    //get the office transfer for the department
+    Route::get('/{officeTransfer}/edit', [AjaxOfficeTransferController::class, 'edit'])->name('ajax.officeTransfers.edit');
+    //update the office transfer for the department
+    Route::post('/{officeTransfer}/update', [AjaxOfficeTransferController::class, 'update'])->name('ajax.officeTransfers.update');
+    //delete the office transfer for the department
+    Route::post('/{officeTransfer}/delete', [AjaxOfficeTransferController::class, 'delete'])->name('ajax.officeTransfers.delete');
+});
+Route::prefix('gold-transform')->group(function () {
+    Route::get('/', [AjaxGoldTransformController::class, 'index'])->name('ajax.goldTransforms.index');
+    //create opening balances for the department
+    Route::get('/create', [AjaxGoldTransformController::class, 'create'])->name('ajax.goldTransforms.create');
+    //Store the office transfer for the department
+    Route::post('/store', [AjaxGoldTransformController::class, 'store'])->name('ajax.goldTransforms.store');
+    //get the office transfer for the department
+    Route::get('/{officeTransfer}/edit', [AjaxGoldTransformController::class, 'edit'])->name('ajax.goldTransforms.edit');
+    //update the office transfer for the department
+    Route::post('/{officeTransfer}/update', [AjaxGoldTransformController::class, 'update'])->name('ajax.goldTransforms.update');
+    //delete the office transfer for the department
+    Route::post('/{officeTransfer}/delete', [AjaxGoldTransformController::class, 'delete'])->name('ajax.goldTransforms.delete');
 });
 
 //Get opening balances for the department on a specified day

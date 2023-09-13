@@ -1,4 +1,4 @@
-<h1 class="text-center bg-white rounded py-1">{{ __('Opening Balance') }}</h1>
+<h1 class="text-center bg-white rounded py-1">{{ __('Office Transfers') }}</h1>
 
 
 <div class="form-background">

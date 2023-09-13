@@ -1,9 +1,9 @@
-<h1 class="text-center bg-white rounded py-1">{{ __('Office Transfers') }}</h1>
+<h1 class="text-center bg-white rounded py-1">{{ __('Opening Balance') }}</h1>
 
 
 <div class="form-background">
     <h2 class="text-center bg-success text-white mb-2">{{ __('Edit') }}</h2>
-    <form id="office-transfer-form" action="{{ route('ajax.officeTransfers.update', $officeTransfer) }}"
+    <form id="opening-balance-form" action="{{ route('ajax.openingBalances.update', $openingBalance) }}"
         autocomplete="off" method="post">
         @csrf
         <div class="row">
@@ -16,10 +16,23 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="value">{{ __('Document Date') }}</label>
-                    <input type="text" value="{{ $officeTransfer->date }}" class="form-control" name="date">
+                    <input type="text" value="{{ $openingBalance->date }}" class="form-control" name="date">
                 </div>
             </div>
-       
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="value">{{ __('Inventory Record Number') }}</label>
+                    <input type="text" value="{{ $openingBalance->inventory_record_num }}" class="form-control"
+                        name="inventory_record_num">
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="value">{{ __('Inventory Record Date') }}</label>
+                    <input type="text" value="{{ $openingBalance->inventory_record_date }}" class="form-control"
+                        name="inventory_record_date">
+                </div>
+            </div>
 
         </div>
         <div class="row">
@@ -27,24 +40,25 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="person_on_charge">{{ __('Person On Charge') }}</label>
-                    <input value="{{ $officeTransfer->person_on_charge }}" type="text" name="person_on_charge"
+                    <input value="{{ $openingBalance->person_on_charge }}" type="text" name="person_on_charge"
                         class="form-control">
                 </div>
                
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="type">{{ __('Transfer Type') }}</label>
-                    <select class="form-select text-center" name="type" aria-label="Default select example">
-                        <option value="to" {{$officeTransfer->type=='to'?"selected":""}}>{{__('Transfer To Office')}} </option>
-                        <option value="from" {{$officeTransfer->type=='from'?"selected":""}}>{{__('Transfer From Office')}} </option>
+                    <label for="person_on_charge">{{ __('Department') }}</label>
+                    <select class="form-select text-center" name="department_id" aria-label="Default select example">
+                    @foreach ($departments as $department)
+                        <option value="{{$department->id}}" {{$openingBalance->department_id==$department->id?"selected":""}}>{{$department->name}}</option>
+                    @endforeach
                     </select>   
                 </div>
             </div>
         </div>
         <input autocomplete="false" name="hidden" type="text" style="display:none;">
-        <table id="office-transfer-autocomplete-table"
-            class="w-100 printForm create-form office-transfer-autocomplete-table">
+        <table id="opening-balance-autocomplete-table"
+            class="w-100 printForm create-form opening-balance-autocomplete-table">
             <thead>
                 <tr>
                     <th>{{ __('Kind') }}</th>
@@ -60,7 +74,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($officeTransfer->details as $details)
+                @foreach ($openingBalance->details as $details)
                     <tr class="addrow" id="row-{{ $loop->index }}">
                         <td><input type="text" id="kind-{{ $loop->index }}" data-field-name="code"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"
@@ -110,16 +124,16 @@
     </form>
 </div>
 
-<script src="{{ asset('js/office-transfer.js') }}"></script>
+<script src="{{ asset('js/opening-balance.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('#office-transfer-form').on('submit', function(e) {
+        $('#opening-balance-form').on('submit', function(e) {
             e.preventDefault();
             let url = $(this).attr('action');
             let data = new FormData(this);
             axios.post(url, data).then((response) => {
                 toastr.success(response.data.message);
-                axios.get("{{ route('ajax.officeTransfers.index') }}").then((
+                axios.get("{{ route('ajax.openingBalances.index') }}").then((
                     response) => {
                     $('#main-content').html(response.data);
                 });
@@ -138,7 +152,7 @@
 
         $('#undo').on('click', function(e) {
             e.preventDefault();
-            axios.get("{{ route('ajax.officeTransfers.index') }}").then((
+            axios.get("{{ route('ajax.openingBalances.index') }}").then((
                 response) => {
                 $('#main-content').html(response.data);
             });

@@ -69,3 +69,15 @@
 .mr-32 {
     margin-right: 32px;
 }
+.gold-transform-department-label {
+    margin: 10px 70px;
+    background-color: lightgreen;
+    border: black 1px solid;
+    font-size: 19px;
+    padding: 4px;
+}
+
+.gold-transform-department-select {
+    display: inline-block;
+    width: 30%;
+}   

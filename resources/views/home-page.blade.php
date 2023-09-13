@@ -79,8 +79,8 @@
                                 data-url="{{ route('ajax.officeTransfers.index') }}" id="office-transfers">
                                 {{ __('Office Transfers') }}</li>
                                 <li class="me-4" data-type="gold-transform"
-                                data-create-url="" 
-                                data-url="" id="gold-transform">
+                                data-create-url="{{route('ajax.goldTransforms.create')}}" 
+                                data-url="{{route('ajax.goldTransforms.index')}}" id="gold-transform">
                                 {{ __('Gold Transform') }}</li>
                             </ul>
                         </li>

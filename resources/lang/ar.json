@@ -209,6 +209,13 @@
     "Delete Of Transfer To Office": "حذف تحويل الى المكتب",
     "Delete Of Transfer From Office": "حذف تحويل من المكتب",
     "Delete Of Transfer From Office For Editing": "حذف تحويل من المكتب للتعديل",
-    "Delete Of Transfer To Office For Editing": "حذف تحويل الى المكتب للتعديل"
-
+    "Delete Of Transfer To Office For Editing": "حذف تحويل الى المكتب للتعديل",
+    "Save And Transfer To Dept": "حفظ وتحويل الى قسم",
+    "Used Items": " المكونات المستخدمة",
+    "New Items": "الأصناف الجديدة",
+    "Gold Loss" : "خياس الذهب",
+    "Worker": "العامل",
+    "Calibrated In Gold 21" : "معاير بذهب 21",
+    "Calibrated In Gold 24" : "معاير بذهب 24",
+    "Used Weight": "الوزن المستخدم"
 }
