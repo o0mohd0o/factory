@@ -44,9 +44,9 @@
                     class="w-100 printForm create-form used-items-autocomplete-table">
                     <thead>
                         <tr>
-                            <th>{{ __('Kind') }}</th>
+                            <th>{{ __('Item Code') }}</th>
 
-                            <th>{{ __('Kind Name') }}</th>
+                            <th>{{ __('Item Name') }}</th>
 
                             <th>{{ __('Shares') }}</th>
 
@@ -58,27 +58,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="addrow" id="row-1">
-                            <input type="hidden" name="item_id" id="transfered-item-id">
+                        <tr class="used-items-addrow" id="row-1">
+                            <input type="hidden" name="used_item_id" id="used-item-id">
 
-                            <input type="hidden" name="transfered_from" id="transfered-item-department-id">
-                            <td><input type="text" data-department="{{ '' }}" id="kind-code"
-                                    data-field-name="kind" class="form-control autocomplete_txt" autofill="off"
-                                    autocomplete="off" name="kind"></td>
-                            <td><input type="text" id="kind-name" data-department="{{ '' }}"
-                                    class="form-control autocomplete_txt" autofill="off" data-field-name="kind_name"
-                                    autocomplete="off" name="kind_name"></td>
+                            <td><input type="text" id="used-item-code"
+                                    data-field-name="item" class="form-control autocomplete_txt" autofill="off"
+                                    autocomplete="off" name="used_item"></td>
+                            <td><input type="text" id="used-item-name"
+                                    class="form-control autocomplete_txt" autofill="off" data-field-name="item_name"
+                                    autocomplete="off" name="used_item_name"></td>
 
-                            <td><input type="text" id="shares" data-department="{{ '' }}"
+                            <td><input type="number" id="used-item-shares"
                                     class="form-control autocomplete_txt" autofill="off" data-field-name="shares"
-                                    autocomplete="off" name="shares"></td>
+                                    autocomplete="off" name="used_item_shares"></td>
 
-                            <td><input type="text" id="itemWeightBeforeTransfer" class="form-control"
-                                    name="item_weight_before_transfer" readonly></td>
-                            <td><input type="text" class="form-control weight-to-transfer" name="weight_to_transfer"
-                                    value="0">
+                            <td><input type="number" id="used-item-weight-before-transform" class="form-control"
+                                    name="used_item_weight_before_transform" readonly></td>
+                            <td><input type="number" class="form-control weight-to-use" name="weight_to_use">
                             </td>
-
+                            <td class="table-borderless">
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -88,52 +87,46 @@
                 <h3 class="text-center bg-warning text-dark mb-2 m-auto text-nowrap  w-25 border rounded">
                     {{ __('New Items') }}</h3>
 
-                <table id="opening-balance-autocomplete-table"
-                    class="w-100 printForm create-form opening-balance-autocomplete-table">
-                    <thead>
+                <table id="new-items-autocomplete-table"
+                    class="w-100 printForm create-form new-items-autocomplete-table">
+                    <thead class="text-nowrap">
                         <tr>
-                            <th>{{ __('Kind') }}</th>
-                            <th>{{ __('Kind Name') }}</th>
+                            <th>{{ __('Item Code') }}</th>
+                            <th>{{ __('Item Name') }}</th>
                             <th>{{ __('Default Karat') }}</th>
                             <th>{{ __('Shares') }}</th>
-                            <th>{{ __('Unit') }}</th>
+                            <th>{{ __('Weight') }}</th>
                             <th>{{ __('QTY') }}</th>
-                            <th>{{ __('Salary') }}</th>
-                            <th>{{ __('Total Cost') }}</th>
+                            <th>{{ __('Stone Weight') }}</th>
                             <th class="table-borderless"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="addrow" id="row-1">
-                            <td><input type="text" id="kind-1" data-field-name="code"
-                                    class="form-control autocomplete_txt" autofill="off" autocomplete="off"
-                                    name="kind[]"></td>
-                            <td><input type="text" id="kind-name-1" data-field-name="name"
-                                    class="form-control autocomplete_txt" autofill="off" autocomplete="off"
-                                    name="kind_name[]">
+                        <tr class="new-items-addrow" id="row-1">
+                            <input type="hidden" name="new_item_id" id="new-item-id">
+
+                            <td><input type="text" id="new-item-code"
+                                    data-field-name="item" class="form-control autocomplete_txt" autofill="off"
+                                    autocomplete="off" name="new_item"></td>
+                            <td><input type="text" id="new-item-name"
+                                    class="form-control autocomplete_txt" autofill="off" data-field-name="item_name"
+                                    autocomplete="off" name="new_item_name"></td>
+
+                            <td><input type="number" id="default-item-shares"
+                                    class="form-control autocomplete_txt" autofill="off" 
+                                    autocomplete="off" readonly></td>
+
+                            <td><input type="number" id="new-item-shares"
+                                    class="form-control autocomplete_txt" autofill="off" data-field-name="shares"
+                                    autocomplete="off" name="new_item_shares"></td>
+
+                            <td><input type="number" id="new-item-weight" class="form-control"
+                                    name="new_item_weight" ></td>
+
+                            <td><input type="number" class="form-control new-item-qty" name="new_item_qty"
+                                    value="1">
+                            <td><input type="number" class="form-control new-item-stone-weight" name="new_item_stone_weight">
                             </td>
-                            <td><input type="text" id="kind-karat-1" data-field-name="karat"
-                                    class="form-control autocomplete_txt" autofill="off" autocomplete="off"
-                                    name="karat[]">
-                            </td>
-                            <td><input type="text" id="shares-1" data-field-name="shares" class="form-control "
-                                    autofill="off" name="shares[]">
-                            </td>
-                            <td>
-                                <select class="form-control" name="unit[]" id="unit-1">
-                                    <option value="gram"> جرام</option>
-                                    <option value="kilogram">كيلو جرام</option>
-                                    <option value="ounce">أونصة </option>
-                                </select>
-                            </td>
-                            <td><input type="text" class="form-control quantity" id="quantity-1"
-                                    name="quantity[]" value="1">
-                            </td>
-                            <td><input type="text" class="form-control salary" id="salary-1" name="salary[]"
-                                    value="0">
-                            </td>
-                            <td><input type="text" class="form-control total-cost" id="total-cost-1"
-                                    name="total_cost[]" value="0" readonly></td>
                             <td class="table-borderless">
                             </td>
                         </tr>

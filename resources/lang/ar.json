@@ -98,7 +98,7 @@
     "Document Date": "تاريخ السند",
     "Inventory Record Number": "رقم محضر الجرد",
     "Inventory Record Date": "تاريخ محضر الجرد",
-    "QTY": "الكمية",
+    "QTY": "الكمية/العدد",
     "Unit": "الوحدة",
     "Salary": "الأجرة",
     "Total Cost": "اجمالى التكلفة",
@@ -217,5 +217,9 @@
     "Worker": "العامل",
     "Calibrated In Gold 21" : "معاير بذهب 21",
     "Calibrated In Gold 24" : "معاير بذهب 24",
-    "Used Weight": "الوزن المستخدم"
+    "Used Weight": "الوزن المستخدم",
+    "Stone Weight": "وزن الحجر",
+    "Purity Differnce": "فرق العيار",
+    "Item Code" : "كود الصنف",
+    "Item Name" : "اسم الصنف"
 }
