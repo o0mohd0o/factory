@@ -3,7 +3,7 @@
 
 <div class="form-background">
     <h2 class="text-center bg-success text-white mb-2">{{ __('Create') }}</h2>
-    <form id="opening-balance-form" action="{{ route('ajax.openingBalances.store') }}" autocomplete="off" method="post">
+    <form id="gold-transform-form" action="{{ route('ajax.openingBalances.store') }}" autocomplete="off" method="post">
         @csrf
         <div class="row">
             <div class="col-sm-3">
@@ -58,26 +58,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="used-items-addrow" id="row-1">
-                            <input type="hidden" name="used_item_id" id="used-item-id">
+                        <tr class="used-items-addrow">
+                            <input type="hidden" name="used_item_id">
 
-                            <td><input type="text" id="used-item-code"
-                                    data-field-name="item" class="form-control autocomplete_txt" autofill="off"
+                            <td><input type="text" 
+                                data-field-name="code" class="form-control autocomplete_txt" autofill="off"
                                     autocomplete="off" name="used_item"></td>
-                            <td><input type="text" id="used-item-name"
-                                    class="form-control autocomplete_txt" autofill="off" data-field-name="item_name"
+                            <td><input type="text" 
+                                    class="form-control autocomplete_txt" autofill="off" data-field-name="name"
                                     autocomplete="off" name="used_item_name"></td>
 
-                            <td><input type="number" id="used-item-shares"
+                            <td><input type="number" 
                                     class="form-control autocomplete_txt" autofill="off" data-field-name="shares"
                                     autocomplete="off" name="used_item_shares"></td>
 
-                            <td><input type="number" id="used-item-weight-before-transform" class="form-control"
+                            <td><input type="number" class="form-control"
                                     name="used_item_weight_before_transform" readonly></td>
                             <td><input type="number" class="form-control weight-to-use" name="weight_to_use">
                             </td>
-                            <td class="table-borderless">
-                            </td>
+                            <td class="table-borderless"> <a href="#" class="add-row">
+                                <i class="fas fa-plus-square fa-lg" style="color: green;font-size: 29px;"></i>
+                            </a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -169,7 +170,7 @@
                     {{ __('Print') }}
                 </button>
                 <button type="submit" name="submit"
-                    class="btn btn-success mr-5">{{ __('Save And Transfer To Dept') }}</button>
+                    class="btn btn-success mr-5 save-and-transfer">{{ __('Save And Transfer To Dept') }}</button>
                 {{-- <label for="to_department" class="gold-transform-department-label">{{ __('To Department') }}</label> --}}
                 <select class="form-select text-center gold-transform-department-select" name="department_id"
                     aria-label="Default select example">
@@ -183,10 +184,10 @@
     </form>
 </div>
 
-<script src="{{ asset('js/opening-balance.js') }}"></script>
+<script src="{{ asset('js/gold-transform.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('#opening-balance-form').on('submit', function(e) {
+        $('#gold-transform-form').on('submit', function(e) {
             e.preventDefault();
             let url = $(this).attr('action');
             let data = new FormData(this);
