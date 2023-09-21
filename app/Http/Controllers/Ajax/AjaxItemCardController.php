@@ -185,7 +185,11 @@ class AjaxItemCardController extends Controller
 
     public function fetchItemCards(Request $request)
     {
-        $items = Items::where($request->field_name, 'like', '%' . $request->value . '%')
+        $items = Items::query()
+            ->where(function ($query) use ($request) {
+                $query->where('code', 'like', '%' . $request->value . '%')
+                    ->orWhere('name', 'like', '%' . $request->value . '%');
+            })
             ->doesntHave('childs')
             ->get();
 

@@ -44,7 +44,7 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="person_on_charge">{{ __('Department') }}</label>
+                    <label for="department_id">{{ __('Department') }}</label>
                     <select class="form-select text-center" name="department_id" aria-label="Default select example">
                     @foreach ($departments as $department)
                         <option value="{{$department->id}}">{{$department->name}}</option>

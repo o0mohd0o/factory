@@ -69,6 +69,7 @@
         </script>
     @else
         <script>
+            var basePath = "{{url('/')}}";
             var itemCardPath = "{{ url('/') . '/fetch-items' }}";
         </script>
     @endif

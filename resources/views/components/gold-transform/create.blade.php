@@ -6,16 +6,27 @@
     <form id="gold-transform-form" action="{{ route('ajax.openingBalances.store') }}" autocomplete="off" method="post">
         @csrf
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-1">
                 <div class="form-group">
                     <label for="value">{{ __('Document ID') }}</label>
                     <input type="text" value="{{ $lastId }}" class="form-control" readonly>
                 </div>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <div class="form-group">
                     <label for="value">{{ __('Document Date') }}</label>
                     <input type="text" value="<?php echo date('Y-m-d'); ?>" class="form-control" name="date" readonly>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="department">{{ __('Department') }}</label>
+                    <select class="form-select text-center" id="gold-transform-department" name="department_id"
+                        aria-label="Default select example">
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 
@@ -61,24 +72,25 @@
                         <tr class="used-items-addrow">
                             <input type="hidden" name="used_item_id">
 
-                            <td><input type="text" 
-                                data-field-name="code" class="form-control autocomplete_txt" autofill="off"
-                                    autocomplete="off" name="used_item"></td>
-                            <td><input type="text" 
-                                    class="form-control autocomplete_txt" autofill="off" data-field-name="name"
-                                    autocomplete="off" name="used_item_name"></td>
+                            <td><input type="text" data-field-name="code"
+                                    class="form-control used-items-autocomplete" autofill="off" autocomplete="off"
+                                    name="used_item"></td>
+                            <td><input type="text" class="form-control used-items-autocomplete" autofill="off"
+                                    data-field-name="name" autocomplete="off" name="used_item_name"></td>
 
-                            <td><input type="number" 
-                                    class="form-control autocomplete_txt" autofill="off" data-field-name="shares"
-                                    autocomplete="off" name="used_item_shares"></td>
+                            <td><input type="number" min="0" class="form-control used-items-autocomplete"
+                                    autofill="off" data-field-name="shares" autocomplete="off" name="used_item_shares"
+                                    readonly></td>
 
-                            <td><input type="number" class="form-control"
+                            <td><input type="number" min="0" class="form-control"
                                     name="used_item_weight_before_transform" readonly></td>
-                            <td><input type="number" class="form-control weight-to-use" name="weight_to_use">
+                            <td><input type="number" min="0" class="form-control weight-to-use"
+                                    name="weight_to_use" required>
                             </td>
-                            <td class="table-borderless"> <a href="#" class="add-row">
-                                <i class="fas fa-plus-square fa-lg" style="color: green;font-size: 29px;"></i>
-                            </a></td>
+                            <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
+                                    <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+                                </a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -103,33 +115,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="new-items-addrow" id="row-1">
-                            <input type="hidden" name="new_item_id" id="new-item-id">
+                        <tr class="new-items-addrow">
+                            <input type="hidden" name="new_item_id">
 
-                            <td><input type="text" id="new-item-code"
-                                    data-field-name="item" class="form-control autocomplete_txt" autofill="off"
-                                    autocomplete="off" name="new_item"></td>
-                            <td><input type="text" id="new-item-name"
-                                    class="form-control autocomplete_txt" autofill="off" data-field-name="item_name"
-                                    autocomplete="off" name="new_item_name"></td>
+                            <td><input type="text" data-field-name="code" class="form-control new-items-autocomplete"
+                                    autofill="off" autocomplete="off" name="new_item"></td>
+                            <td><input type="text" class="form-control new-items-autocomplete" autofill="off"
+                                    data-field-name="name" autocomplete="off" name="new_item_name"></td>
 
-                            <td><input type="number" id="default-item-shares"
-                                    class="form-control autocomplete_txt" autofill="off" 
-                                    autocomplete="off" readonly></td>
+                            <td><input type="number" min="0" class="form-control" autofill="off" name="new_item_karat"
+                                    autocomplete="off" data-field-name="karat" readonly></td>
 
-                            <td><input type="number" id="new-item-shares"
-                                    class="form-control autocomplete_txt" autofill="off" data-field-name="shares"
-                                    autocomplete="off" name="new_item_shares"></td>
+                            <td><input type="number" min="0" class="form-control" autofill="off"
+                                    data-field-name="shares" autocomplete="off" name="new_item_shares" required></td>
 
-                            <td><input type="number" id="new-item-weight" class="form-control"
-                                    name="new_item_weight" ></td>
-
-                            <td><input type="number" class="form-control new-item-qty" name="new_item_qty"
-                                    value="1">
-                            <td><input type="number" class="form-control new-item-stone-weight" name="new_item_stone_weight">
+                            <td><input type="number" min="0" class="form-control" name="new_item_weight" required>
                             </td>
-                            <td class="table-borderless">
+
+                            <td><input type="number" min="1" class="form-control new-item-qty"
+                                    name="new_item_qty" value="1">
+                            <td><input type="number" min="0" class="form-control new-item-stone-weight"
+                                    name="new_item_stone_weight">
                             </td>
+                            <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
+                                    <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+                                </a>
                         </tr>
                     </tbody>
                 </table>
@@ -139,9 +149,9 @@
             <div class="row mt-4">
                 <div class="col-5 mx-auto">
                     <h3 class="text-center bg-warning text-dark mb-2 m-auto text-nowrap  w-25 border rounded">
-                        {{ __('Gold Loss') }}</h3>
+                        {{ __('Gold Loss In Gram') }}</h3>
 
-                    <table class="w-100 printForm create-form">
+                    <table id="gold-transform-loss" class="w-100 printForm create-form">
                         <thead>
                             <tr>
                                 <th>{{ __('Calibrated In Gold 21') }}</th>
@@ -150,8 +160,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>10</td>
-                                <td>10</td>
+                                <td class="loss-calib-in-21">0</td>
+                                <td class="loss-calib-in-24">0</td>
                             </tr>
                         </tbody>
                     </table>
