@@ -12,4 +12,11 @@ $(document).ready(function () {
     $(document).bind("contextmenu", function(e) {
         return false;
     });
+
+    
 });
+
+ function roundToDecimals(number,  fixedPoint = 3) {
+    return Number.parseFloat(number).toFixed(fixedPoint);
+  }
+  

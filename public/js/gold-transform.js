@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     $.ajaxSetup({
         headers: {
@@ -257,10 +258,10 @@ $(document).ready(function () {
             let differenceInCalibIn24 = sharesDifference / 1000;
             console.log(`differenceInCalibIn21 = ${differenceInCalibIn21}`);
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-21").html(
-                Math.round(differenceInCalibIn21, 3)
+                roundToDecimals(differenceInCalibIn21)
             );
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-24").html(
-                Math.round(differenceInCalibIn24, 3)
+                roundToDecimals(differenceInCalibIn24)
             );
             if (usedGold < newGold) {
                 toastr.error(
