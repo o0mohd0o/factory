@@ -117,7 +117,7 @@ $(document).ready(function () {
                     data = selectedData.item.data;
                     $(this)
                         .closest("tr")
-                        .find("input[name='used_item_id']")
+                        .find("input[name='used_item_id[]']")
                         .val(data.id);
                     $(this)
                         .closest("tr")
@@ -195,7 +195,7 @@ $(document).ready(function () {
                     var data = selectedData.item.data;
                     $(this)
                         .closest("tr")
-                        .find("input[name='new_item_id']")
+                        .find("input[name='new_item_id[]']")
                         .val(data.id);
                     $(this)
                         .closest("tr")
@@ -211,7 +211,7 @@ $(document).ready(function () {
                         .val(data.karat);
                     $(this)
                         .closest("tr")
-                        .find("td>input[name='new_item_shares']")
+                        .find("td>input[name='new_item_shares[]']")
                         .val(data.karat);
                 }
             },
@@ -241,22 +241,22 @@ $(document).ready(function () {
                         $(this).find('td>input[name="used_item_shares"]').val()
                     ) *
                     Number(
-                        $(this).find('td>input[name="weight_to_use"]').val()
+                        $(this).find('td>input[name="weight_to_use[]"]').val()
                     );
             });
             $("#new-items-autocomplete-table>tbody>tr").each(function (e) {
                 newGold +=
                     Number(
-                        $(this).find('td>input[name="new_item_shares"]').val()
+                        $(this).find('td>input[name="new_item_shares[]"]').val()
                     ) *
                     Number(
-                        $(this).find('td>input[name="new_item_weight"]').val()
+                        $(this).find('td>input[name="new_item_weight[]"]').val()
                     );
             });
             let sharesDifference = usedGold - newGold;
             let differenceInCalibIn21 = sharesDifference / 875;
             let differenceInCalibIn24 = sharesDifference / 1000;
-            console.log(`differenceInCalibIn21 = ${differenceInCalibIn21}`);
+
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-21").html(
                 roundToDecimals(differenceInCalibIn21)
             );

@@ -3,7 +3,7 @@
 
 <div class="form-background">
     <h2 class="text-center bg-success text-white mb-2">{{ __('Create') }}</h2>
-    <form id="gold-transform-form" action="{{ route('ajax.openingBalances.store') }}" autocomplete="off" method="post">
+    <form id="gold-transform-form" action="{{ route('ajax.goldTransforms.store') }}" autocomplete="off" method="post">
         @csrf
         <div class="row">
             <div class="col-sm-1">
@@ -70,7 +70,7 @@
                     </thead>
                     <tbody>
                         <tr class="used-items-addrow">
-                            <input type="hidden" name="used_item_id">
+                            <input type="hidden" class="item-id" name="used_item_id[]">
 
                             <td><input type="text" data-field-name="code"
                                     class="form-control used-items-autocomplete" autofill="off" autocomplete="off"
@@ -85,7 +85,7 @@
                             <td><input type="number" min="0" class="form-control"
                                     name="used_item_weight_before_transform" readonly></td>
                             <td><input type="number" min="0" class="form-control weight-to-use"
-                                    name="weight_to_use" required>
+                                    name="weight_to_use[]" required>
                             </td>
                             <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
                                     <i class="fas fa-plus-square fs-2" style="color: green;"></i>
@@ -116,7 +116,7 @@
                     </thead>
                     <tbody>
                         <tr class="new-items-addrow">
-                            <input type="hidden" name="new_item_id">
+                            <input type="hidden" name="new_item_id[]">
 
                             <td><input type="text" data-field-name="code" class="form-control new-items-autocomplete"
                                     autofill="off" autocomplete="off" name="new_item"></td>
@@ -127,15 +127,15 @@
                                     autocomplete="off" data-field-name="karat" readonly></td>
 
                             <td><input type="number" min="0" class="form-control" autofill="off"
-                                    data-field-name="shares" autocomplete="off" name="new_item_shares" required></td>
+                                    data-field-name="shares" autocomplete="off" name="new_item_shares[]" required></td>
 
-                            <td><input type="number" min="0" class="form-control" name="new_item_weight" required>
+                            <td><input type="number" min="0" class="form-control" name="new_item_weight[]" required>
                             </td>
 
                             <td><input type="number" min="1" class="form-control new-item-qty"
-                                    name="new_item_qty" value="1">
+                                    name="new_item_qty[]" value="1">
                             <td><input type="number" min="0" class="form-control new-item-stone-weight"
-                                    name="new_item_stone_weight">
+                                    name="new_item_stone_weight[]">
                             </td>
                             <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
                                     <i class="fas fa-plus-square fs-2" style="color: green;"></i>
@@ -203,7 +203,7 @@
             let data = new FormData(this);
             axios.post(url, data).then((response) => {
                 toastr.success(response.data.message);
-                axios.get("{{ route('ajax.openingBalances.index') }}").then((
+                axios.get("{{ route('ajax.goldTransforms.index') }}").then((
                     response) => {
                     $('#main-content').html(response.data);
                 });
@@ -222,13 +222,13 @@
 
         $('#undo').on('click', function(e) {
             e.preventDefault();
-            axios.get("{{ route('ajax.openingBalances.index') }}").then((
+            axios.get("{{ route('ajax.goldTransforms.index') }}").then((
                 response) => {
                 $('#main-content').html(response.data);
             }).catch((error) => {
                 toastr.error(error.response.data.message);
                 axios.get(
-                    "{{ route('ajax.openingBalances.create') }}"
+                    "{{ route('ajax.goldTransforms.create') }}"
                 ).then((
                     response) => {
                     $('#main-content').html(response.data);

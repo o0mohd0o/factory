@@ -15,6 +15,11 @@ class CreateGoldTransormNewItemsTable extends Migration
     {
         Schema::create('gold_transorm_new_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('item_id')->constrained('items');
+            $table->double('actual_shares');
+            $table->double('weight');
+            $table->integer('quantity')->default(1);
+            $table->double('stone_weight')->nullable();
             $table->timestamps();
         });
     }

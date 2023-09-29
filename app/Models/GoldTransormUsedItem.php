@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class GoldTransormUsedItem extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'gold_Transform_id',
+
+    ];
 }

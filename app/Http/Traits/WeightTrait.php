@@ -12,7 +12,7 @@ trait WeightTrait
                 $convertedQuantity = $quantity * 1000;
                 break;
             case 'ounce':
-                $convertedQuantity = $quantity * 28.3495231;
+                $convertedQuantity = $quantity * 31.1;
                 break;
 
             default:
