@@ -219,7 +219,7 @@ class AjaxOfficeTransferController extends Controller
 
         //Check if the office transfer used before
         //If it is used before we can not edit or delete it.
-        $officeTransferMovementReport = $this->checkIfTheOpeningBalanceUsed($officeTransfer);
+        $officeTransferMovementReport = $this->checkIfTheOpeningBalanceUsed($officeTransfer, weightStrict:false);
         if ($officeTransferMovementReport['used']&& $officeTransfer->type == 'from') {
             return response()->json([
                 'status' => 'error',

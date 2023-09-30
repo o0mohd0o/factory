@@ -9,6 +9,11 @@ class GoldTransormNewItem extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'gold_Transform_id'
+        'item_id',
+        'gold_transform_id',
+        'actual_shares',
+        'weight',
+        'quantity',
+        'stone_weight',
     ];
 }

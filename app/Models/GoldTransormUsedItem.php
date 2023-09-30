@@ -10,6 +10,7 @@ class GoldTransormUsedItem extends Model
     use HasFactory;
     protected $fillable = [
         'gold_Transform_id',
-
+        'department_item_id',
+        'weight',
     ];
 }

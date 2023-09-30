@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 trait OpeningBalanceTrait
 {
-    public function checkIfTheOpeningBalanceUsed($openingBalance)
+    public function checkIfTheOpeningBalanceUsed($openingBalance, $weightStrict = true)
     {
 
         //Group opening balance items by kinds
@@ -25,7 +25,7 @@ trait OpeningBalanceTrait
                     }, function ($query) use ($item) {
                         return $query->where('shares', explode('-', $item)[1]);
                     })
-                    ->whereRaw('cast(current_weight as signed) >= ' . $weights->sum())
+                    ->when($weightStrict, fn($query) => $query->whereRaw('cast(current_weight as signed) >= ' . $weights->sum()))
                     ->firstOrFail();
                 $items[] = [
                     'kind' => $kind,

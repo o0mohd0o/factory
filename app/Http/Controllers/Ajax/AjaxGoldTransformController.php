@@ -6,6 +6,7 @@ use App\Events\OpeningBalanceCreateEvent;
 use App\Events\OpeningBalanceDeleteEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GoldTransformStoreRequest;
+use App\Http\Services\GoldTransformService;
 use App\Http\Traits\WeightTrait;
 use App\Models\Department;
 use App\Models\DepartmentItem;
@@ -19,7 +20,11 @@ use Illuminate\Support\Facades\DB;
 
 class AjaxGoldTransformController extends Controller
 {
-    use WeightTrait;
+    public $goldTransformService;
+
+    public function __construct(GoldTransformService $goldTransformService) {
+        $this->goldTransformService = $goldTransformService;
+    }
 
     public function index(Request $request)
     {
@@ -60,7 +65,7 @@ class AjaxGoldTransformController extends Controller
 
     public function create()
     {
-        $lastId = DB::table('opening_balances')->max('id');
+        $lastId = DB::table('gold_transforms')->max('id');
 
         return response()->json([
             view('components.gold-transform.create', [
@@ -72,6 +77,14 @@ class AjaxGoldTransformController extends Controller
 
     public function store(GoldTransformStoreRequest $request)
     {
+        $goldLoss = $this->goldTransformService->getGoldLoss(
+            $request->used_item_id,
+             $request->weight_to_use,
+             $request->new_item_weight,
+             $request->new_item_shares,
+        );
+
+        dd($goldLoss);
 
         $data = $request->validated();
         $department = Department::findOrFail($request->department_id);

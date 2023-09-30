@@ -84,7 +84,7 @@
 
                             <td><input type="number" min="0" class="form-control"
                                     name="used_item_weight_before_transform" readonly></td>
-                            <td><input type="number" min="0" class="form-control weight-to-use"
+                            <td><input type="number" min="0" step="any" class="form-control weight-to-use"
                                     name="weight_to_use[]" required>
                             </td>
                             <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
@@ -126,15 +126,15 @@
                             <td><input type="number" min="0" class="form-control" autofill="off" name="new_item_karat"
                                     autocomplete="off" data-field-name="karat" readonly></td>
 
-                            <td><input type="number" min="0" class="form-control" autofill="off"
+                            <td><input type="number" min="" class="form-control" autofill="off"
                                     data-field-name="shares" autocomplete="off" name="new_item_shares[]" required></td>
 
-                            <td><input type="number" min="0" class="form-control" name="new_item_weight[]" required>
+                            <td><input type="number" min="0" step="any" class="form-control" name="new_item_weight[]" required>
                             </td>
 
                             <td><input type="number" min="1" class="form-control new-item-qty"
                                     name="new_item_qty[]" value="1">
-                            <td><input type="number" min="0" class="form-control new-item-stone-weight"
+                            <td><input type="number" min="0" step="any" class="form-control new-item-stone-weight"
                                     name="new_item_stone_weight[]">
                             </td>
                             <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
@@ -182,7 +182,7 @@
                 <button type="submit" name="submit"
                     class="btn btn-success mr-5 save-and-transfer">{{ __('Save And Transfer To Dept') }}</button>
                 {{-- <label for="to_department" class="gold-transform-department-label">{{ __('To Department') }}</label> --}}
-                <select class="form-select text-center gold-transform-department-select" name="department_id"
+                <select class="form-select text-center gold-transform-department-select" name="transfer_to_department_id"
                     aria-label="Default select example">
                     <option value=""></option>
                     @foreach ($departments as $department)

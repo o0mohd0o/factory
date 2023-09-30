@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGoldTransformTable extends Migration
+class CreateGoldTransformsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateGoldTransformTable extends Migration
      */
     public function up()
     {
-        Schema::create('gold_transform', function (Blueprint $table) {
+        Schema::create('gold_transforms', function (Blueprint $table) {
             $table->id();
             $table->date('date');
             $table->string('worker');
             $table->string('person_on_charge');
             $table->foreignId('department_id')->constrained();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateGoldTransformTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('gold_transform');
+        Schema::dropIfExists('gold_transforms');
     }
 }

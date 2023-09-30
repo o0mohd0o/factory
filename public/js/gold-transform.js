@@ -256,14 +256,14 @@ $(document).ready(function () {
             let sharesDifference = usedGold - newGold;
             let differenceInCalibIn21 = sharesDifference / 875;
             let differenceInCalibIn24 = sharesDifference / 1000;
-
+            console.log(usedGold , newGold);
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-21").html(
                 roundToDecimals(differenceInCalibIn21)
             );
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-24").html(
                 roundToDecimals(differenceInCalibIn24)
             );
-            if (usedGold < newGold) {
+            if (Math.abs(usedGold - newGold) >0.01) {
                 toastr.error(
                     "There is an error. New items gold shares must be equal or less than  used items gold shares"
                 );

@@ -89,6 +89,7 @@ class AjaxTransferController extends Controller
                 $query->where('kind', 'like', '%' . $request->value . '%')
                     ->orWhere('kind_name',  'like', '%' . $request->value . '%');
             })
+            ->where('current_weight', '>', 0)
             ->get();
         return $items;
     }

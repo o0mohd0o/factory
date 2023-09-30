@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class GoldTransformStoreRequest extends FormRequest
 {
@@ -24,27 +26,28 @@ class GoldTransformStoreRequest extends FormRequest
     public function rules()
     {
         return [
+            'transfer_to_department_id' => 'nullable|exists:departments,id',
             'department_id' => 'required|exists:departments,id',
             'date' => 'required|date_format:Y-m-d',
-            'inventory_record_date' => 'required|date_format:Y-m-d',
             'person_on_charge' => 'required|string',
-            'inventory_record_num' => 'nullable|string',
-            'kind' => 'array|required|min:1',
-            'kind_name' => 'array|required|min:1',
-            'karat' => 'array|required',
-            'karat.*' => 'nullable|string',
-            'shares' => 'array|required',
-            'shares.*' => 'nullable|numeric',
-            'quantity' => 'array|required|min:1',
-            'unit' => 'array|required',
-            'kind.*' => 'required|string',
-            'kind_name.*' => 'required|string',
-            'quantity.*' => 'required|min:1',
-            'unit.*' => 'required|in:gram,kilogram,ounce',
-            'salary' => 'array',
-            'salary.*' => 'nullable',
-            'total_cost' => 'array',
-            'total_cost.*' => 'nullable',
+            'worker' => 'required|string',
+            'used_item_id' => 'array|required',
+            'used_item_id.*' => [
+                'required',
+                Rule::exists('department_items', 'id')->where(fn (Builder $query) => $query->where('department_id', $this->department_id))
+            ],
+            'weight_to_use' => 'array|required',
+            'weight_to_use.*' => ['required', 'numeric', 'min:0'],
+            'new_item_id' => 'array|required',
+            'new_item_id.*' => 'required|exists:items,id',
+            'new_item_shares' => 'array|required',
+            'new_item_shares.*' => 'nullable|numeric',
+            'new_item_weight' => 'array|required',
+            'new_item_weight.*' => 'required|min:0|numeric',
+            'new_item_qty' => 'array|required',
+            'new_item_qty.*' => 'nullable|min:1|numeric',
+            'new_item_stone_weight' => 'array|required',
+            'new_item_stone_weight.*' => 'nullable|min:0|numeric',
         ];
     }
 }

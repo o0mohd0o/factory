@@ -20,17 +20,19 @@ class OfficeTransferDeleteEvent
     public $officeTransferId;
     public $weight;
     public $department;
+    public $officeTransferType;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(DepartmentItem $departmentItem, $type, $weight, $officeTransferId, $department)
+    public function __construct(DepartmentItem $departmentItem, $type, $weight, $officeTransferId, $department, $officeTransferType)
     {
         $this->departmentItem = $departmentItem;
         $this->type = $type;
         $this->officeTransferId = $officeTransferId;
+        $this->officeTransferType = $officeTransferType;
         $this->weight = $weight;
         $this->department = $department;
     }

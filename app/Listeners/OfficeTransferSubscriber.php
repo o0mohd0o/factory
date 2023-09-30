@@ -80,7 +80,7 @@ class OfficeTransferSubscriber
             'karat' => $event->departmentItem->karat, //refers to Karat
             'transfer_type' => $event->officeTransferType, //
             'doc_num' => $event->officeTransferId, //
-            'department_to' => $event->department->id,  //transfering to department id
+            'department_id' => $event->department->id,  //transfering to department id
             'department_name' => $event->department->name,  //transfering to department name
             'type' => $event->type //create, delete, edit office transfer
         ]);
