@@ -20,6 +20,10 @@ class DepartmentItem extends Model
         // 'item_id',
     ];
 
+    public function scopeDepartment($query, $department)
+    {
+         $query->where('department_id', $department);
+    }
 
     public function getCurrentWeightAttribute($value)
     {

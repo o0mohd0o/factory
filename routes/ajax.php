@@ -55,11 +55,11 @@ Route::prefix('gold-transform')->group(function () {
     //Store the office transfer for the department
     Route::post('/store', [AjaxGoldTransformController::class, 'store'])->name('ajax.goldTransforms.store');
     //get the office transfer for the department
-    Route::get('/{officeTransfer}/edit', [AjaxGoldTransformController::class, 'edit'])->name('ajax.goldTransforms.edit');
+    Route::get('/{goldTransform}/edit', [AjaxGoldTransformController::class, 'edit'])->name('ajax.goldTransforms.edit');
     //update the office transfer for the department
-    Route::post('/{officeTransfer}/update', [AjaxGoldTransformController::class, 'update'])->name('ajax.goldTransforms.update');
+    Route::post('/{goldTransform}/update', [AjaxGoldTransformController::class, 'update'])->name('ajax.goldTransforms.update');
     //delete the office transfer for the department
-    Route::post('/{officeTransfer}/delete', [AjaxGoldTransformController::class, 'delete'])->name('ajax.goldTransforms.delete');
+    Route::post('/{goldTransform}/delete', [AjaxGoldTransformController::class, 'delete'])->name('ajax.goldTransforms.delete');
 });
 
 //Get opening balances for the department on a specified day

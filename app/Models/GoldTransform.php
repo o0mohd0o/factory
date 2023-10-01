@@ -20,7 +20,12 @@ class GoldTransform extends Model
 
     public function scopeDay($query, $date)
     {
-        return $query->where('date', $date);
+         $query->where('date', $date);
+    }
+
+    public function scopeDepartment($query, $department)
+    {
+         $query->where('department_id', $department);
     }
     
     /**
@@ -40,7 +45,7 @@ class GoldTransform extends Model
      */
     public function newItems()
     {
-        return $this->hasMany(GoldTransormNewItem::class, 'gold_Transform_id', 'id');
+        return $this->hasMany(GoldTransformNewItem::class, 'gold_transform_id', 'id');
     }
 
     /**
@@ -50,7 +55,7 @@ class GoldTransform extends Model
      */
     public function usedItems()
     {
-        return $this->hasMany(GoldTransormUsedItem::class, 'gold_Transform_id', 'id');
+        return $this->hasMany(GoldTransformUsedItem::class, 'gold_transform_id', 'id');
     }
     
       /**

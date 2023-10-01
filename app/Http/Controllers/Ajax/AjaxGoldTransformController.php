@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Ajax;
 
-use App\Events\OpeningBalanceCreateEvent;
-use App\Events\OpeningBalanceDeleteEvent;
+use App\Events\GoldTransformCreateEvent;
+use App\Events\GoldTransformDeleteEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GoldTransformStoreRequest;
 use App\Http\Services\GoldTransformService;
@@ -11,8 +11,7 @@ use App\Http\Traits\WeightTrait;
 use App\Models\Department;
 use App\Models\DepartmentItem;
 use App\Models\GoldTransform;
-use App\Models\OpeningBalance;
-use App\Models\OpeningBalanceReport;
+use App\Models\GoldTransformReport;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -22,7 +21,8 @@ class AjaxGoldTransformController extends Controller
 {
     public $goldTransformService;
 
-    public function __construct(GoldTransformService $goldTransformService) {
+    public function __construct(GoldTransformService $goldTransformService)
+    {
         $this->goldTransformService = $goldTransformService;
     }
 
@@ -30,10 +30,9 @@ class AjaxGoldTransformController extends Controller
     {
         try {
             $goldTransform = GoldTransform::with([
-                'department',
-                'newItems',
-                'usedItems',
-                'goldLoss',
+                'newItems.item',
+                'usedItems.departmentItem',
+                // 'goldLoss',
             ])
                 ->when($request->ordering == 'last', function ($query) {
                     return $query->latest();
@@ -54,7 +53,6 @@ class AjaxGoldTransformController extends Controller
                 'message' => __('Sorry,There is no document.')
             ], 404);
         }
-
 
         return response()->json([
             view('components.gold-transform.index', [
@@ -79,185 +77,63 @@ class AjaxGoldTransformController extends Controller
     {
         $goldLoss = $this->goldTransformService->getGoldLoss(
             $request->used_item_id,
-             $request->weight_to_use,
-             $request->new_item_weight,
-             $request->new_item_shares,
+            $request->weight_to_use,
+            $request->new_item_weight,
+            $request->new_item_shares,
         );
 
-        dd($goldLoss);
+        $goldTransform = $this->goldTransformService->createGoldTransform($request);
 
-        $data = $request->validated();
-        $department = Department::findOrFail($request->department_id);
-
-        try {
-            DB::beginTransaction();
-
-            $goldTransform = $department->openingBalances()->create($data);
-
-            $dataDetails = [];
-
-            //End of remove duplicate kinds from input to use it to sum its weights
-            //Loop through the input using the count of kinds
-            for ($i = 0; $i < count($data['kind']); $i++) {
-                $dataDetails[$i]['kind'] = $data['kind'][$i];
-                $dataDetails[$i]['kind_name'] = $data['kind_name'][$i];
-                $dataDetails[$i]['karat'] = $data['karat'][$i];
-                $dataDetails[$i]['shares'] = $data['shares'][$i];
-                $dataDetails[$i]['unit'] = $data['unit'][$i];
-                $dataDetails[$i]['quantity'] = $data['quantity'][$i];
-                $dataDetails[$i]['salary'] = $data['salary'][$i];
-                $dataDetails[$i]['total_cost'] = $data['total_cost'][$i];
-                $dataDetails[$i]['weight'] = $this->unitToGram($data['unit'][$i], $dataDetails[$i]['quantity']);
-            }
-
-            for ($i = 0; $i < count($data['kind']); $i++) {
-                try {
-                    $item = $department->items()->where('kind', $dataDetails[$i]['kind'])
-                        ->where('shares', $dataDetails[$i]['shares'])
-                        ->firstOrFail();
-
-                    $item->update([
-                        'previous_weight' => $item->current_weight,
-                        'current_weight' => $item->current_weight + $dataDetails[$i]['weight'],
-                    ]);
-                } catch (ModelNotFoundException $e) {
-                    $item = $department->items()->create([
-                        'kind' => $dataDetails[$i]['kind'],
-                        'shares' => $dataDetails[$i]['shares'],
-                        'karat' => $dataDetails[$i]['karat'],
-                        'kind_name' => $dataDetails[$i]['kind_name'],
-                        'previous_weight' => 0,
-                        'current_weight' =>  $dataDetails[$i]['weight'],
-                    ]);
-                }
-                //Fire opening balance create event
-                OpeningBalanceCreateEvent::dispatch($item, 'create', $dataDetails[$i]['weight'], $goldTransform->id, $department);
-            }
-
-
-            $goldTransform->details()->createMany($dataDetails);
-
-            DB::commit();
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $th->getMessage()
-            ], 500);
-        }
-
-        session()->put('person_on_charge', $data['person_on_charge']);
+        session()->put('person_on_charge', $request->person_on_charge);
 
 
         return response()->json([
             'status' => 'success',
-            'message' => __('Opening balance created successfully.')
+            'message' => __('Gold Transorm created successfully.')
         ]);
     }
 
 
-    public function edit(OpeningBalance $goldTransform)
+    public function edit(GoldTransform $goldTransform)
     {
-        $goldTransform->load(['department', 'details']);
-        $lastId = DB::table('opening_balances')->max('id');
+        $goldTransform->load([
+            'newItems.item',
+            'usedItems.departmentItem',
+        ]);
+        $lastId = DB::table('gold_transforms')->max('id');
         return response()->json([
-            view('components.opening-balances.edit', [
-                'openingBalance' => $goldTransform,
-                'department' => $goldTransform->department,
+            view('components.gold-transform.edit', [
+                'goldTransform' => $goldTransform,
                 'lastId' => $lastId + 1,
             ])->render()
         ]);
     }
 
-    public function update(GoldTransformStoreRequest $request, OpeningBalance $goldTransform)
+    public function update(GoldTransformStoreRequest $request, GoldTransform $goldTransform)
     {
-        $goldTransform->load(['department', 'details']);
-
-        //Check if the opening balance used before
-        //If it is used before we can not edit or delete it.
-        $goldTransformMovementReport = $this->checkIfTheOpeningBalanceUsed($goldTransform);
-        if ($goldTransformMovementReport['used']) {
-            return response()->json([
-                'status' => 'error',
-                'message' => __('Sorry, This opening balance has been used.You can not edit or delete it.')
-            ], 404);
-        }
-
-
         try {
             DB::beginTransaction();
-            //Delete opening balance and their details
-            $goldTransform->details()->delete();
-            $goldTransform->delete();
-
-            //Remove the opening balance credits
-            foreach ($goldTransformMovementReport['items'] as $item) {
-                $item['kind']->previous_weight = $item['kind']->current_weight;
-                $item['kind']->current_weight -= $item['removedWeight'];
-                $item['kind']->save();
-                //Fire opening balance delete event
-                OpeningBalanceDeleteEvent::dispatch($item['kind'], 'edit', $item['removedWeight'], $goldTransform->id, $goldTransform->department);
-            }
-
-            //Call store function and passing nesseccary arguments to it.
-            $this->store($request, $goldTransform->department);
-
+            $goldTransform->load(['newItems.item', 'usedItems']);
+            $this->goldTransformService->delete($goldTransform);
+            $goldTransform = $this->goldTransformService->createGoldTransform($request);
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $th->getMessage()
-            ], 500);
+            throw $th;
         }
-
         return response()->json([
             'status' => 'success',
-            'message' => __('Opening balance created successfully.')
+            'message' => __('Gold Transorm Updated successfully.')
         ]);
     }
 
-    public function delete(OpeningBalance $goldTransform)
+    public function delete(GoldTransform $goldTransform)
     {
-        $goldTransform->load(['department', 'details']);
-
-        //Check if the opening balance used before
-        //If it is used before we can not edit or delete it.
-        $goldTransformMovementReport = $this->checkIfTheOpeningBalanceUsed($goldTransform);
-        if ($goldTransformMovementReport['used']) {
-            return response()->json([
-                'status' => 'error',
-                'message' => __('Sorry, This opening balance has been used.You can not edit or delete it.')
-            ], 404);
-        }
-
-
-        try {
-            DB::beginTransaction();
-            //Delete opening balance and their details
-            $goldTransform->details()->delete();
-            $goldTransform->delete();
-            //Remove the opening balance credits
-            foreach ($goldTransformMovementReport['items'] as $item) {
-                $item['kind']->previous_weight = $item['kind']->current_weight;
-                $item['kind']->current_weight -= $item['removedWeight'];
-                $item['kind']->save();
-                //Fire opening balance delete event
-                OpeningBalanceDeleteEvent::dispatch($item['kind'], 'delete', $item['removedWeight'], $goldTransform->id, $goldTransform->department);
-            }
-
-            DB::commit();
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $th->getMessage()
-            ], 500);
-        }
-
+        $goldTransform->load(['newItems.item', 'usedItems']);
+        $this->goldTransformService->delete($goldTransform);
         return response()->json([
             'status' => 'success',
-            'message' => __('Opening balance deleted successfully.')
+            'message' => __('Gold Transorm deleted successfully.')
         ]);
     }
 }

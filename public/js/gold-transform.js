@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     $.ajaxSetup({
         headers: {
@@ -170,8 +169,29 @@ $(document).ready(function () {
                         ];
                         if (res.length) {
                             result = $.map(res, function (obj) {
+                                let label = "";
+                                if (
+                                    obj["shares"] == "null" ||
+                                    !obj["shares"] ||
+                                    obj["shares"] == undefined
+                                ) {
+                                    label = obj[fieldName];
+                                } else {
+                                    label =
+                                        obj["kind"] +
+                                        "-" +
+                                        obj["kind_name"] +
+                                        " عيار ( " +
+                                        obj["shares"] +
+                                        ")";
+                                    label =
+                                        obj[fieldName] +
+                                        " عيار ( " +
+                                        obj["shares"] +
+                                        ")";
+                                }
                                 return {
-                                    label: obj[fieldName],
+                                    label: label,
                                     value: obj[fieldName],
                                     data: obj,
                                 };
@@ -256,14 +276,22 @@ $(document).ready(function () {
             let sharesDifference = usedGold - newGold;
             let differenceInCalibIn21 = sharesDifference / 875;
             let differenceInCalibIn24 = sharesDifference / 1000;
-            console.log(usedGold , newGold);
+            console.log(usedGold, newGold);
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-21").html(
-                roundToDecimals(differenceInCalibIn21)
+                roundToDecimals(
+                    Math.abs(differenceInCalibIn21) >= 0.01
+                        ? differenceInCalibIn21
+                        : 0
+                )
             );
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-24").html(
-                roundToDecimals(differenceInCalibIn24)
+                roundToDecimals(
+                    Math.abs(differenceInCalibIn24) >= 0.01
+                        ? differenceInCalibIn24
+                        : 0
+                )
             );
-            if (Math.abs(usedGold - newGold) >0.01) {
+            if (Math.abs(differenceInCalibIn21) >= 0.01) {
                 toastr.error(
                     "There is an error. New items gold shares must be equal or less than  used items gold shares"
                 );
