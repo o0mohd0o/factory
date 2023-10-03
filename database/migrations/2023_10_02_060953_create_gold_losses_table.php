@@ -17,7 +17,7 @@ class CreateGoldLossesTable extends Migration
             $table->id();
             $table->foreignId('department_id')->constrained();
             $table->double('weight_in_21');
-            $table->string('person_on_charge');
+            $table->string('worker');
             $table->unsignedBigInteger('lossable_id');
             $table->string('lossable_type');
             $table->softDeletes();

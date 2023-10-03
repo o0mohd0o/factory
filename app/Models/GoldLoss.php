@@ -13,7 +13,7 @@ class GoldLoss extends Model
     protected $fillable = [
         'department_id',
         'weight_in_21',
-        'person_on_charge',
+        'worker',
         'lossable_id',
         'lossable_type',
     ];

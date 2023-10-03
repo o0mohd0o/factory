@@ -149,7 +149,7 @@ class GoldTransformService
                $goldTransform->goldLoss()->create([
                 'department_id' => $request->department_id,
                 'weight_in_21' => $goldLoss,
-                'person_on_charge' => $request->person_on_charge,
+                'worker' => $request->worker,
                ]);
             }
             DB::commit();
