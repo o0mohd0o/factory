@@ -59,11 +59,11 @@ class GoldTransform extends Model
     }
     
       /**
-     * Get the post's image.
+     * Get the gold transform's gold loss.
      */
     public function goldLoss(): MorphOne
     {
-        return $this->morphOne(GoldLoss::class, 'gold_loss');
+        return $this->morphOne(GoldLoss::class, 'lossable');
     }
 
     /**

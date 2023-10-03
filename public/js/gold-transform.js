@@ -279,19 +279,19 @@ $(document).ready(function () {
             console.log(usedGold, newGold);
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-21").html(
                 roundToDecimals(
-                    Math.abs(differenceInCalibIn21) >= 0.01
+                    differenceInCalibIn21 >= 0.01
                         ? differenceInCalibIn21
                         : 0
                 )
             );
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-24").html(
                 roundToDecimals(
-                    Math.abs(differenceInCalibIn24) >= 0.01
+                    differenceInCalibIn24 >= 0.01
                         ? differenceInCalibIn24
                         : 0
                 )
             );
-            if (Math.abs(differenceInCalibIn21) >= 0.01) {
+            if (differenceInCalibIn21 >= 0.01) {
                 toastr.error(
                     "There is an error. New items gold shares must be equal or less than  used items gold shares"
                 );

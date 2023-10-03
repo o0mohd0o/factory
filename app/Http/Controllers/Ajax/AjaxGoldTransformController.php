@@ -32,7 +32,7 @@ class AjaxGoldTransformController extends Controller
             $goldTransform = GoldTransform::with([
                 'newItems.item',
                 'usedItems.departmentItem',
-                // 'goldLoss',
+                'goldLoss',
             ])
                 ->when($request->ordering == 'last', function ($query) {
                     return $query->latest();
@@ -75,14 +75,8 @@ class AjaxGoldTransformController extends Controller
 
     public function store(GoldTransformStoreRequest $request)
     {
-        $goldLoss = $this->goldTransformService->getGoldLoss(
-            $request->used_item_id,
-            $request->weight_to_use,
-            $request->new_item_weight,
-            $request->new_item_shares,
-        );
-
-        $goldTransform = $this->goldTransformService->createGoldTransform($request);
+        
+        $this->goldTransformService->createGoldTransform($request);
 
         session()->put('person_on_charge', $request->person_on_charge);
 
@@ -99,6 +93,7 @@ class AjaxGoldTransformController extends Controller
         $goldTransform->load([
             'newItems.item',
             'usedItems.departmentItem',
+            'goldLoss',
         ]);
         $lastId = DB::table('gold_transforms')->max('id');
         return response()->json([
@@ -113,7 +108,7 @@ class AjaxGoldTransformController extends Controller
     {
         try {
             DB::beginTransaction();
-            $goldTransform->load(['newItems.item', 'usedItems']);
+            $goldTransform->load(['newItems.item', 'usedItems', 'goldLoss']);
             $this->goldTransformService->delete($goldTransform);
             $goldTransform = $this->goldTransformService->createGoldTransform($request);
             DB::commit();
@@ -123,13 +118,13 @@ class AjaxGoldTransformController extends Controller
         }
         return response()->json([
             'status' => 'success',
-            'message' => __('Gold Transorm Updated successfully.')
+            'message' => __('Gold Transorm Updated Successfully.')
         ]);
     }
 
     public function delete(GoldTransform $goldTransform)
     {
-        $goldTransform->load(['newItems.item', 'usedItems']);
+        $goldTransform->load(['newItems.item', 'usedItems', 'goldLoss']);
         $this->goldTransformService->delete($goldTransform);
         return response()->json([
             'status' => 'success',

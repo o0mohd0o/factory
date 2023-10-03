@@ -32,7 +32,8 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="value">{{ __('Document Date') }}</label>
-                    <input type="text" value="{{$goldTransform->date}}" class="form-control" name="date" readonly>
+                    <input type="text" value="{{ $goldTransform->date }}" class="form-control" name="date"
+                        readonly>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -41,7 +42,9 @@
                     <select class="form-select text-center" id="gold-transform-department" name="department_id"
                         aria-label="Default select example">
                         @foreach ($departments as $department)
-                            <option value="{{ $department->id }}" {{$goldTransform->department_id==$department->id?"selected":""}}>{{ $department->name }}</option>
+                            <option value="{{ $department->id }}"
+                                {{ $goldTransform->department_id == $department->id ? 'selected' : '' }}>
+                                {{ $department->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -85,14 +88,14 @@
                     <tbody>
                         @foreach ($goldTransform->usedItems as $usedItem)
                             <tr>
-                                <th>{{$usedItem->departmentItem->kind}}</th>
+                                <th>{{ $usedItem->departmentItem->kind }}</th>
 
-                                <th>{{$usedItem->departmentItem->kind_name}}</th>
-    
-                                <th>{{$usedItem->departmentItem->shares}}</th>
-    
-                                <th>{{$usedItem->weight }}</th>
-    
+                                <th>{{ $usedItem->departmentItem->kind_name }}</th>
+
+                                <th>{{ $usedItem->departmentItem->shares }}</th>
+
+                                <th>{{ $usedItem->weight }}</th>
+
                             </tr>
                         @endforeach
                     </tbody>
@@ -147,13 +150,11 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="loss-calib-in-21">0</td>
-                                <td class="loss-calib-in-24">0</td>
+                                <td class="loss-calib-in-21">{{ round($goldTransform->goldLoss?->weight_in_21, 2) }}</td>
+                                <td class="loss-calib-in-24">{{ round($goldTransform->goldLoss?->weight_in_24, 2) }}</td>
                             </tr>
                         </tbody>
                     </table>
-
-
                 </div>
             </div>
         </div>

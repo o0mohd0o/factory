@@ -61,7 +61,7 @@ class GoldTransformService
         }
 
         $diff  = $totalUsedGoldWeight - $totalNewGoldWeight;
-        return abs($diff / 1000) > 0.01 ?  $diff / 875 : null;
+        return $diff / 875 > 0.01 ?  $diff / 875 : null;
     }
 
     public function saveGoldTransform(
@@ -99,6 +99,7 @@ class GoldTransformService
             $goldTransform->usedItems()->delete();
             $goldTransform->newItems()->delete();
             $goldTransform->delete();
+            $goldTransform->goldLoss()->delete();
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -121,6 +122,13 @@ class GoldTransformService
             $request->new_item_stone_weight,
         );
 
+        $goldLoss = $this->getGoldLoss(
+            $request->used_item_id,
+            $request->weight_to_use,
+            $request->new_item_weight,
+            $request->new_item_shares,
+        );
+
         try {
             DB::beginTransaction();
             $goldTransform =  $this->saveGoldTransform($request->date, $request->worker, $request->person_on_charge, $request->department_id);
@@ -136,6 +144,14 @@ class GoldTransformService
                 $request->new_item_shares,
                 $request->department_id
             );
+
+            if ($goldLoss) {
+               $goldTransform->goldLoss()->create([
+                'department_id' => $request->department_id,
+                'weight_in_21' => $goldLoss,
+                'person_on_charge' => $request->person_on_charge,
+               ]);
+            }
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

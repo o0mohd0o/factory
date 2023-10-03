@@ -180,8 +180,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="loss-calib-in-21">0</td>
-                                <td class="loss-calib-in-24">0</td>
+                                <td class="loss-calib-in-21">{{round($goldTransform->goldLoss?->weight_in_21, 2)}}</td>
+                                <td class="loss-calib-in-24">{{round($goldTransform->goldLoss?->weight_in_24, 2)}}</td>
                             </tr>
                         </tbody>
                     </table>
