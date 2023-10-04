@@ -29,8 +29,7 @@ class GoldTransformStoreRequest extends FormRequest
             'transfer_to_department_id' => 'nullable|exists:departments,id',
             'department_id' => 'required|exists:departments,id',
             'date' => 'required|date_format:Y-m-d',
-            'person_on_charge' => 'required|string',
-            'worker' => 'required|string',
+            'worker_id' => 'nullable|exists:workers,id',
             'used_item_id' => 'array|required',
             'used_item_id.*' => [
                 'required',

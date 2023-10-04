@@ -124,6 +124,8 @@ Route::post('departments/daily-reports/show', [AjaxReportController::class, 'dai
 Route::post('departments/daily-reports-in-total/show', [AjaxReportController::class, 'dailyReportsInTotal'])->name('departments.dailyReportsInTotal.show');
 //department karat difference Reports in total
 Route::post('departments/karat-difference-reports/show', [AjaxReportController::class, 'karatDifferenceReports'])->name('departments.karatDifferenceReports.show');
+//department Gold Losses Reports in total
+Route::post('departments/gold-losses/show', [AjaxReportController::class, 'goldLosses'])->name('departments.goldLosses.show');
 
 
 //General settings

@@ -1,6 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="department-report-show" tabindex="-1" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="department-report-show" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
 
         <div class="modal-content">
@@ -18,12 +17,7 @@
                 </h3>
 
 
-                @if ($department->main_department)
-                    @include('modals.components.opening-balance-report', [
-                        'openingBalancesReports' => $openingBalancesReports,
-                        'department' => $department,
-                    ])
-                @endif
+
 
                 @if ($department->main_department)
                     @include('modals.components.office-transfer-report', [
@@ -37,7 +31,10 @@
                     'department' => $department,
                 ])
 
-
+                @include('modals.components.opening-balance-report', [
+                    'openingBalancesReports' => $openingBalancesReports,
+                    'department' => $department,
+                ])
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">غلق</button>
@@ -50,7 +47,7 @@
 <script>
     $(document).ready(function() {
         $("#department-report-show").modal('show');
-        $('#print').on('click', function (){
+        $('#print').on('click', function() {
             window.print();
         })
     });

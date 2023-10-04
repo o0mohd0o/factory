@@ -62,7 +62,7 @@
             let url = $(this).attr('action');
             $('#department-report-karat-difference-query').modal('toggle');
             axios.post(url, data).then((response) => {
-                $('#department-report-show-section').html(response.data);
+                $('#report-show-section').html(response.data);
                 console.log(response.data);
             }).catch((error) => {
                 toastr.error(error.response.data.message);

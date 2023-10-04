@@ -291,7 +291,7 @@ $(document).ready(function () {
                         : 0
                 )
             );
-            if (differenceInCalibIn21 >= 0.01) {
+            if (differenceInCalibIn21 <= -0.01) {
                 toastr.error(
                     "There is an error. New items gold shares must be equal or less than  used items gold shares"
                 );

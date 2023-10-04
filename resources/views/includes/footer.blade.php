@@ -18,7 +18,7 @@
 
 @include('includes.modals')
 
-<div id="department-report-show-section" style="direction: rtl;">
+<div id="report-show-section" style="direction: rtl;">
 
 </div>
 

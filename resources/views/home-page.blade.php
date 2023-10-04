@@ -43,6 +43,8 @@
                                     <li data-type="department-report" data-bs-toggle="modal"
                                         data-bs-target="#department-report-query">{{ __('Depts Statements') }}</li>
                                 @endif
+                                <li data-type="gold-loss-report" data-bs-toggle="modal"
+                                    data-bs-target="#gold-loss-report-query">{{ __('Gold Loss') }}</li>
                                 @if (auth()->user()->can('daily_journal'))
                                     <li data-type="department-daily-report" data-bs-toggle="modal"
                                         data-bs-target="#department-daily-report-query">{{ __('Daily Journal') }}</li>
@@ -72,16 +74,17 @@
                             {{ __('Departments and Transfers') }}
                             <ul class="dropdown-menu">
                                 <li class="me-4" data-type="inner-departments-Transfers"
-                                data-url="{{ route('ajax.transfers.index', $departments->first()) }}" id="inner-departments-Transfers">
-                                {{ __('Inner Transfers') }}</li>
+                                    data-url="{{ route('ajax.transfers.index', $departments->first()) }}"
+                                    id="inner-departments-Transfers">
+                                    {{ __('Inner Transfers') }}</li>
                                 <li class="me-4" data-type="office-transfers"
-                                data-create-url="{{ route('ajax.officeTransfers.create') }}" 
-                                data-url="{{ route('ajax.officeTransfers.index') }}" id="office-transfers">
-                                {{ __('Office Transfers') }}</li>
+                                    data-create-url="{{ route('ajax.officeTransfers.create') }}"
+                                    data-url="{{ route('ajax.officeTransfers.index') }}" id="office-transfers">
+                                    {{ __('Office Transfers') }}</li>
                                 <li class="me-4" data-type="gold-transform"
-                                data-create-url="{{route('ajax.goldTransforms.create')}}" 
-                                data-url="{{route('ajax.goldTransforms.index')}}" id="gold-transform">
-                                {{ __('Gold Transform') }}</li>
+                                    data-create-url="{{ route('ajax.goldTransforms.create') }}"
+                                    data-url="{{ route('ajax.goldTransforms.index') }}" id="gold-transform">
+                                    {{ __('Gold Transform') }}</li>
                             </ul>
                         </li>
                         @if (auth()->user()->can('manage_users'))

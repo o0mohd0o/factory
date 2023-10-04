@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Wildside\Userstamps\Userstamps;
 
 class GoldTransform extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Userstamps;
 
     protected $fillable = [
         'date',
-        'worker',
-        'person_on_charge',
+        'worker_id',
         'department_id',
     ];
 
@@ -36,6 +36,16 @@ class GoldTransform extends Model
     public function department()
     {
         return $this->belongsTo(Department::class, 'department_id', 'id');
+    }
+
+    /**
+     * Get the department that owns the OpeningBalance
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class, 'worker_id', 'id');
     }
 
     /**

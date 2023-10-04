@@ -52,15 +52,16 @@
 
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="person_on_charge">{{ __('Person On Charge') }}</label>
-                    <input value="{{ $goldTransform->person_on_charge }}" type="text" name="person_on_charge"
-                        class="form-control">
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
                     <label for="worker">{{ __('Worker') }}</label>
-                    <input value="{{ $goldTransform->worker }}" type="text" name="worker" class="form-control">
+                    <select class="form-select text-center" id="gold-transform-worker" name="worker_id"
+                        aria-label="Default select example">
+                        <option value=""></option>
+                        @foreach ($workers as $worker)
+                            <option value="{{ $worker->id }}"
+                                {{ $goldTransform->worker_id == $worker->id ? 'selected' : '' }}>
+                                {{ $worker->name_ar }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 
@@ -150,8 +151,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="loss-calib-in-21">{{ round($goldTransform->goldLoss?->weight_in_21, 2) }}</td>
-                                <td class="loss-calib-in-24">{{ round($goldTransform->goldLoss?->weight_in_24, 2) }}</td>
+                                <td class="loss-calib-in-21">{{ round($goldTransform->goldLoss?->loss_weight_in_21, 2) }}</td>
+                                <td class="loss-calib-in-24">{{ round($goldTransform->goldLoss?->loss_weight_in_24, 2) }}</td>
                             </tr>
                         </tbody>
                     </table>

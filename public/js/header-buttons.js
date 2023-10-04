@@ -121,7 +121,7 @@ $(document).ready(function () {
         axios
             .get(url)
             .then((response) => {
-                $("#department-report-show-section").html(response.data);
+                $("#report-show-section").html(response.data);
             })
             .catch((error) => {
                 toastr.error(error.response.data.message);

@@ -12,14 +12,16 @@ class GoldLoss extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'department_id',
-        'weight_in_21',
-        'worker',
+        'total_used_gold_in_21',
+        'loss_weight_in_21',
+        'worker_id',
+        'date',
         'lossable_id',
         'lossable_type',
     ];
 
-    public function getWeightIn24Attribute()  {
-        return isset($this->attributes['weight_in_21'])?$this->attributes['weight_in_21']*21/24:null;
+    public function getLossWeightIn24Attribute()  {
+        return isset($this->attributes['loss_weight_in_21'])?$this->attributes['loss_weight_in_21']*21/24:null;
     }
 
      /**
@@ -29,4 +31,33 @@ class GoldLoss extends Model
     {
         return $this->morphTo();
     }
+
+    public function scopeFilterByDepartment($query, $departmentID)  {
+        $query->where('department_id', $departmentID);
+    }
+
+    public function scopeFilterByWorker($query, $workerID)  {
+        $query->where('worker_id', $workerID);
+    }
+
+     /**
+     * Get the department that owns  the gold loss
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'id');
+    }
+
+     /**
+     * Get the Worker that owns the gold loss
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function worker()
+    {
+        return $this->belongsTo(Worker::class, 'worker_id', 'id');
+    }
+
 }

@@ -4,7 +4,9 @@ namespace App\Http\Services;
 
 use App\Models\DepartmentItem;
 use App\Models\Department;
+use App\Models\GoldLoss;
 use App\Models\GoldTransform;
+use App\Models\GoldTransformUsedItem;
 use App\Models\Items;
 use App\Models\OpeningBalance;
 use App\Models\Transfer;
@@ -66,15 +68,13 @@ class GoldTransformService
 
     public function saveGoldTransform(
         string $date,
-        string $worker,
-        string $person_on_charge,
+        ?int $worker_id,
         int $department_id,
 
     ): GoldTransform {
         $goldTransform = GoldTransform::create([
             'date' => $date,
-            'worker' => $worker,
-            'person_on_charge' => $person_on_charge,
+            'worker_id' => $worker_id,
             'department_id' => $department_id,
         ]);
 
@@ -131,7 +131,7 @@ class GoldTransformService
 
         try {
             DB::beginTransaction();
-            $goldTransform =  $this->saveGoldTransform($request->date, $request->worker, $request->person_on_charge, $request->department_id);
+            $goldTransform =  $this->saveGoldTransform($request->date, $request->worker_id, $request->department_id);
             $this->saveGoldTransformNewItems($goldTransform, $newItemsData);
             $this->saveGoldTransformUsedItems($goldTransform, $usedItemsData);
             $this->removeUsedItemsWeightsFromDepartment(
@@ -144,13 +144,19 @@ class GoldTransformService
                 $request->new_item_shares,
                 $request->department_id
             );
-
+            
             if ($goldLoss) {
-               $goldTransform->goldLoss()->create([
-                'department_id' => $request->department_id,
-                'weight_in_21' => $goldLoss,
-                'worker' => $request->worker,
-               ]);
+                $goldTransform->load(['usedItems.departmentItem']);
+                $goldTransform->goldLoss()->create([
+                    'department_id' => $request->department_id,
+                    'loss_weight_in_21' => $goldLoss,
+                    'total_used_gold_in_21' => $goldTransform->usedItems->reduce(
+                        fn (?int $shares, GoldTransformUsedItem $goldTransformUsedItem) => $goldTransformUsedItem->weight * ($goldTransformUsedItem->departmentItem->shares / $shares),
+                        875
+                    ),
+                    'worker_id' => $request->worker,
+                    'date' => $request->date,
+                ]);
             }
             DB::commit();
         } catch (\Throwable $th) {
@@ -215,7 +221,7 @@ class GoldTransformService
                         fn ($query) => $query->whereNull('shares'),
                         fn ($query) => $query->where('shares', $newItem->actual_shares)
                     )
-                    ->whereRaw('current_weight >= ' . $newItem->weight -0.01)
+                    ->whereRaw('current_weight >= ' . $newItem->weight - 0.01)
                     ->firstOrFail();
 
                 $departmentItem->previous_weight = $departmentItem->current_weight;
@@ -232,5 +238,23 @@ class GoldTransformService
             $usedItem->departmentItem->current_weight += $usedItem->weight;
             $usedItem->departmentItem->save();
         }
+    }
+
+
+    public function getGoldLosses(
+        ?int $departmentId,
+        ?int $workerId,
+        ?string $fromDate,
+        ?string $toDate,
+    ): Collection|GoldLoss {
+        $goldLosses = GoldLoss::query()
+            ->with(['department', 'worker'])
+            ->when($departmentId, fn ($query) => $query->filterByDepartment($departmentId))
+            ->when($workerId, fn ($query) => $query->filterByWorker($workerId))
+            ->when($fromDate, fn ($query) => $query->where('date', '>=', $fromDate))
+            ->when($toDate, fn ($query) => $query->where('date', '<=', $toDate))
+            ->get();
+
+        return $goldLosses;
     }
 }

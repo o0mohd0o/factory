@@ -32,15 +32,14 @@
 
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="person_on_charge">{{ __('Person On Charge') }}</label>
-                    <input value="{{ session('person_on_charge', '') }}" type="text" name="person_on_charge"
-                        class="form-control">
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
                     <label for="worker">{{ __('Worker') }}</label>
-                    <input value="{{ session('Worker', '') }}" type="text" name="worker" class="form-control">
+                    <select class="form-select text-center" id="gold-transform-worker" name="worker_id"
+                        aria-label="Default select example">
+                        <option value=""></option>
+                        @foreach ($workers as $worker)
+                            <option value="{{ $worker->id }}"> {{ $worker->name_ar }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 
@@ -123,19 +122,21 @@
                             <td><input type="text" class="form-control new-items-autocomplete" autofill="off"
                                     data-field-name="name" autocomplete="off" name="new_item_name"></td>
 
-                            <td><input type="number" min="0" class="form-control" autofill="off" name="new_item_karat"
-                                    autocomplete="off" data-field-name="karat" readonly></td>
+                            <td><input type="number" min="0" class="form-control" autofill="off"
+                                    name="new_item_karat" autocomplete="off" data-field-name="karat" readonly></td>
 
                             <td><input type="number" min="" class="form-control" autofill="off"
-                                    data-field-name="shares" autocomplete="off" name="new_item_shares[]" required></td>
+                                    data-field-name="shares" autocomplete="off" name="new_item_shares[]" required>
+                            </td>
 
-                            <td><input type="number" min="0" step="any" class="form-control" name="new_item_weight[]" required>
+                            <td><input type="number" min="0" step="any" class="form-control"
+                                    name="new_item_weight[]" required>
                             </td>
 
                             <td><input type="number" min="1" class="form-control new-item-qty"
                                     name="new_item_qty[]" value="1">
-                            <td><input type="number" min="0" step="any" class="form-control new-item-stone-weight"
-                                    name="new_item_stone_weight[]">
+                            <td><input type="number" min="0" step="any"
+                                    class="form-control new-item-stone-weight" name="new_item_stone_weight[]">
                             </td>
                             <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
                                     <i class="fas fa-plus-square fs-2" style="color: green;"></i>
@@ -182,8 +183,8 @@
                 <button type="submit" name="submit"
                     class="btn btn-success mr-5 save-and-transfer">{{ __('Save And Transfer To Dept') }}</button>
                 {{-- <label for="to_department" class="gold-transform-department-label">{{ __('To Department') }}</label> --}}
-                <select class="form-select text-center gold-transform-department-select" name="transfer_to_department_id"
-                    aria-label="Default select example">
+                <select class="form-select text-center gold-transform-department-select"
+                    name="transfer_to_department_id" aria-label="Default select example">
                     <option value=""></option>
                     @foreach ($departments as $department)
                         <option value="{{ $department->id }}">{{ $department->name }}</option>

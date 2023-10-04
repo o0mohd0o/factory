@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Worker;
 use App\Models\Department;
 use App\Models\GeneralSettings;
 use Config;
@@ -31,19 +32,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // $api = new LicenseBoxExternalAPI();
-        // if ( !app()->runningInConsole() ) {
-        //     $res = $api->verify_license();
-
-        // if($res['status']!=true){
-        //     header( "refresh:5;url=". url('/activate/index.php') );
-        //     die('Your license is invalid, please contact support.');
-        // }
-        // }
         if (Schema::hasTable('departments')) {
             View::share('departments', Department::all());
             View::share('generalSettings', GeneralSettings::first());
         }
+        View::share('workers', Worker::all());
         Http::macro('hesabat', function () {
             return Http::acceptJson()->withOptions([
                 'verify' => false,

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\GoldTransformService;
 use App\Models\Department;
 use App\Models\DepartmentDailyReport;
+use App\Models\GoldLoss;
 use App\Models\Report;
 use App\Models\Transfer;
 use App\Models\TransferReport;
+use App\Models\Worker;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -24,14 +27,16 @@ class AjaxReportController extends Controller
 
         try {
             //code...
-            $department = Department::with(['openingBalancesReports' => function ($query) use ($data) {
-                return $query->datePeriod($data['from'], $data['to'])
-                    ->orderBy('date', 'desc');
-            }],
-            ['officeTransfersReports' => function ($query) use ($data) {
-                return $query->datePeriod($data['from'], $data['to'])
-                    ->orderBy('date', 'desc');
-            }])->findOrFail($data['department_id']);
+            $department = Department::with(
+                ['openingBalancesReports' => function ($query) use ($data) {
+                    return $query->datePeriod($data['from'], $data['to'])
+                        ->orderBy('date', 'desc');
+                }],
+                ['officeTransfersReports' => function ($query) use ($data) {
+                    return $query->datePeriod($data['from'], $data['to'])
+                        ->orderBy('date', 'desc');
+                }]
+            )->findOrFail($data['department_id']);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
@@ -137,6 +142,35 @@ class AjaxReportController extends Controller
                 'transferReports' => $transferReports,
                 'to' => $data['to'],
                 'from' => $data['from'],
+            ])->render()
+        ]);
+    }
+
+
+    public function goldLosses(Request $request)
+    {
+        $request->validate([
+            'department_id' => 'nullable|exists:departments,id',
+            'worker_id' => 'nullable|exists:workers,id',
+            'from' => 'nullable|date_format:Y-m-d',
+            'to' => 'nullable|date_format:Y-m-d',
+        ]);
+
+        $goldLosses  = (new GoldTransformService())->getGoldLosses(
+            $request->department_id,
+            $request->worker_id,
+            $request->from,
+            $request->to,
+        );
+
+        $worker = Worker::find($request->worker_id);
+        $department = Department::find($request->department_id);
+
+        return response()->json([
+            view('modals.gold-loss-report-show', [
+                'goldLosses' => $goldLosses,
+                'worker' => $worker,
+                'department' => $department,
             ])->render()
         ]);
     }
