@@ -3,8 +3,8 @@
 
 <div class="form-background">
     <h2 class="text-center bg-success text-white mb-2">{{ __('Edit') }}</h2>
-    <form id="opening-balance-form" action="{{ route('ajax.openingBalances.update', $openingBalance) }}"
-        autocomplete="off" method="post">
+    <form id="opening-balance-form" action="{{ route('ajax.openingBalances.update', $openingBalance) }}" autocomplete="off"
+        method="post">
         @csrf
         <div class="row">
             <div class="col-sm-3">
@@ -43,16 +43,18 @@
                     <input value="{{ $openingBalance->person_on_charge }}" type="text" name="person_on_charge"
                         class="form-control">
                 </div>
-               
+
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="person_on_charge">{{ __('Department') }}</label>
                     <select class="form-select text-center" name="department_id" aria-label="Default select example">
-                    @foreach ($departments as $department)
-                        <option value="{{$department->id}}" {{$openingBalance->department_id==$department->id?"selected":""}}>{{$department->name}}</option>
-                    @endforeach
-                    </select>   
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->id }}"
+                                {{ $openingBalance->department_id == $department->id ? 'selected' : '' }}>
+                                {{ $department->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>
@@ -74,7 +76,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($openingBalance->details as $details)
+                @foreach ($openingBalance->details as $key => $details)
                     <tr class="addrow" id="row-{{ $loop->index }}">
                         <td><input type="text" id="kind-{{ $loop->index }}" data-field-name="code"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"
@@ -84,12 +86,12 @@
                                 name="kind_name[]" value="{{ $details->kind_name }}">
                         </td>
                         <td><input type="text" id="kind-karat-{{ $loop->index }}" data-field-name="karat"
-                                class="form-control autocomplete_txt" autofill="off" autocomplete="off"
-                                name="karat[]" value="{{ $details->karat }}">
+                                class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="karat[]"
+                                value="{{ $details->karat }}">
                         </td>
-                        <td><input type="text" id="shares-1" data-field-name="shares"
-                            class="form-control " autofill="off"  name="shares[]" value="{{ $details->shares }}">
-                    </td>
+                        <td><input type="text" id="shares-1" data-field-name="shares" class="form-control "
+                                autofill="off" name="shares[]" value="{{ $details->shares }}">
+                        </td>
                         <td>
                             <select class="form-control" name="unit[]" id="unit-{{ $loop->index }}">
                                 <option value="gram" @if ($details->unit == 'gram') selected @endif> جرام</option>
@@ -103,11 +105,18 @@
                         </td>
                         <td><input type="text" class="form-control salary" id="salary-{{ $loop->index }}"
                                 name="salary[]" value="{{ $details->salary }}"></td>
-                        <td><input type="text" class="form-control total-cost" id="total-cost-{{ $loop->index }}"
-                                name="total_cost[]" value="{{ $details->total_cost }}" readonly></td>
-                        <td class="table-borderless">
-                            <a href="http://" class="remove-row"><i class="fas fa-window-close text-danger fs-3"></i></a>
-
+                        <td><input type="text" class="form-control total-cost"
+                                id="total-cost-{{ $loop->index }}" name="total_cost[]"
+                                value="{{ $details->total_cost }}" readonly></td>
+                        <td><input type="text" class="form-control total-cost" id="total-cost-1"
+                                name="total_cost[]" value="0" readonly></td>
+                        <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
+                                <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+                                @if ($key > 0)
+                                    <a href="#" class="remove-row m-1"><i
+                                            class="fas fa-window-close text-danger fs-2"></i></a>
+                                @endif
+                            </a>
                         </td>
                     </tr>
                 @endforeach
@@ -141,7 +150,7 @@
                 let errors = error.response.data;
                 if (error.response.status == 422) {
                     $.each(errors.errors, function(key, value) {
-                        toastr.error( value);
+                        toastr.error(value);
                     });
                 } else {
                     toastr.error(error.response.data.message);

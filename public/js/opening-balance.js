@@ -5,56 +5,36 @@ $(document).ready(function () {
         },
     });
 
-    var rowcount, tableBody, basePath;
-    rowcount = $("#opening-balance-autocomplete-table tbody tr").length + 1;
-    tableBody = $("#opening-balance-autocomplete-table tbody");
+    var basePath;
     basePath = $("#base_path").val();
 
-    function formHtml() {
-        html = '<tr class="addrow" id="row-' + rowcount + '">';
-        html +=
-            '<td><input type="text" id="kind-' +
-            rowcount +
-            '" data-field-name="code" class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"></td>';
-        html +=
-            '<td><input type="text" id="kind-name-' +
-            rowcount +
-            '" class="form-control autocomplete_txt" data-field-name="name" autofill="off" autocomplete="off" name="kind_name[]"></td>';
-        html +=
-            '<td><input type="text" id="kind-karat-' +
-            rowcount +
-            '" class="form-control autocomplete_txt" data-field-name="karat" autofill="off" autocomplete="off" name="karat[]"></td>';
-        html +=
-            '<td><input type="text" id=" shares-' +
-            rowcount +
-            '" class="form-control " data-field-name="shares" autofill="off"  name="shares[]"></td>';
-        html +=
-            '<td><select class="form-control" name="unit[]" id="unit-' +
-            rowcount +
-            '"><option value="gram"> جرام</option><option value="kilogram">كيلو جرام</option><option value="ounce">أونصة </option></select>';
-        html +=
-            '<td><input type="text" class="form-control quantity" id="quantity-' +
-            rowcount +
-            '" name="quantity[]" value="1"></td>';
-        html +=
-            '<td><input type="text" class="form-control salary" id="salary-' +
-            rowcount +
-            '" name="salary[]" value="0"></td>';
-        html +=
-            '<td><input type="text" class="form-control total-cost" id="total-cost-' +
-            rowcount +
-            '" name="total_cost[]" value="0" readonly></td>';
-        html +=
-            '<td class="table-borderless"> <a href="http://" class="remove-row"><i class="fas fa-window-close text-danger fs-3"></i></a></td>';
-        html += "</tr>";
-        rowcount++;
-        return html;
-    }
+    $("#opening-balance-autocomplete-table").on(
+        "click",
+        "tbody > tr > td > a.add-row",
+        function (e) {
+            e.preventDefault();
+            let tr = $(this).closest("tr");
+            var clone = tr.clone();
+            let actionTdCell = `<a href="#" class="add-row m-1">
+        <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+    </a>
+    <a href="#" class="remove-row m-1"><i class="fas fa-window-close text-danger fs-2"></i></a>`;
+            clone.find(":last-child").html(actionTdCell);
+            clone.find("input:not(.new-item-qty)").val("");
+            tr.after(clone);
+        }
+    );
 
-    function addNewRow() {
-        var html = formHtml();
-        tableBody.append(html);
-    }
+    $("#opening-balance-autocomplete-table").on(
+        "click",
+        "tbody > tr > td > a.remove-row",
+        function (e) {
+            e.preventDefault();
+            let body = $(this).closest("tr").parent("tbody");
+            $(this).closest("tr").remove();
+            body.trigger("change");
+        }
+    );
 
     function getId(element) {
         var id, idArr;
@@ -153,16 +133,13 @@ $(document).ready(function () {
 
     // Add New row
     function registerEvents() {
-        $("body")
-            .off()
-            .on("keydown", ".addrow", function (e) {
-                if (e.keyCode == 40 || e.keyCode == 13) {
-                    if (e.keyCode == 13) {
-                        e.preventDefault();
-                    }
-                    addNewRow();
-                }
-            });
+        $(".opening-balance-autocomplete-table").on(
+            "click",
+            "input",
+            function (e) {
+                $(this).select();
+            }
+        );
         $(document).on("focus", ".autocomplete_txt", handleAutocomplete);
         // $(document).on('focus','.autocomplete_department', handleDeptTo);
     }

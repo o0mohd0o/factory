@@ -123,19 +123,28 @@ $(document).ready(function () {
                         var result;
                         result = [
                             {
-                                label:
-                                    "لا توجد بيانات بهذا الاسم" +
-                                    data.term,
+                                label: "لا توجد بيانات بهذا الاسم" + data.term,
                                 value: "",
                             },
                         ];
                         if (res.length) {
                             result = $.map(res, function (obj) {
-                                let label = '';
-                                if (obj['shares']=='null' || !obj['shares'] || obj['shares'] == undefined) {
-                                     label = obj[fieldName];
+                                let label = "";
+                                if (
+                                    obj["shares"] == "null" ||
+                                    !obj["shares"] ||
+                                    obj["shares"] == undefined
+                                ) {
+                                    label =
+                                        obj["kind"] + "-" + obj["kind_name"];
                                 } else {
-                                     label = obj[fieldName] + ' عيار ( ' + obj['shares'] + ')';
+                                    label =
+                                        obj["kind"] +
+                                        "-" +
+                                        obj["kind_name"] +
+                                        " عيار ( " +
+                                        obj["shares"] +
+                                        ")";
                                 }
                                 return {
                                     label: label,
@@ -147,10 +156,13 @@ $(document).ready(function () {
                         cb(result);
                     },
                     error: function (result) {
-                        if (response.status = 422) {
-                            $.each(response.responseJSON.errors, function(key, value) {
-                                toastr.error( value);
-                            });
+                        if ((response.status = 422)) {
+                            $.each(
+                                response.responseJSON.errors,
+                                function (key, value) {
+                                    toastr.error(value);
+                                }
+                            );
                         } else {
                             toastr.error(response.message);
                         }
@@ -183,7 +195,6 @@ $(document).ready(function () {
     }
 
     function handleDept() {
-        
         var fieldName, currentEle;
         currentEle = $(this);
         fieldName = currentEle.data("field-name");
@@ -208,9 +219,7 @@ $(document).ready(function () {
                         var result;
                         result = [
                             {
-                                label:
-                                    "لا توجد بيانات بهذا الاسم" +
-                                    data.term,
+                                label: "لا توجد بيانات بهذا الاسم" + data.term,
                                 value: "",
                             },
                         ];
@@ -242,10 +251,9 @@ $(document).ready(function () {
                     currentElement = getCurrentElement(currentEle);
                     data = selectedData.item.data;
                     console.log(currentElement);
-                       $("#transfer_to").val(data.id);
-                        $("#transfer_to_name").val(data.name);
-                    }
-                
+                    $("#transfer_to").val(data.id);
+                    $("#transfer_to_name").val(data.name);
+                }
             },
         });
     }

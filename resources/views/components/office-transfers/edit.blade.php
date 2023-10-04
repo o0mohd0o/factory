@@ -19,10 +19,6 @@
                     <input type="text" value="{{ $officeTransfer->date }}" class="form-control" name="date">
                 </div>
             </div>
-       
-
-        </div>
-        <div class="row">
 
             <div class="col-sm-3">
                 <div class="form-group">

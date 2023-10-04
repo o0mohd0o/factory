@@ -96,8 +96,10 @@
                     </td>
                     <td><input type="text" class="form-control total-cost" id="total-cost-1" name="total_cost[]"
                             value="0" readonly></td>
-                    <td class="table-borderless"> 
-                    </td>
+                            <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
+                                <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+                            </a>
+                        </td>
                 </tr>
             </tbody>
         </table>

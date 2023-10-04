@@ -38,12 +38,6 @@
                             readonly>
                     </div>
                 </div>
-              
-             
-
-            </div>
-            <div class="row">
-
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="person_on_charge">{{ __('Person On Charge') }}</label>
