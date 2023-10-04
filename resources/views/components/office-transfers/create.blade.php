@@ -3,8 +3,7 @@
 
 <div class="form-background">
     <h2 class="text-center bg-success text-white mb-2">{{ __('Create') }}</h2>
-    <form id="office-transfer-form" action="{{ route('ajax.officeTransfers.store') }}" autocomplete="off"
-        method="post">
+    <form id="office-transfer-form" action="{{ route('ajax.officeTransfers.store') }}" autocomplete="off" method="post">
         @csrf
         <div class="row">
             <div class="col-sm-3">
@@ -19,7 +18,7 @@
                     <input type="text" value="<?php echo date('Y-m-d'); ?>" class="form-control" name="date" readonly>
                 </div>
             </div>
-       
+
 
             <div class="col-sm-3">
                 <div class="form-group">
@@ -32,9 +31,9 @@
                 <div class="form-group">
                     <label for="type">{{ __('Transfer Type') }}</label>
                     <select class="form-select text-center" name="type" aria-label="Default select example">
-                        <option value="to">{{__('Transfer To Office')}}</option>
-                        <option value="from">{{__('Transfer From Office')}}</option>
-                    </select>   
+                        <option value="to">{{ __('Transfer To Office') }}</option>
+                        <option value="from">{{ __('Transfer From Office') }}</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -55,7 +54,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="addrow" id="row-1">
+                <tr class="addrow">
                     <td><input type="text" id="kind-1" data-field-name="code"
                             class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"></td>
                     <td><input type="text" id="kind-name-1" data-field-name="name"
@@ -64,8 +63,8 @@
                     <td><input type="text" id="kind-karat-1" data-field-name="karat"
                             class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="karat[]">
                     </td>
-                    <td><input type="text" id="shares-1" data-field-name="shares"
-                            class="form-control " autofill="off"  name="shares[]">
+                    <td><input type="text" id="shares-1" data-field-name="shares" class="form-control "
+                            autofill="off" name="shares[]">
                     </td>
                     <td>
                         <select class="form-control" name="unit[]" id="unit-1">
@@ -81,7 +80,11 @@
                     </td>
                     <td><input type="text" class="form-control total-cost" id="total-cost-1" name="total_cost[]"
                             value="0" readonly></td>
-                    <td class="table-borderless"> 
+                    <td><input type="text" class="form-control total-cost" id="total-cost-1" name="total_cost[]"
+                            value="0" readonly></td>
+                    <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
+                            <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+                        </a>
                     </td>
                 </tr>
             </tbody>
@@ -114,7 +117,7 @@
                 let errors = error.response.data;
                 if (error.response.status == 422) {
                     $.each(errors.errors, function(key, value) {
-                        toastr.error( value);
+                        toastr.error(value);
                     });
                 } else {
                     toastr.error(error.response.data.message);

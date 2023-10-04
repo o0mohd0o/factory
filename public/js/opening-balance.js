@@ -54,19 +54,9 @@ $(document).ready(function () {
         "change",
         ".salary, .quantity",
         function () {
-            let rowID = getId($(this).closest("tr"));
             let totalCost =
-                $("#salary-" + rowID).val() * $("#quantity-" + rowID).val();
-            $("#total-cost-" + rowID).val(totalCost);
-        }
-    );
-
-    $("#opening-balance-autocomplete-table").on(
-        "click",
-        ".remove-row",
-        function (e) {
-            e.preventDefault();
-            $(this).closest("tr").remove();
+            $(this).closest("tr").find("td>input[name='quantity[]']").val() * $(this).closest("tr").find("td>input[name='salary[]']").val();
+            $(this).closest("tr").find("td>input[name='total_cost[]']").val(totalCost);
         }
     );
 
@@ -122,10 +112,10 @@ $(document).ready(function () {
                     var rowNo, data;
                     rowNo = getId(currentEle);
                     data = selectedData.item.data;
-                    $("#kind-" + rowNo).val(data.code);
-                    $("#kind-name-" + rowNo).val(data.name);
-                    $("#kind-karat-" + rowNo).val(data.karat);
-                    $("#shares-" + rowNo).val(data.karat);
+                    $(this).closest("tr").find("td>input[name='kind[]']").val(data.code);
+                    $(this).closest("tr").find("td>input[name='kind_name[]']").val(data.name);
+                    $(this).closest("tr").find("td>input[name='karat[]']").val(data.karat);
+                    $(this).closest("tr").find("td>input[name='shares[]']").val(data.karat);
                 }
             },
         });

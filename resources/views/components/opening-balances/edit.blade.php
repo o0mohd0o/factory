@@ -77,7 +77,7 @@
             </thead>
             <tbody>
                 @foreach ($openingBalance->details as $key => $details)
-                    <tr class="addrow" id="row-{{ $loop->index }}">
+                    <tr class="addrow">
                         <td><input type="text" id="kind-{{ $loop->index }}" data-field-name="code"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"
                                 value="{{ $details->kind }}"></td>
@@ -108,8 +108,6 @@
                         <td><input type="text" class="form-control total-cost"
                                 id="total-cost-{{ $loop->index }}" name="total_cost[]"
                                 value="{{ $details->total_cost }}" readonly></td>
-                        <td><input type="text" class="form-control total-cost" id="total-cost-1"
-                                name="total_cost[]" value="0" readonly></td>
                         <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
                                 <i class="fas fa-plus-square fs-2" style="color: green;"></i>
                                 @if ($key > 0)

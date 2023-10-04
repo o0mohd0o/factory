@@ -70,7 +70,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="addrow" id="row-1">
+                <tr class="addrow">
                     <td><input type="text" id="kind-1" data-field-name="code"
                             class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"></td>
                     <td><input type="text" id="kind-name-1" data-field-name="name"

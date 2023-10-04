@@ -5,56 +5,35 @@ $(document).ready(function () {
         },
     });
 
-    var rowcount, tableBody, basePath;
-    rowcount = $("#office-transfer-autocomplete-table tbody tr").length + 1;
-    tableBody = $("#office-transfer-autocomplete-table tbody");
+    var basePath;
     basePath = $("#base_path").val();
+    $("#office-transfer-autocomplete-table").on(
+        "click",
+        "tbody > tr > td > a.add-row",
+        function (e) {
+            e.preventDefault();
+            let tr = $(this).closest("tr");
+            var clone = tr.clone();
+            let actionTdCell = `<a href="#" class="add-row m-1">
+    <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+</a>
+<a href="#" class="remove-row m-1"><i class="fas fa-window-close text-danger fs-2"></i></a>`;
+            clone.find(":last-child").html(actionTdCell);
+            clone.find("input:not(.new-item-qty)").val("");
+            tr.after(clone);
+        }
+    );
 
-    function formHtml() {
-        html = '<tr class="addrow" id="row-' + rowcount + '">';
-        html +=
-            '<td><input type="text" id="kind-' +
-            rowcount +
-            '" data-field-name="code" class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"></td>';
-        html +=
-            '<td><input type="text" id="kind-name-' +
-            rowcount +
-            '" class="form-control autocomplete_txt" data-field-name="name" autofill="off" autocomplete="off" name="kind_name[]"></td>';
-        html +=
-            '<td><input type="text" id="kind-karat-' +
-            rowcount +
-            '" class="form-control autocomplete_txt" data-field-name="karat" autofill="off" autocomplete="off" name="karat[]"></td>';
-        html +=
-            '<td><input type="text" id=" shares-' +
-            rowcount +
-            '" class="form-control " data-field-name="shares" autofill="off"  name="shares[]"></td>';
-        html +=
-            '<td><select class="form-control" name="unit[]" id="unit-' +
-            rowcount +
-            '"><option value="gram"> جرام</option><option value="kilogram">كيلو جرام</option><option value="ounce">أونصة </option></select>';
-        html +=
-            '<td><input type="text" class="form-control quantity" id="quantity-' +
-            rowcount +
-            '" name="quantity[]" value="1"></td>';
-        html +=
-            '<td><input type="text" class="form-control salary" id="salary-' +
-            rowcount +
-            '" name="salary[]" value="0"></td>';
-        html +=
-            '<td><input type="text" class="form-control total-cost" id="total-cost-' +
-            rowcount +
-            '" name="total_cost[]" value="0" readonly></td>';
-        html +=
-            '<td class="table-borderless"> <a href="http://" class="remove-row"><i class="fas fa-window-close text-danger fs-3"></i></a></td>';
-        html += "</tr>";
-        rowcount++;
-        return html;
-    }
-
-    function addNewRow() {
-        var html = formHtml();
-        tableBody.append(html);
-    }
+    $("#office-transfer-autocomplete-table").on(
+        "click",
+        "tbody > tr > td > a.remove-row",
+        function (e) {
+            e.preventDefault();
+            let body = $(this).closest("tr").parent("tbody");
+            $(this).closest("tr").remove();
+            body.trigger("change");
+        }
+    );
 
     function getId(element) {
         var id, idArr;
@@ -63,33 +42,17 @@ $(document).ready(function () {
         return idArr[idArr.length - 1];
     }
 
-    function getCurrentElement(element) {
-        var id, idArr;
-        id = element.attr("id");
-        idArr = id.split("-");
-        return idArr[0];
-    }
-
     $("#office-transfer-autocomplete-table").on(
         "change",
         ".salary, .quantity",
         function () {
-            let rowID = getId($(this).closest("tr"));
             let totalCost =
-                $("#salary-" + rowID).val() * $("#quantity-" + rowID).val();
-            $("#total-cost-" + rowID).val(totalCost);
-        }
+            $(this).closest("tr").find("td>input[name='quantity[]']").val() * $(this).closest("tr").find("td>input[name='salary[]']").val();
+            $(this).closest("tr").find("td>input[name='total_cost[]']").val(totalCost);
+       }
     );
 
-    $("#office-transfer-autocomplete-table").on(
-        "click",
-        ".remove-row",
-        function (e) {
-            e.preventDefault();
-            $(this).closest("tr").remove();
-        }
-    );
-
+    
     function handleAutocomplete() {
         var fieldName, currentEle;
         currentEle = $(this);
@@ -142,10 +105,10 @@ $(document).ready(function () {
                     var rowNo, data;
                     rowNo = getId(currentEle);
                     data = selectedData.item.data;
-                    $("#kind-" + rowNo).val(data.code);
-                    $("#kind-name-" + rowNo).val(data.name);
-                    $("#kind-karat-" + rowNo).val(data.karat);
-                    $("#shares-" + rowNo).val(data.karat);
+                    $(this).closest("tr").find("td>input[name='kind[]']").val(data.code);
+                    $(this).closest("tr").find("td>input[name='kind_name[]']").val(data.name);
+                    $(this).closest("tr").find("td>input[name='karat[]']").val(data.karat);
+                    $(this).closest("tr").find("td>input[name='shares[]']").val(data.karat);
                 }
             },
         });
