@@ -36,7 +36,11 @@ class AppServiceProvider extends ServiceProvider
             View::share('departments', Department::all());
             View::share('generalSettings', GeneralSettings::first());
         }
-        View::share('workers', Worker::all());
+
+        if (Schema::hasTable('workers')) {
+            View::share('workers', Worker::all());
+        }
+
         Http::macro('hesabat', function () {
             return Http::acceptJson()->withOptions([
                 'verify' => false,
