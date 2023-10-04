@@ -74,7 +74,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($goldTransform->usedItems as $usedItem)
+                        @foreach ($goldTransform->usedItems as $key => $usedItem)
                             <tr class="used-items-addrow">
                                 <input type="hidden" class="item-id" name="used_item_id[]"
                                     value="{{ $usedItem->departmentItem->id }}">
@@ -100,6 +100,10 @@
                                 </td>
                                 <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
                                         <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+                                        @if ($key > 0)
+                                            <a href="#" class="remove-row m-1"><i
+                                                    class="fas fa-window-close text-danger fs-2"></i></a>
+                                        @endif
                                     </a>
                                 </td>
                             </tr>
@@ -128,37 +132,45 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($goldTransform->newItems as $newItem)
+                        @foreach ($goldTransform->newItems as $key => $newItem)
                             <tr class="new-items-addrow">
-                                <input type="hidden" name="new_item_id[]" value="{{$newItem->item->id}}">
+                                <input type="hidden" name="new_item_id[]" value="{{ $newItem->item->id }}">
 
                                 <td><input type="text" data-field-name="code"
                                         class="form-control new-items-autocomplete" autofill="off" autocomplete="off"
-                                        name="new_item" value="{{$newItem->item->code}}"></td>
+                                        name="new_item" value="{{ $newItem->item->code }}"></td>
                                 <td><input type="text" class="form-control new-items-autocomplete" autofill="off"
-                                        data-field-name="name" autocomplete="off" name="new_item_name" value="{{$newItem->item->name}}"></td>
+                                        data-field-name="name" autocomplete="off" name="new_item_name"
+                                        value="{{ $newItem->item->name }}"></td>
 
                                 <td><input type="number" min="0" class="form-control" autofill="off"
-                                        name="new_item_karat" autocomplete="off" data-field-name="karat" value="{{$newItem->item->karat}}" readonly>
+                                        name="new_item_karat" autocomplete="off" data-field-name="karat"
+                                        value="{{ $newItem->item->karat }}" readonly>
                                 </td>
 
                                 <td><input type="number" min="" class="form-control" autofill="off"
-                                        data-field-name="shares" autocomplete="off" name="new_item_shares[]" value="{{$newItem->actual_shares}}"
-                                        required>
+                                        data-field-name="shares" autocomplete="off" name="new_item_shares[]"
+                                        value="{{ $newItem->actual_shares }}" required>
                                 </td>
 
                                 <td><input type="number" min="0" step="any" class="form-control"
-                                        name="new_item_weight[]" value="{{$newItem->weight}}" required>
+                                        name="new_item_weight[]" value="{{ $newItem->weight }}" required>
                                 </td>
 
                                 <td><input type="number" min="1" class="form-control new-item-qty"
-                                        name="new_item_qty[]" value="{{$newItem->quantity}}">
+                                        name="new_item_qty[]" value="{{ $newItem->quantity }}">
                                 <td><input type="number" min="0" step="any"
-                                        class="form-control new-item-stone-weight" name="new_item_stone_weight[]" value="{{$newItem->stone_weight}}">
+                                        class="form-control new-item-stone-weight" name="new_item_stone_weight[]"
+                                        value="{{ $newItem->stone_weight }}">
                                 </td>
                                 <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
                                         <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+                                        @if ($key > 0)
+                                            <a href="#" class="remove-row m-1"><i
+                                                    class="fas fa-window-close text-danger fs-2"></i></a>
+                                        @endif
                                     </a>
+                                </td>
                             </tr>
                         @endforeach
 
@@ -181,8 +193,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="loss-calib-in-21">{{round($goldTransform->goldLoss?->loss_weight_in_21, 2)}}</td>
-                                <td class="loss-calib-in-24">{{round($goldTransform->goldLoss?->loss_weight_in_24, 2)}}</td>
+                                <td class="loss-calib-in-21">
+                                    {{ round($goldTransform->goldLoss?->loss_weight_in_21, 2) }}</td>
+                                <td class="loss-calib-in-24">
+                                    {{ round($goldTransform->goldLoss?->loss_weight_in_24, 2) }}</td>
                             </tr>
                         </tbody>
                     </table>
