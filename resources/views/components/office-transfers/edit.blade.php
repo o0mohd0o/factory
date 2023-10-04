@@ -58,7 +58,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($officeTransfer->details as $details)
+                @foreach ($officeTransfer->details as $key => $details)
                     <tr class="addrow">
                         <td><input type="text" id="kind-{{ $loop->index }}" data-field-name="code"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"
