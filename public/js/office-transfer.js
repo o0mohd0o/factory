@@ -80,8 +80,24 @@ $(document).ready(function () {
                         ];
                         if (res.length) {
                             result = $.map(res, function (obj) {
+                                let label = "";
+                                if (
+                                    obj["karat"] == "null" ||
+                                    !obj["karat"] ||
+                                    obj["karat"] == undefined
+                                ) {
+                                    label = obj["code"] + "-" + obj["name"];
+                                } else {
+                                    label =
+                                        obj["code"] +
+                                        "-" +
+                                        obj["name"] +
+                                        " عيار ( " +
+                                        obj["karat"] +
+                                        ")";
+                                }
                                 return {
-                                    label: obj[fieldName],
+                                    label: label,
                                     value: obj[fieldName],
                                     data: obj,
                                 };

@@ -171,23 +171,18 @@ $(document).ready(function () {
                             result = $.map(res, function (obj) {
                                 let label = "";
                                 if (
-                                    obj["shares"] == "null" ||
-                                    !obj["shares"] ||
-                                    obj["shares"] == undefined
+                                    obj["karat"] == "null" ||
+                                    !obj["karat"] ||
+                                    obj["karat"] == undefined
                                 ) {
-                                    label = obj[fieldName];
+                                    label = obj["code"] + "-" + obj["name"];
                                 } else {
                                     label =
-                                        obj["kind"] +
+                                        obj["code"] +
                                         "-" +
-                                        obj["kind_name"] +
+                                        obj["name"] +
                                         " عيار ( " +
-                                        obj["shares"] +
-                                        ")";
-                                    label =
-                                        obj[fieldName] +
-                                        " عيار ( " +
-                                        obj["shares"] +
+                                        obj["karat"] +
                                         ")";
                                 }
                                 return {
@@ -279,16 +274,12 @@ $(document).ready(function () {
             console.log(usedGold, newGold);
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-21").html(
                 roundToDecimals(
-                    differenceInCalibIn21 >= 0.01
-                        ? differenceInCalibIn21
-                        : 0
+                    differenceInCalibIn21 >= 0.01 ? differenceInCalibIn21 : 0
                 )
             );
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-24").html(
                 roundToDecimals(
-                    differenceInCalibIn24 >= 0.01
-                        ? differenceInCalibIn24
-                        : 0
+                    differenceInCalibIn24 >= 0.01 ? differenceInCalibIn24 : 0
                 )
             );
             if (differenceInCalibIn21 <= -0.01) {
