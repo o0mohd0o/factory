@@ -29,7 +29,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    if(auth()->user()->can('manage_users')) {
+    if (auth()->user()->can('manage_users')) {
         return view('dashboard');
     }
     return view('home-page');
@@ -82,3 +82,16 @@ Route::get('cron-jobs/departments/generate-daily-report', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/empty-data', function () {
+    \DB::statement("TRUNCATE `department_daily_reports`");
+    \DB::statement("TRUNCATE `department_items`");
+    \DB::statement("TRUNCATE `gold_transforms`");
+    \DB::statement("TRUNCATE `gold_transform_used_items`");
+    \DB::statement("TRUNCATE `gold_losses`");
+    \DB::statement("TRUNCATE `gold_transform_new_items`");
+    \DB::statement("TRUNCATE `opening_balances`");
+    \DB::statement("TRUNCATE `opening_balance_details`");
+    \DB::statement("TRUNCATE `opening_balance_reports`");
+    \DB::statement("TRUNCATE `transfers`");
+    \DB::statement("TRUNCATE `transfer_reports`");
+})->name('emptyData');

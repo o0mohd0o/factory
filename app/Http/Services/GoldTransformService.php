@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Events\TransferEvent;
 use App\Models\DepartmentItem;
 use App\Models\Department;
 use App\Models\GoldLoss;
@@ -98,8 +99,8 @@ class GoldTransformService
             $this->deleteGoldTransformItemsWeights($goldTransform);
             $goldTransform->usedItems()->delete();
             $goldTransform->newItems()->delete();
-            $goldTransform->delete();
             $goldTransform->goldLoss()->delete();
+            $goldTransform->delete();
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -131,20 +132,43 @@ class GoldTransformService
 
         try {
             DB::beginTransaction();
+            $tranferToDepartment = Department::find($request->transfer_to_department_id);
+            $tranferFromDepartment = Department::find($request->department_id);
             $goldTransform =  $this->saveGoldTransform($request->date, $request->worker_id, $request->department_id);
             $this->saveGoldTransformNewItems($goldTransform, $newItemsData);
             $this->saveGoldTransformUsedItems($goldTransform, $usedItemsData);
-            $this->removeUsedItemsWeightsFromDepartment(
+            $usedDepartmentItems = $this->removeUsedItemsWeightsFromDepartment(
                 $request->used_item_id,
                 $request->weight_to_use,
             );
-            $this->addNewItemsInDepartment(
+
+            for ($i = 0; $i < count($usedDepartmentItems['usedDepartmentItems']); $i++) {
+                (new DailyReportService())->addNewDailyReport(
+                    $tranferFromDepartment, 
+                    $usedDepartmentItems['usedDepartmentItems'][$i], 
+                    $usedDepartmentItems['usedDepartmentItemsWeights'][$i], 
+                    'credit'
+                );
+            }
+
+            
+            
+            $newDepartmentItems = $this->addNewItemsInDepartment(
                 $request->new_item_id,
                 $request->new_item_weight,
                 $request->new_item_shares,
                 $request->department_id
             );
-            
+
+            for ($i = 0; $i < count($newDepartmentItems['newDepartmentItems']); $i++) {
+                (new DailyReportService())->addNewDailyReport(
+                    $tranferFromDepartment, 
+                    $newDepartmentItems['newDepartmentItems'][$i], 
+                    $newDepartmentItems['newDepartmentItemsWeights'][$i], 
+                    'debit'
+                );
+            }
+
             if ($goldLoss) {
                 $goldTransform->load(['usedItems.departmentItem']);
                 $goldTransform->goldLoss()->create([
@@ -158,6 +182,43 @@ class GoldTransformService
                     'date' => $request->date,
                 ]);
             }
+
+            if ($request->transfer_to_department_id) {
+                // $this->addNewItemsInDepartment(
+                //     $request->new_item_id,
+                //     $request->new_item_weight,
+                //     $request->new_item_shares,
+                //     $request->transfer_to_department_id
+                // );
+                $this->removeUsedItemsWeightsFromDepartment(
+                    collect($newDepartmentItems['newDepartmentItems'])->pluck('id')->toArray(),
+                    $newDepartmentItems['newDepartmentItemsWeights'],
+                );
+                for ($i = 0; $i < count($newDepartmentItems['newDepartmentItems']); $i++) {
+                    $transfer = Transfer::create([
+                        'department_item_id' => $newDepartmentItems['newDepartmentItems'][$i]->id,
+                        'date' => $request->date,
+                        'person_on_charge' => auth()->user()->name_ar,
+                        'transfer_from' => $tranferFromDepartment->id,
+                        'transfer_to' => $tranferToDepartment->id,
+                        'transfer_from_name' => $tranferFromDepartment->name,
+                        'transfer_to_name' => $tranferToDepartment->name,
+                        'kind' => $newDepartmentItems['newDepartmentItems'][$i]->kind,
+                        'kind_name' => $newDepartmentItems['newDepartmentItems'][$i]->kind_name,
+                        'shares' => $newDepartmentItems['newDepartmentItems'][$i]->shares,
+                        'shares_to_transfer' => $newDepartmentItems['newDepartmentItems'][$i]->shares,
+                        'weight_to_transfer' => $newDepartmentItems['newDepartmentItemsWeights'][$i],
+                        'karat' => $newDepartmentItems['newDepartmentItems'][$i]->karat,
+                        'item_weight_before_transfer' => $newDepartmentItems['newDepartmentItems'][$i]->current_weight + $newDepartmentItems['newDepartmentItemsWeights'][$i],
+                        'item_weight_after_transfer' =>  $newDepartmentItems['newDepartmentItems'][$i]->current_weight ,
+                        'total_loss' => 0,
+                        'total_gain' => 0,
+                        'net_weight' => $newDepartmentItems['newDepartmentItemsWeights'][$i],
+                    ]);
+                    TransferEvent::dispatch($transfer, $newDepartmentItems['newDepartmentItems'][$i]);
+                }
+            }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -167,8 +228,10 @@ class GoldTransformService
         return $goldTransform;
     }
 
-    public function removeUsedItemsWeightsFromDepartment(array $usedItems, array $usedWeights): void
+    public function removeUsedItemsWeightsFromDepartment(array $usedItems, array $usedWeights): array
     {
+        $usedDepartmentItems = [];
+        $usedDepartmentItemsWeights = [];
         for ($i = 0; $i < count($usedItems); $i++) {
             $departmentUsedItem = DepartmentItem::find($usedItems[$i]);
             $departmentUsedItem->update(
@@ -177,11 +240,19 @@ class GoldTransformService
                     'current_weight' => $departmentUsedItem->current_weight - $usedWeights[$i],
                 ]
             );
+            array_push($usedDepartmentItems, $departmentUsedItem);
+            array_push($usedDepartmentItemsWeights, $usedWeights[$i]);
         }
+        return [
+            'usedDepartmentItems' => $usedDepartmentItems,
+            'usedDepartmentItemsWeights' => $usedDepartmentItemsWeights,
+        ];
     }
 
-    public function addNewItemsInDepartment(array $newItemsIds, array $newWeights, array $newGoldItemsShares, int $departmentId): void
+    public function addNewItemsInDepartment(array $newItemsIds, array $newWeights, array $newGoldItemsShares, int $departmentId): array
     {
+        $newDepartmentItems = [];
+        $newDepartmentItemsWeights = [];
         $newItems = Items::find($newItemsIds);
         $department = Department::find($departmentId);
         for ($i = 0; $i < count($newItemsIds); $i++) {
@@ -196,6 +267,8 @@ class GoldTransformService
                     'previous_weight' => $item->current_weight,
                     'current_weight' => $item->current_weight + $newWeights[$i],
                 ]);
+                array_push($newDepartmentItems, $item);
+                array_push($newDepartmentItemsWeights, $newWeights[$i]);
             } else {
                 $item = $department->items()->create([
                     'kind' => $newItem->code,
@@ -205,8 +278,14 @@ class GoldTransformService
                     'previous_weight' => 0,
                     'current_weight' =>  $newWeights[$i],
                 ]);
+                array_push($newDepartmentItems, $item);
+                array_push($newDepartmentItemsWeights, $newWeights[$i]);
             }
         }
+        return [
+            'newDepartmentItems' => $newDepartmentItems,
+            'newDepartmentItemsWeights' => $newDepartmentItemsWeights,
+        ];
     }
 
     public function deleteGoldTransformItemsWeights($goldTransform): void

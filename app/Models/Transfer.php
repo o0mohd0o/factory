@@ -10,7 +10,6 @@ class Transfer extends Model
     use HasFactory;
     protected $fillable = [
         'department_item_id',
-        'department_item_kind',
         'date',
         'person_on_charge',
         'transfer_from',
@@ -21,7 +20,6 @@ class Transfer extends Model
         'kind_name',
         'shares',
         'shares_to_transfer',
-        'item_id',
         'weight_to_transfer',
         'karat',
         'item_weight_before_transfer',

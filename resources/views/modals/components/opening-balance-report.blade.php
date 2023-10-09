@@ -2,7 +2,7 @@
     {{ __('Opening Balance') }}
 </h2>
 
-@forelse ($openingBalancesReports as $day => $reports)
+@forelse ($openingBalancesReports??[] as $day => $reports)
     <h3 class="transfer-day text-center  m-2  text-info border border-info rounded">
         {{ __('Day') . '  ' . $day }}
     </h3>

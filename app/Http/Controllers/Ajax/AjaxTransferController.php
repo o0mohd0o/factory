@@ -135,7 +135,7 @@ class AjaxTransferController extends Controller
                 'status' => 'error',
                 'message' => $th->getMessage(),
 
-            ], 500);
+            ], 404);
         }
 
         $data['transfer_from'] = $department->id;

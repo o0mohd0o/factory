@@ -35,4 +35,8 @@ class TransferService
 
         return $transfer ? $transfer->date : null;
     }
+
+    public function transferToDepartment($data) : void {
+        
+    }
 }
