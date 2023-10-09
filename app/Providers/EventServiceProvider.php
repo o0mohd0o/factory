@@ -22,20 +22,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        TransferEvent::class => [
-            TransferListener::class,
-        ],
     ];
 
-    /**
-     * The subscriber classes to register.
-     *
-     * @var array
-     */
-    protected $subscribe = [
-        OpeningBalanceSubscriber::class,
-        OfficeTransferSubscriber::class,
-    ];
+   
 
     /**
      * Register any events for your application.

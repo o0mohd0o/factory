@@ -4,31 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Wildside\Userstamps\Userstamps;
 
 class Transfer extends Model
 {
-    use HasFactory;
+    use HasFactory, Userstamps;
     protected $fillable = [
-        'department_item_id',
-        'department_item_kind',
-        'date',
-        'person_on_charge',
-        'transfer_from',
-        'transfer_to',
-        'transfer_from_name',
-        'transfer_to_name',
-        'kind',
-        'kind_name',
-        'shares',
-        'shares_to_transfer',
         'item_id',
+        'transfer_from',//from department id
+        'transfer_to',//to department id
+        'actual_shares',
         'weight_to_transfer',
-        'karat',
-        'item_weight_before_transfer',
-        'item_weight_after_transfer',
-        'total_loss',
-        'total_gain',
-        'net_weight',
+        'person_on_charge',
+        'date',
     ];
 
     public function scopeDay($query, $date)
@@ -40,7 +28,6 @@ class Transfer extends Model
     {
         return $query->whereBetween('date', [$date_from, $date_to]);
     }
-
 
     /**
      * Get the department that the Transfer is from

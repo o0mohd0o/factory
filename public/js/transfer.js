@@ -5,100 +5,10 @@ $(document).ready(function () {
         },
     });
 
-    var rowcount, tableBody, basePath;
-    rowcount = $("#autocomplete_table tbody tr").length + 1;
-    tableBody = $("#autocomplete_table tbody");
+    var basePath;
     basePath = $("#base_path").val();
 
-    function formHtml() {
-        html = '<tr class="addrow" id="row_' + rowcount + '">';
-        html +=
-            '<td><input name="item_id[]"  data-field-name="id" id="itemID_' +
-            rowcount +
-            '" class="item-id form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="item_name[]" data-field-name="item_name" id="itemName_' +
-            rowcount +
-            '" class="itemName form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="previous_balance[]"  data-field-name="previousـbalance" id="previousـbalance_' +
-            rowcount +
-            '" class="itemSerial form-control autocomplete_txt add_serial_items" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="coming[]" data-field-name="coming" id="coming_' +
-            rowcount +
-            '" class="carat form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="going[]" data-field-name="going" id="going_' +
-            rowcount +
-            '" class="weight form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="certified_loss[]" data-field-name="certified_loss" id="certified_loss_' +
-            rowcount +
-            '" class="fare form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="not_certified_loss[]" data-field-name="not_certified_loss" id="not_certified_loss_' +
-            rowcount +
-            '" class="sales-price form-control autocomplete_txt" autofill="off" autocomplete="off" ></td>';
-        html +=
-            '<td><input name="other_loss[]" data-field-name="other_loss" id="other_loss_' +
-            rowcount +
-            '" class="form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="add_stones[]" data-field-name="add_stones" id="add_stones_' +
-            rowcount +
-            '" class="form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="add_copper[]" data-field-name="add_copper" id="add_copper_' +
-            rowcount +
-            '" class="form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="add_other1[]" data-field-name="add_other1" id="add_other1_' +
-            rowcount +
-            '" class="form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="add_other2[]" data-field-name="add_other2" id="add_other2_' +
-            rowcount +
-            '"  class="form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="add_other3[]" data-field-name="add_other3" id="add_other3_' +
-            rowcount +
-            '"  class="form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="current_balance[]" data-field-name="current_balance" id="current_balance_' +
-            rowcount +
-            '"  class="form-control autocomplete_txt" autofill="off" autocomplete="off"></td>';
-        html +=
-            '<td><input name="transfer_to_name[]" data-field-name="name" id="transferTo_' +
-            rowcount +
-            '"  class="form-control autocomplete_department" autofill="off" autocomplete="off">';
-        html +=
-            '<input type="hidden" name="transfer_to[]" data-field-name="transfer_from_hidden" id="transfer_to_hidden_' +
-            rowcount +
-            '"  class="autocomplete_department"></td>';
-        html += "</tr>";
-        rowcount++;
-        return html;
-    }
-
-    function addNewRow() {
-        var html = formHtml();
-        tableBody.append(html);
-    }
-
-    function getId(element) {
-        var id, idArr;
-        id = element.attr("id");
-        idArr = id.split("_");
-        return idArr[idArr.length - 1];
-    }
-
-    function getCurrentElement(element) {
-        var id, idArr;
-        id = element.attr("id");
-        idArr = id.split("_");
-        return idArr[0];
-    }
+   
 
     function handleAutocomplete() {
         var fieldName, currentEle;
@@ -259,13 +169,6 @@ $(document).ready(function () {
     }
     // Add New row
     function registerEvents() {
-        $("body")
-            .off()
-            .on("keydown", ".addrow", function (e) {
-                if (e.keyCode == 40) {
-                    addNewRow();
-                }
-            });
         $(document).on("focus", ".autocomplete_txt", handleAutocomplete);
         $(document).on("focus", ".autocomplete_department", handleDept);
         // $(document).on('focus','.autocomplete_department', handleDeptTo);

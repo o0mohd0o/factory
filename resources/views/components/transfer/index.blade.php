@@ -58,13 +58,8 @@
                                  <th>{{ __('Kind Name') }}</th>
                                  <th>{{ __('Default Karat') }}</th>
                                  <th>{{ __('Shares') }}</th>
-                                 <th>{{ __('Shares To Transfer') }}</th>
-                                 <th>{{ __('Shares Difference') }}</th>
                                  <th>{{ __('Item Current Balance') }}</th>
                                  <th>{{ __('Weight') }}</th>
-                                 <th>{{ __('Total Loss') }}</th>
-                                 <th>{{ __('Total Gain') }}</th>
-                                 <th>{{ __('Net Weight') }}</th>
                                  <th>{{ __('To Department') }}</th>
                                  <th>{{ __('Person On Charge') }}</th>
                                  <th>{{ __('Confirm Transfer') }}</th>
@@ -75,20 +70,13 @@
                              @foreach ($outcomingTransfers as $transfer)
                                  <tr>
                                      <td>{{ $transfer->id }}</td>
-                                     <td>{{ $transfer->kind }}</td>
-                                     <td>{{ $transfer->kind_name }}</td>
-                                     <td>{{ $transfer->karat }}</td>
-                                     <td>{{ $transfer->shares }}</td>
-                                     <td>{{ $transfer->shares_to_transfer }}</td>
-                                     <td class="text-danger">
-                                         {{ $transfer->shares - $transfer->shares_to_transfer ? $transfer->shares - $transfer->shares_to_transfer : '-' }}
-                                     </td>
+                                     <td>{{ $transfer->item->code }}</td>
+                                     <td>{{ $transfer->item->name }}</td>
+                                     <td>{{ $transfer->item->karat }}</td>
+                                     <td>{{ $transfer->actual_shares }}</td>
                                      <td>{{ $transfer->item_weight_before_transfer }}</td>
                                      <td>{{ $transfer->weight_to_transfer }}</td>
-                                     <td>{{ $transfer->total_loss }}</td>
-                                     <td>{{ $transfer->total_gain }}</td>
-                                     <td>{{ $transfer->net_weight }}</td>
-                                     <td>{{ $transfer->transfer_to_name }}</td>
+                                     <td>{{ $transfer->department->name }}</td>
                                      <td>{{ $transfer->person_on_charge }}</td>
                                      <td></td>
                                      <td>
@@ -117,24 +105,12 @@
                                  <td><input type="text" id="shares" data-department="{{ $department->id }}"
                                          class="form-control autocomplete_txt" autofill="off"
                                          data-field-name="shares" autocomplete="off" name="shares"></td>
-                                 <td><input type="text" id="shares-to-transfer" class="form-control "
-                                         autofill="off" data-field-name="shares-to-transfer"
-                                         name="shares_to_transfer"></td>
-                                 <td><input type="text" id="shares-difference" class="form-control text-danger"
-                                         autofill="off" data-field-name="shares-difference" readonly></td>
                                  <td><input type="text" id="itemWeightBeforeTransfer" class="form-control"
                                          name="item_weight_before_transfer" readonly></td>
                                  <td><input type="text" class="form-control weight-to-transfer"
                                          name="weight_to_transfer" value="0">
                                  </td>
-                                 <td><input type="text" class="form-control total-loss" name="total_loss"
-                                         value="0">
-                                 </td>
-                                 <td><input type="text" class="form-control total-gain" name="total_gain"
-                                         value="0">
-                                 </td>
-                                 <td><input type="text" class="form-control net-weight" name="net_weight"
-                                         value="0" readonly></td>
+                                 
                                  <td><input type="text" id="transfer_to_name"
                                          data-department={{ $department->id }} data-field-name="name"
                                          class="form-control autocomplete_department" autofill="off"
@@ -148,11 +124,8 @@
                                  <td></td>
                              </tr>
                              <tr>
-                                 <td colspan="8"></td>
-                                 <td class="bg-success">{{ $outcomingTransfersSum }}</td>
-                                 <td class="bg-success">{{ $outcomingTransfers->sum('total_loss') }} </td>
-                                 <td class="bg-success">{{ $outcomingTransfers->sum('total_gain') }}</td>
-                                 <td class="bg-success">{{ $outcomingTransfers->sum('net_weight') }}</td>
+                                 <td colspan="11"></td>
+                                 <td class="bg-success">{{ $outcomingTransfers->sum('weight_to_transfer') }}</td>
                                  <td></td>
                                  <td></td>
                                  <td></td>
@@ -175,9 +148,6 @@
                              <th>{{ __('Default Karat') }}</th>
                              <th>{{ __('Shares') }}</th>
                              <th>{{ __('Weight') }}</th>
-                             <th>{{ __('Total Loss') }}</th>
-                             <th>{{ __('Total Gain') }}</th>
-                             <th>{{ __('Net Weight') }}</th>
                              <th>{{ __('From Department ID') }}</th>
                              <th>{{ __('From Department') }}</th>
                              <th>{{ __('Person On Charge') }}</th>
