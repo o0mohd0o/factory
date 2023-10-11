@@ -51,9 +51,9 @@ class AjaxReportController extends Controller
             ->get()
             ->groupBy('date');
 
+        $openingBalancesReports = $department->openingBalancesReports->groupBy('date');
         //Load department opening balances reports if it is the main department
         if ($department->main_department) {
-            $openingBalancesReports = $department->openingBalancesReports->groupBy('date');
             $officeTransfersReports = $department->officeTransfersReports->groupBy('date');
         }
 
@@ -61,7 +61,7 @@ class AjaxReportController extends Controller
             view('modals.department-report-show', [
                 'department' => $department,
                 'transferReports' => $transferReports,
-                'openingBalancesReports' => $openingBalancesReports ?? null,
+                'openingBalancesReports' => $openingBalancesReports,
                 'officeTransfersReports' => $officeTransfersReports ?? null,
                 'to' => $data['to'],
                 'from' => $data['from'],
