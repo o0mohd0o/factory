@@ -1,4 +1,5 @@
 <h1 class="text-center bg-white rounded py-1">{{ __('Office Transfers') }}</h1>
+<h2 class="text-center bg-warning rounded py-1">{{ $departments->first()->name }}</h2>
 
 
 <div class="form-background">

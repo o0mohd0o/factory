@@ -12,9 +12,9 @@
                     <label for="value">{{ __('Material ID') }}</label>
                     <div class="input-group mb-3">
                         <input name="sub_code" type="text" class="form-control" id="basic-url"
-                            value="{{ $newItemCode }}" aria-describedby="basic-addon3" readonly>
+                            value="{{ $newItemCode }}">
                         @if ($parentItemCode)
-                            <span class="input-group-text" id="basic-addon3">{{ $parentItemCode }}</span>
+                            <span class="input-group-text">{{ $parentItemCode }}</span>
                         @endif
                     </div>
                 </div>
@@ -25,11 +25,17 @@
                     <input type="text" name="name" value="" class="form-control" id="box">
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-2">
                 <div class="form-group">
-                    <label for="karat">{{ __('Carat') }}</label>
-                    <select class="form-select text-center" name="karat" aria-label="Default select example">
-                        <option value="" selected>اختر العيار</option>
+                    <label for="value">{{ __('Karat') }}</label>
+                    <input type="text" name="karat" class="form-control">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="karat">{{ __('Shares') }}</label>
+                    <select class="form-select text-center" name="shares" aria-label="Default select example">
+                        <option value="" selected></option>
                         <option value="750">750</option>
                         <option value="875">875</option>
                         <option value="916.66">916.66</option>
@@ -108,7 +114,7 @@
                 let errors = error.response.data;
                 if (error.response.status == 422) {
                     $.each(errors.errors, function(key, value) {
-                        toastr.error( value);
+                        toastr.error(value);
                     });
                 } else {
                     toastr.error(error.response.data.message);

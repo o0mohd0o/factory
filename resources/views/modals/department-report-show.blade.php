@@ -16,25 +16,11 @@
                     <span class="text-primary">{{ $to }}</span>
                 </h3>
 
-
-
-
-                @if ($department->main_department)
-                    @include('modals.components.office-transfer-report', [
-                        'officeTransfersReports' => $officeTransfersReports,
+                    @include('modals.components.department-statement', [
+                        'departmentStatements' => $departmentStatements,
                         'department' => $department,
                     ])
-                @endif
-
-                @include('modals.components.transfer-report', [
-                    'transferReports' => $transferReports,
-                    'department' => $department,
-                ])
-
-                @include('modals.components.opening-balance-report', [
-                    'openingBalancesReports' => $openingBalancesReports,
-                    'department' => $department,
-                ])
+               
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">غلق</button>

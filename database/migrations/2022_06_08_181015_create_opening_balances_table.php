@@ -21,7 +21,8 @@ class CreateOpeningBalancesTable extends Migration
             $table->string('person_on_charge');
             $table->string('inventory_record_num')->nullable();
             $table->foreignId('department_id')->constrained('departments');
-            $table->softDeletes();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }

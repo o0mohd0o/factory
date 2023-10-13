@@ -8,8 +8,6 @@ $(document).ready(function () {
     var basePath;
     basePath = $("#base_path").val();
 
-   
-
     function handleAutocomplete() {
         var fieldName, currentEle;
         currentEle = $(this);
@@ -20,20 +18,20 @@ $(document).ready(function () {
         }
         currentEle.autocomplete({
             source: function (data, cb) {
-                $.ajax({
-                    url: basePath + "/ajax/transfers/fetch-department-items",
-                    method: "GET",
-                    dataType: "json",
-                    data: {
-                        value: data.term,
-                        field_name: fieldName,
-                        department: department,
-                    },
-                    success: function (res) {
+                axios
+                    .get(basePath + "/ajax/transfers/fetch-department-items", {
+                        params: {
+                            value: data.term,
+                            field_name: fieldName,
+                            department_id: department,
+                        },
+                    })
+                    .then((response) => {
+                        let res = response.data;
                         var result;
                         result = [
                             {
-                                label: "لا توجد بيانات بهذا الاسم" + data.term,
+                                label: "لا يوجد بيانات بهذا الاسم " + data.term,
                                 value: "",
                             },
                         ];
@@ -41,18 +39,20 @@ $(document).ready(function () {
                             result = $.map(res, function (obj) {
                                 let label = "";
                                 if (
-                                    obj["shares"] == "null" ||
-                                    !obj["shares"] ||
-                                    obj["shares"] == undefined
+                                    obj["karat"] == "null" ||
+                                    !obj["karat"] ||
+                                    obj["karat"] == undefined
                                 ) {
-                                    label =
-                                        obj["kind"] + "-" + obj["kind_name"];
+                                    label = obj["code"] + "-" + obj["name"];
                                 } else {
                                     label =
-                                        obj["kind"] +
+                                        obj["code"] +
                                         "-" +
-                                        obj["kind_name"] +
+                                        obj["name"] +
                                         " عيار ( " +
+                                        obj["karat"] +
+                                        ")"+
+                                        " أسهم ( " +
                                         obj["shares"] +
                                         ")";
                                 }
@@ -64,20 +64,10 @@ $(document).ready(function () {
                             });
                         }
                         cb(result);
-                    },
-                    error: function (result) {
-                        if ((response.status = 422)) {
-                            $.each(
-                                response.responseJSON.errors,
-                                function (key, value) {
-                                    toastr.error(value);
-                                }
-                            );
-                        } else {
-                            toastr.error(response.message);
-                        }
-                    },
-                });
+                    })
+                    .catch((error) => {
+                        toastr.error(error);
+                    });
             },
             autoFocus: true,
             minLength: 1,
@@ -89,16 +79,39 @@ $(document).ready(function () {
                 ) {
                     // console.log(selectedData);
                     var data;
-
                     data = selectedData.item.data;
-                    $("#transfered-item-id").val(data.id);
-                    $("#transfered-item-department-id").val(data.department_id);
-                    $("#kind-code").val(data.kind);
-                    $("#kind-name").val(data.kind_name);
-                    $("#kind-karat").val(data.karat);
-                    $("#shares").val(data.shares);
-                    $("#shares-to-transfer").val(data.shares);
-                    $("#itemWeightBeforeTransfer").val(data.current_weight);
+                    $(this)
+                        .closest("tr")
+                        .find("input[name='item_id']")
+                        .val(data.id);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='kind']")
+                        .val(data.code);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='kind_name']")
+                        .val(data.name);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='karat']")
+                        .val(data.karat);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='actual_shares']")
+                        .val(data.shares);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='item_weight_before_transfer']")
+                        .val(data.current_weight);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='weight_to_transfer']")
+                        .val(data.current_weight);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='item_weight_before_transfer']")
+                        .focus().select();
                 }
             },
         });
@@ -156,13 +169,16 @@ $(document).ready(function () {
                     selectedData.item.data
                 ) {
                     // console.log(selectedData);
-                    var data, currentElement;
-                    rowNo = getId(currentEle);
-                    currentElement = getCurrentElement(currentEle);
+                    var data;
                     data = selectedData.item.data;
-                    console.log(currentElement);
-                    $("#transfer_to").val(data.id);
-                    $("#transfer_to_name").val(data.name);
+                    $(this)
+                        .closest("tr")
+                        .find("input[name='transfer_to']")
+                        .val(data.id);
+                        $(this)
+                        .closest("tr")
+                        .find("td>input[name='transfer_to_name']")
+                        .val(data.name);
                 }
             },
         });

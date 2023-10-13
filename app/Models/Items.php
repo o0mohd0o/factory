@@ -17,6 +17,7 @@ class Items extends Model
         'parent_code',
         'name',
         'karat',
+        'shares',
         'level_num',
         'desc_1',
         'desc_2',

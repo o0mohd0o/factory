@@ -15,6 +15,7 @@ class CreateItemDailyJournalsTable extends Migration
     {
         Schema::create('item_daily_journals', function (Blueprint $table) {
             $table->id();
+            $table->date('date');
             $table->foreignId('item_id');
             $table->double('debit')->default(0);
             $table->double('credit')->default(0);

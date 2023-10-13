@@ -13,6 +13,7 @@ class ItemDailyJournal extends Model
     use HasFactory, Userstamps;
 
     protected $fillable = [
+        'date',
         'item_id',
         'debit',
         'credit',
@@ -23,6 +24,16 @@ class ItemDailyJournal extends Model
         'doc_id',
         'doc_type',
     ];
+
+    public function scopeEnteryDateBetween($query, ?string $from, ?string $to)
+    {
+        $query->when($from, fn ($query) => $query->where('date', '>=', $from))
+            ->when($to, fn ($query) => $query->where('date', '<=', $to));
+    }
+
+    function scopeDepartment($query, $departmentID)  {
+        $query->where('department_id', $departmentID);
+    }
 
     /**
      * Get the item that owns the ItemDailyJournal

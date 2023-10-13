@@ -224,5 +224,6 @@
     "Item Name" : "اسم الصنف",
     "Gold Loss In Gram": "خياس الذهب بالجرام",
     "Gold Transorm deleted successfully.": "تم حذف سند معالجة الذهب بنجاح",
-    "Gold Transorm Updated Successfully.": "تم تحديث السند بنجاح"
+    "Gold Transorm Updated Successfully.": "تم تحديث السند بنجاح",
+    "Document Type": "نوع السند"
 }

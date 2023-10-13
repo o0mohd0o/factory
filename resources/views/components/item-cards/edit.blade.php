@@ -10,7 +10,7 @@
                     <label for="value">{{ __('Material ID') }}</label>
                     <div class="input-group mb-3">
                         <input readonly type="text" class="form-control" id="basic-url"
-                            value="{{ $itemCard->code }}" aria-describedby="basic-addon3" readonly>
+                            value="{{ $itemCard->code }}" aria-describedby="basic-addon3">
 
                     </div>
                 </div>
@@ -19,18 +19,25 @@
                 <div class="form-group">
                     <label for="value">{{ __('Material Name') }}</label>
                     <input type="text" name="name" value="{{ $itemCard->name }}" class="form-control"
-                        id="box">
+                    >
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-2">
                 <div class="form-group">
-                    <label for="karat">{{ __('Carat') }}</label>
-                    <select class="form-select text-center" name="karat" aria-label="Default select example">
-                        <option value="" @if ($itemCard->karat == null) selected @endif>اختر العيار</option>
-                        <option value="750" @if ($itemCard->karat == 750) selected @endif>750</option>
-                        <option value="875" @if ($itemCard->karat == 875) selected @endif>875</option>
-                        <option value="916.66" @if ($itemCard->karat == 916.66) selected @endif>916.66</option>
-                        <option value="1000" @if ($itemCard->karat == 1000) selected @endif>1000</option>
+                    <label for="value">{{ __('Karat') }}</label>
+                    <input type="text" name="karat" value="{{ $itemCard->karat }}" class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="shares">{{ __('Shares') }}</label>
+                    <select class="form-select text-center" name="shares" aria-label="Default select example">
+                        <option value="" @if ($itemCard->shares == null) selected @endif>  </option>
+                        <option value="750" @if ($itemCard->shares == 750) selected @endif>750</option>
+                        <option value="875" @if ($itemCard->shares == 875) selected @endif>875</option>
+                        <option value="916.66" @if ($itemCard->shares == 916.66) selected @endif>916.66</option>
+                        <option value="1000" @if ($itemCard->shares == 1000) selected @endif>1000</option>
                     </select>
                 </div>
             </div>
@@ -39,7 +46,7 @@
                 <div class="form-group">
                     <label for="customer">{{ __('Fare') }}</label>
                     <input type="number" step="any" name="fare" value="{{ $itemCard->fare }}"
-                        class="form-control" id="box">
+                        class="form-control">
                 </div>
             </div>
             <div class="col-sm-4">

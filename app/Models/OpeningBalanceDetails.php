@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OpeningBalanceDetails extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = 'opening_balance_details';
 
     protected $fillable = [
-        'kind',
-        'kind_name',
-        'karat',
-        'shares',
+        'item_id',
+        'actual_shares',
         'unit',
         'quantity',
+        'weight',
         'total_cost',
         'salary',
         'opening_balance_id',
@@ -33,4 +32,15 @@ class OpeningBalanceDetails extends Model
     {
         return $this->belongsTo(openingBalance::class, 'opening_balance_id', 'id');
     }
+
+     /**
+     * Get the item that  the Transfer goes to
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function item()
+    {
+        return $this->belongsTo(Items::class, 'item_id', 'id');
+    }
+
 }

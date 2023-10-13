@@ -17,19 +17,13 @@ class CreateTransfersTable extends Migration
             $table->id();
             $table->date('date');
             $table->string('person_on_charge');
-            $table->string('transfer_from_name');
-            $table->string('transfer_to_name');
-            $table->string('kind');
-            $table->string('kind_name');
-            $table->string('karat')->nullable();
-            $table->string('shares')->nullable();
-            $table->string('shares_to_transfer')->nullable();
-            $table->string('weight_to_transfer');
-            $table->string('item_weight_before_transfer');
-            $table->string('item_weight_after_transfer');
-            $table->foreignId('department_item_id')->constrained('department_items');
+            $table->double('actual_shares')->nullable();
+            $table->double('weight_to_transfer');
+            $table->foreignId('item_id')->constrained('items');
             $table->foreignId('transfer_from')->constrained('departments');
             $table->foreignId('transfer_to')->constrained('departments');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use App\Http\Services\GoldTransformService;
 use App\Models\Department;
 use App\Models\DepartmentDailyReport;
 use App\Models\GoldLoss;
+use App\Models\ItemDailyJournal;
 use App\Models\Report;
 use App\Models\Transfer;
 use App\Models\TransferReport;
@@ -17,52 +18,27 @@ use Illuminate\Http\Request;
 
 class AjaxReportController extends Controller
 {
-    public function transferReports(Request $request)
+    public function departmentStatement(Request $request)
     {
         $data = $request->validate([
             'department_id' => 'required|exists:departments,id',
-            'from' => 'required|date_format:Y-m-d',
-            'to' => 'required|date_format:Y-m-d',
+            'from' => 'nullable|date_format:Y-m-d',
+            'to' => 'nullable|date_format:Y-m-d',
         ]);
 
-        try {
-            //code...
-            $department = Department::with(
-                ['openingBalancesReports' => function ($query) use ($data) {
-                    return $query->datePeriod($data['from'], $data['to'])
-                        ->orderBy('date', 'desc');
-                }],
-                ['officeTransfersReports' => function ($query) use ($data) {
-                    return $query->datePeriod($data['from'], $data['to'])
-                        ->orderBy('date', 'desc');
-                }]
-            )->findOrFail($data['department_id']);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => __('Department Not Found'),
-            ], 404);
-        }
+        $departmentStatements = ItemDailyJournal::query()
+            ->with(['item', 'doc'])
+            ->enteryDateBetween($request->from, $request->to)
+            ->department($request->department_id)
+            ->orderBy('date')
+            ->get();
 
-        $transferReports = TransferReport::where('transfer_to', $data['department_id'])
-            ->orWhere('transfer_from', $data['department_id'])
-            ->datePeriod($data['from'], $data['to'])
-            ->orderBy('date', 'desc')
-            ->get()
-            ->groupBy('date');
-
-        //Load department opening balances reports if it is the main department
-        if ($department->main_department) {
-            $openingBalancesReports = $department->openingBalancesReports->groupBy('date');
-            $officeTransfersReports = $department->officeTransfersReports->groupBy('date');
-        }
+        $department = Department::find($request->department_id);
 
         return response()->json([
             view('modals.department-report-show', [
                 'department' => $department,
-                'transferReports' => $transferReports,
-                'openingBalancesReports' => $openingBalancesReports ?? null,
-                'officeTransfersReports' => $officeTransfersReports ?? null,
+                'departmentStatements' => $departmentStatements,
                 'to' => $data['to'],
                 'from' => $data['from'],
             ])->render()

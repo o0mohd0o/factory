@@ -52,11 +52,53 @@ $(document).ready(function () {
 
     $("#opening-balance-autocomplete-table").on(
         "change",
-        ".salary, .quantity",
+        ".salary, .quantity, .unit",
         function () {
             let totalCost =
-            $(this).closest("tr").find("td>input[name='quantity[]']").val() * $(this).closest("tr").find("td>input[name='salary[]']").val();
-            $(this).closest("tr").find("td>input[name='total_cost[]']").val(totalCost);
+                $(this)
+                    .closest("tr")
+                    .find("td>input[name='quantity[]']")
+                    .val() *
+                $(this).closest("tr").find("td>input[name='salary[]']").val();
+            $(this)
+                .closest("tr")
+                .find("td>input[name='total_cost[]']")
+                .val(totalCost);
+            let unitTimesQuantity = 0;
+            switch (
+                $(this).closest("tr").find("td>input[name='unit[]']").val()
+            ) {
+                case "gram":
+                    unitTimesQuantity = $(this)
+                        .closest("tr")
+                        .find("td>input[name='weight[]']")
+                        .val();
+                    break;
+                case "kilogram":
+                    unitTimesQuantity =
+                        $(this)
+                            .closest("tr")
+                            .find("td>input[name='quantity[]']")
+                            .val() * 1000;
+                    break;
+                case "ounce":
+                    unitTimesQuantity =
+                        $(this)
+                            .closest("tr")
+                            .find("td>input[name='quantity[]']")
+                            .val() * 31.1;
+                    break;
+                default:
+                    unitTimesQuantity = $(this)
+                        .closest("tr")
+                        .find("td>input[name='weight[]']")
+                        .val();
+                    break;
+            }
+            $(this)
+                .closest("tr")
+                .find("td>input[name='weight[]']")
+                .val(unitTimesQuantity);
         }
     );
 
@@ -128,10 +170,26 @@ $(document).ready(function () {
                     var rowNo, data;
                     rowNo = getId(currentEle);
                     data = selectedData.item.data;
-                    $(this).closest("tr").find("td>input[name='kind[]']").val(data.code);
-                    $(this).closest("tr").find("td>input[name='kind_name[]']").val(data.name);
-                    $(this).closest("tr").find("td>input[name='karat[]']").val(data.karat);
-                    $(this).closest("tr").find("td>input[name='shares[]']").val(data.karat);
+                    $(this)
+                        .closest("tr")
+                        .find("input[name='item_id[]']")
+                        .val(data.id);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='kind[]']")
+                        .val(data.code);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='kind_name[]']")
+                        .val(data.name);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='karat[]']")
+                        .val(data.karat);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='actual_shares[]']")
+                        .val(data.shares);
                 }
             },
         });

@@ -2,7 +2,7 @@
 <div class="modal fade" id="department-report-query" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
-        <form method="POST" id="department-report-form" action="{{ route('departments.transferReports.show') }}">
+        <form method="POST" id="department-report-form" action="{{ route('reports.departmentStatement.show') }}">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">

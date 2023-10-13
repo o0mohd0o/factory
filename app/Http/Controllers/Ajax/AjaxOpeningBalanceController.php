@@ -6,6 +6,7 @@ use App\Events\OpeningBalanceCreateEvent;
 use App\Events\OpeningBalanceDeleteEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOpeningBalanceRequest;
+use App\Http\Services\ItemDailyJournalService;
 use App\Http\Traits\OpeningBalanceTrait;
 use App\Http\Traits\WeightTrait;
 use App\Models\Department;
@@ -21,10 +22,16 @@ class AjaxOpeningBalanceController extends Controller
 {
     use WeightTrait, OpeningBalanceTrait;
 
+    protected $itemDailyJournalService;
+
+    public function __construct(ItemDailyJournalService $itemDailyJournalService)
+    {
+        $this->itemDailyJournalService = $itemDailyJournalService;
+    }
     public function index(Request $request)
     {
         try {
-            $openingBalance = OpeningBalance::with(['details'])
+            $openingBalance = OpeningBalance::with(['details.item'])
                 ->when($request->department_id, function ($query) use($request) {
                     return $query->where('department_id', $request->department_id);
                 })
@@ -78,52 +85,35 @@ class AjaxOpeningBalanceController extends Controller
         try {
             DB::beginTransaction();
 
-            $openingBalance = $department->openingBalances()->create($data);
 
             $dataDetails = [];
             
             //End of remove duplicate kinds from input to use it to sum its weights
             //Loop through the input using the count of kinds
-            for ($i = 0; $i < count($data['kind']); $i++) {
-                $dataDetails[$i]['kind'] = $data['kind'][$i];
-                $dataDetails[$i]['kind_name'] = $data['kind_name'][$i];
-                $dataDetails[$i]['karat'] = $data['karat'][$i];
-                $dataDetails[$i]['shares'] = $data['shares'][$i];
+            for ($i = 0; $i < count($data['item_id']); $i++) {
+                $dataDetails[$i]['item_id'] = $data['item_id'][$i];
+                $dataDetails[$i]['actual_shares'] = $data['actual_shares'][$i];
                 $dataDetails[$i]['unit'] = $data['unit'][$i];
                 $dataDetails[$i]['quantity'] = $data['quantity'][$i];
                 $dataDetails[$i]['salary'] = $data['salary'][$i];
                 $dataDetails[$i]['total_cost'] = $data['total_cost'][$i];
-                $dataDetails[$i]['weight'] = $this->unitToGram($data['unit'][$i], $dataDetails[$i]['quantity']);
+                $dataDetails[$i]['weight'] = $data['weight'][$i];
             }
 
-            for ($i = 0; $i < count($data['kind']); $i++) {
-                try {
-                    $item = $department->items()->where('kind', $dataDetails[$i]['kind'])
-                    ->where('shares', $dataDetails[$i]['shares'])
-                        ->firstOrFail();
-
-                    $item->update([
-                        'previous_weight' => $item->current_weight,
-                        'current_weight' => $item->current_weight + $dataDetails[$i]['weight'],
-                    ]);
-                } catch (ModelNotFoundException $e) {
-                    $item = $department->items()->create([
-                        'kind' => $dataDetails[$i]['kind'],
-                        'shares' => $dataDetails[$i]['shares'],
-                        'karat' => $dataDetails[$i]['karat'],
-                        'kind_name' => $dataDetails[$i]['kind_name'],
-                        'previous_weight' => 0,
-                        'current_weight' =>  $dataDetails[$i]['weight'],
-                    ]);
-                }
-                //Fire opening balance create event
-                OpeningBalanceCreateEvent::dispatch($item, 'create', $dataDetails[$i]['weight'], $openingBalance->id, $department);
-            
+            $openingBalance = $department->openingBalances()->create($data);
+            $openingBalanceDetails = $openingBalance->details()->createMany($dataDetails);
+            foreach ($openingBalanceDetails as $openingBalanceDetail) {
+                $this->itemDailyJournalService->createEntery(
+                    $openingBalance->date,
+                    $openingBalanceDetail->item_id,
+                    $department->id,
+                    $openingBalanceDetail->id,
+                    get_class($openingBalanceDetail),
+                    debit: $openingBalanceDetail->weight,
+                    credit: 0,
+                    actual_shares: $openingBalanceDetail->actual_shares,
+                );
             }
-            
-
-            $openingBalance->details()->createMany($dataDetails);
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -145,7 +135,7 @@ class AjaxOpeningBalanceController extends Controller
 
     public function edit(OpeningBalance $openingBalance)
     {
-        $openingBalance->load(['department', 'details']);
+        $openingBalance->load(['department', 'details.item']);
         $lastId = DB::table('opening_balances')->max('id');
         return response()->json([
             view('components.opening-balances.edit', [
@@ -206,7 +196,7 @@ class AjaxOpeningBalanceController extends Controller
 
     public function delete(OpeningBalance $openingBalance)
     {
-        $openingBalance->load(['department', 'details']);
+        $openingBalance->load(['department', 'details.item']);
 
         //Check if the opening balance used before
         //If it is used before we can not edit or delete it.

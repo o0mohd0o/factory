@@ -23,8 +23,8 @@ class SuperAdminSeeder extends Seeder
             'email' => 'super@admin.com',
             'password' => bcrypt('01010909Aa'),
             'user_code' => '0000',
-            'allowed_branches' => 0,
-            'default_branch' => 0
+            // 'allowed_department' => 0,
+            // 'default_department' => 0
         ]);
 
         $permissions = config("roles.permissions");

@@ -5,20 +5,31 @@ namespace App\Http\Controllers\Ajax;
 use App\Events\TransferEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransferStoreRequest;
+use App\Http\Services\ItemDailyJournalService;
 use App\Http\Services\TransferService;
 use App\Models\Department;
 use App\Models\DepartmentItem;
 use App\Models\GeneralSettings;
 use App\Models\Transfer;
 use Carbon\Carbon;
-use DB;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class AjaxTransferController extends Controller
 {
+
+    protected $transferService;
+    protected $itemDailyJournalService;
+
+    public function __construct(TransferService $transferService, ItemDailyJournalService $itemDailyJournalService)
+    {
+        $this->transferService = $transferService;
+        $this->itemDailyJournalService = $itemDailyJournalService;
+    }
+
     public function index(Request $request, Department $department)
     {
         $data = $request->validate([
@@ -33,6 +44,9 @@ class AjaxTransferController extends Controller
         $outcomingTransfers = $department->outcomingTransfers()
             ->day($data['date'] ?? Carbon::today()->format('Y-m-d'))
             ->get();
+
+        $incomingTransfers->load('item');
+        $outcomingTransfers->load('item');
 
         return response()->json([
             view('components.transfer.index', [
@@ -76,24 +90,6 @@ class AjaxTransferController extends Controller
         ]);
     }
 
-    public function fetchDepartmentItems(Request $request)
-    {
-        $request->validate([
-            'department' => 'required',
-            'field_name' => 'required',
-            'value' => 'required',
-        ]);
-
-        $items = DepartmentItem::whereDepartmentId($request->department)
-            ->where(function ($query) use ($request) {
-                $query->where('kind', 'like', '%' . $request->value . '%')
-                    ->orWhere('kind_name',  'like', '%' . $request->value . '%');
-            })
-            ->where('current_weight', '>', 0)
-            ->get();
-        return $items;
-    }
-
     public function fetchDepartments(Request $request)
     {
 
@@ -110,56 +106,38 @@ class AjaxTransferController extends Controller
     {
         $data = $request->validated();
 
-        $data['net_weight'] = $data['weight_to_transfer'] - $data['total_loss'] + $data['total_gain'];
-
-        try {
-            $departmentItem = DepartmentItem::where('kind', $data['kind'])
-                ->where('department_id', $department->id)
-                ->where('shares', $data['shares'])
-                ->where('current_weight', '>', 0)
-                ->firstOrFail();
-            $data['department_item_id'] = $departmentItem->id;
-            $data['item_weight_before_transfer'] = $departmentItem->current_weight;
-            $data['item_weight_after_transfer'] = $departmentItem->current_weight - $data['weight_to_transfer'];
-
-            if ($data['weight_to_transfer'] > $departmentItem->current_weight) {
-                throw new Exception(__("Insuficient Balance"), 403);
-            }
-
-            //Update Department Item
-            $departmentItem->previous_weight = $departmentItem->current_weight;
-            $departmentItem->current_weight -=  $data['weight_to_transfer'];
-            //End of update Department Item
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $th->getMessage(),
-
-            ], 500);
-        }
-
-        $data['transfer_from'] = $department->id;
-        $data['transfer_from_name'] = $department->name;
-
-
         try {
             DB::beginTransaction();
-            //Create the transfer
-            $transfer = $department->outcomingTransfers()->create($data);
-            $departmentItem->save();
-            //Dispatch Transfer Event
-            TransferEvent::dispatch($transfer, $departmentItem);
 
-            Db::commit();
+            $transfer = Transfer::create($data);
+            $itemEntery = $this->itemDailyJournalService->createEntery(
+                $transfer->date,
+                $transfer->item_id,
+                $transfer->transfer_from,
+                $transfer->id,
+                get_class($transfer),
+                credit: $transfer->weight_to_transfer,
+                debit: 0,
+                actual_shares: $transfer->actual_shares,
+                relatedDepartmentId: $transfer->transfer_to
+            );
+            $toDepartmentItemEntery = $itemEntery->replicate()->fill([
+                'department_id' =>    $transfer->transfer_to,
+                'debit' =>   $transfer->weight_to_transfer,
+                'credit' =>   0,
+                'related_department_id' =>  $transfer->transfer_from
+            ]);
+            $toDepartmentItemEntery->save();
+            DB::commit();
+            //End of update Department Item
         } catch (\Throwable $th) {
-            DB::rollBack();
+            DB::rollback();
             return response()->json([
                 'status' => 'error',
                 'message' => $th->getMessage(),
-                'code' => 500,
-            ]);
+            ], 500);
         }
-
+        
         session()->put('person_on_charge', $data['person_on_charge']);
 
         return response()->json([

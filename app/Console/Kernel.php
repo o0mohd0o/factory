@@ -17,13 +17,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('departments:dailyreport')->everyMinute()
-            ->onSuccess(function () {
-                \Log::channel('departmentsDailyReports')->info("Successfully excuted departments daily reports.");
-            })
-            ->onFailure(function (Stringable $output) {
-                \Log::channel('departmentsDailyReports')->error($output);
-            });;
+        
     }
 
     /**

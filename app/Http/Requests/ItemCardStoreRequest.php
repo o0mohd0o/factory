@@ -36,6 +36,7 @@ class ItemCardStoreRequest extends FormRequest
             })],
             'name' => 'required',
             'karat' => 'nullable',
+            'shares' => 'nullable',
             'level_num' => 'required|in:1,2,3,4,5',
             'desc_1' => 'nullable|string',
             'desc_2' => 'nullable|string',

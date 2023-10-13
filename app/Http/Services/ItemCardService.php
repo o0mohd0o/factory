@@ -21,7 +21,16 @@ class ItemCardService
             ->latest()->first();
 
 
-        $newItemCode = $lastLevelItem ? ltrim($lastLevelItem->sub_code) + 1 : 1;
+            if ($lastLevelItem) {
+                if (is_numeric($lastLevelItem->sub_code)) {
+                    $newItemCode =  ltrim($lastLevelItem->sub_code) + 1;
+                }else{
+                    $newItemCode =  $lastLevelItem->sub_code;
+                }
+            }else{
+                $newItemCode =1 ;
+            }
+        $newItemCode = $lastLevelItem&&is_numeric($lastLevelItem->sub_code) ? ltrim($lastLevelItem->sub_code) + 1 : 1;
 
         try {
             //Get leading zeros from item card settings
@@ -55,13 +64,12 @@ class ItemCardService
 
     public static function usedBefore(Items $itemCard)
     {
-        if (
-            OpeningBalanceDetails::where('kind', $itemCard->code)->exists() ||
-            Transfer::where('kind', $itemCard->code)->exists() ||
-            DepartmentItem::where('kind', $itemCard->code)->exists()
-        ) {
-            return true;
-        }
+        // if (
+        //     OpeningBalanceDetails::where('kind', $itemCard->code)->exists() ||
+        //     Transfer::where('kind', $itemCard->code)->exists() 
+        // ) {
+        //     return true;
+        // }
 
         return false;
     }

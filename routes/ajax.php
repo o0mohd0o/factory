@@ -25,7 +25,7 @@ Route::post('/departments/{department}/delete', [AjaxDepartmentController::class
 
 //Transfers Routes
 //Fetch department items
-Route::get('/transfers/fetch-department-items', [AjaxTransferController::class, 'fetchDepartmentItems'])->name('transfers.fetchDepartmentItems');
+Route::get('/transfers/fetch-department-items', [AjaxItemCardController::class, 'fetchDepartmentItems'])->name('items.fetchDepartmentItems');
 //Fetch departments
 Route::get('/transfers/fetch-departments', [AjaxTransferController::class, 'fetchDepartments'])->name('transfers.fetchDepartments');
 //Store transfer
@@ -117,7 +117,7 @@ Route::get('/item-cards/fetch-all-items', [AjaxItemCardController::class, 'fetch
 
 
 //Reports
-Route::post('departments/transfer-reports/show', [AjaxReportController::class, 'transferReports'])->name('departments.transferReports.show');
+Route::post('departments/statement/show', [AjaxReportController::class, 'departmentStatement'])->name('reports.departmentStatement.show');
 //department Daily Reports
 Route::post('departments/daily-reports/show', [AjaxReportController::class, 'dailyReports'])->name('departments.dailyReports.show');
 //department Daily Reports in total

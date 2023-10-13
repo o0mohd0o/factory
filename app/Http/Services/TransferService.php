@@ -35,4 +35,18 @@ class TransferService
 
         return $transfer ? $transfer->date : null;
     }
+
+
+    public function saveTransfer($itemID, $departmentID, $transferToDepartmentID, $sharesToTransfer, $weightToTransfer, $personOnCharge, $date) : Transfer {
+        $transfer = Transfer::create([
+            'item_id' => $itemID,
+            'transfer_from' => $departmentID,
+            'transfer_to' => $transferToDepartmentID,
+            'actual_shares' => $sharesToTransfer,
+            'weight_to_transfer' => $weightToTransfer,
+            'person_on_charge' => $personOnCharge,
+            'date' => $date
+        ]);
+        return $transfer;
+    }
 }

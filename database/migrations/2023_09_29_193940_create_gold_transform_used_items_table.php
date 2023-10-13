@@ -16,7 +16,7 @@ class CreateGoldTransformUsedItemsTable extends Migration
         Schema::create('gold_transform_used_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('gold_transform_id')->constrained('gold_transforms');
-            $table->foreignId('department_item_id')->constrained('department_items');
+            $table->foreignId('item_id')->constrained('items');
             $table->double('weight');
             $table->softDeletes();
             $table->timestamps();

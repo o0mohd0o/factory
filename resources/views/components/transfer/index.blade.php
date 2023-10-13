@@ -76,7 +76,7 @@
                                      <td>{{ $transfer->actual_shares }}</td>
                                      <td>{{ $transfer->item_weight_before_transfer }}</td>
                                      <td>{{ $transfer->weight_to_transfer }}</td>
-                                     <td>{{ $transfer->department->name }}</td>
+                                     <td>{{ $transfer->toDepartment->name }}</td>
                                      <td>{{ $transfer->person_on_charge }}</td>
                                      <td></td>
                                      <td>
@@ -88,30 +88,30 @@
                              @endforeach
 
                              <tr>
-                                 <input type="hidden" name="item_id" id="transfered-item-id">
-                                 <input type="hidden" name="transfered_from" id="transfered-item-department-id">
-                                 <input type="hidden" id="transfer_to" data-department={{ $department->id }}
+                                 <input type="hidden" name="item_id">
+                                 <input type="hidden" name="transfer_from" value="{{ $department->id }}">
+                                 <input type="hidden" 
                                      data-field-name="id" class="form-control" name="transfer_to">
                                  <td>-</td>
-                                 <td><input type="text" data-department="{{ $department->id }}" id="kind-code"
+                                 <td><input type="text" data-department="{{ $department->id }}"
                                          data-field-name="kind" class="form-control autocomplete_txt" autofill="off"
                                          autocomplete="off" name="kind"></td>
-                                 <td><input type="text" id="kind-name" data-department="{{ $department->id }}"
+                                 <td><input type="text"  data-department="{{ $department->id }}"
                                          class="form-control autocomplete_txt" autofill="off"
                                          data-field-name="kind_name" autocomplete="off" name="kind_name"></td>
-                                 <td><input type="text" id="kind-karat" data-department="{{ $department->id }}"
+                                 <td><input type="text" data-department="{{ $department->id }}"
                                          class="form-control autocomplete_txt" autofill="off" data-field-name="karat"
                                          autocomplete="off" name="karat"></td>
-                                 <td><input type="text" id="shares" data-department="{{ $department->id }}"
+                                 <td><input type="text" data-department="{{ $department->id }}"
                                          class="form-control autocomplete_txt" autofill="off"
-                                         data-field-name="shares" autocomplete="off" name="shares"></td>
-                                 <td><input type="text" id="itemWeightBeforeTransfer" class="form-control"
+                                         data-field-name="shares" autocomplete="off" name="actual_shares"></td>
+                                 <td><input type="text" class="form-control"
                                          name="item_weight_before_transfer" readonly></td>
                                  <td><input type="text" class="form-control weight-to-transfer"
                                          name="weight_to_transfer" value="0">
                                  </td>
                                  
-                                 <td><input type="text" id="transfer_to_name"
+                                 <td><input type="text" 
                                          data-department={{ $department->id }} data-field-name="name"
                                          class="form-control autocomplete_department" autofill="off"
                                          autocomplete="off" name="transfer_to_name"></td>
@@ -124,7 +124,7 @@
                                  <td></td>
                              </tr>
                              <tr>
-                                 <td colspan="11"></td>
+                                 <td colspan="5"></td>
                                  <td class="bg-success">{{ $outcomingTransfers->sum('weight_to_transfer') }}</td>
                                  <td></td>
                                  <td></td>
@@ -145,10 +145,9 @@
                              <th>{{ __('Document ID') }}</th>
                              <th>{{ __('Kind') }}</th>
                              <th>{{ __('Kind Name') }}</th>
-                             <th>{{ __('Default Karat') }}</th>
+                             <th>{{ __('Karat') }}</th>
                              <th>{{ __('Shares') }}</th>
                              <th>{{ __('Weight') }}</th>
-                             <th>{{ __('From Department ID') }}</th>
                              <th>{{ __('From Department') }}</th>
                              <th>{{ __('Person On Charge') }}</th>
                          </tr>
@@ -157,15 +156,11 @@
                          @foreach ($incomingTransfers as $transfer)
                              <tr>
                                  <td>{{ $transfer->id }}</td>
-                                 <td>{{ $transfer->kind }}</td>
-                                 <td>{{ $transfer->kind_name }}</td>
-                                 <td>{{ $transfer->karat }}</td>
-                                 <td class="text-danger">{{ $transfer->shares_to_transfer }}</td>
+                                 <td>{{ $transfer->item->code }}</td>
+                                 <td>{{ $transfer->item->name }}</td>
+                                 <td>{{ $transfer->item->karat }}</td>
+                                 <td class="text-danger">{{ $transfer->actual_shares }}</td>
                                  <td>{{ $transfer->weight_to_transfer }}</td>
-                                 <td>{{ $transfer->total_loss }}</td>
-                                 <td>{{ $transfer->total_gain }}</td>
-                                 <td>{{ $transfer->net_weight }}</td>
-                                 <td>{{ $transfer->transfer_from }}</td>
                                  <td>{{ $transfer->transfer_from_name }}</td>
                                  <td>{{ $transfer->person_on_charge }}</td>
                              </tr>
@@ -173,9 +168,6 @@
                          <tr>
                              <td colspan="5"></td>
                              <td class="bg-success">{{ $incomingTransfersSum }}</td>
-                             <td class="bg-success">{{ $incomingTransfers->sum('total_loss') }} </td>
-                             <td class="bg-success">{{ $incomingTransfers->sum('total_gain') }}</td>
-                             <td class="bg-success">{{ $incomingTransfers->sum('net_weight') }}</td>
                              <td></td>
                              <td></td>
                              <td></td>

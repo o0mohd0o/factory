@@ -19,7 +19,7 @@ class CreateItemsTable extends Migration
             $table->string('sub_code');
             $table->decimal('fare',8,2)->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->unsignedBigInteger('parent_code')->nullable();
+            $table->string('parent_code')->nullable();
             // $table->unsignedBigInteger('parent_2_id')->nullable();
             // $table->unsignedBigInteger('parent_3_id')->nullable();
             // $table->unsignedBigInteger('parent_4_id')->nullable();

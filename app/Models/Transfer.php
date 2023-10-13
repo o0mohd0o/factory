@@ -48,4 +48,21 @@ class Transfer extends Model
     {
         return $this->belongsTo(Department::class, 'transfer_to', 'id');
     }
+    /**
+     * Get the item that  the Transfer goes to
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function item()
+    {
+        return $this->belongsTo(Items::class, 'item_id', 'id');
+    }
+
+     /**
+     * Get the item Daily Journal
+     */
+    public function itemDailyJournal()
+    {
+        return $this->morphOne(ItemDailyJournal::class, 'doc');
+    }
 }

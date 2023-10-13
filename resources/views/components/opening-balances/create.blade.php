@@ -1,6 +1,5 @@
 <h1 class="text-center bg-white rounded py-1">{{ __('Opening Balance') }}</h1>
 
-
 <div class="form-background">
     <h2 class="text-center bg-success text-white mb-2">{{ __('Create') }}</h2>
     <form id="opening-balance-form" action="{{ route('ajax.openingBalances.store') }}" autocomplete="off"
@@ -64,6 +63,7 @@
                     <th>{{ __('Shares') }}</th>
                     <th>{{ __('Unit') }}</th>
                     <th>{{ __('QTY') }}</th>
+                    <th>{{ __('Weight') }}</th>
                     <th>{{ __('Salary') }}</th>
                     <th>{{ __('Total Cost') }}</th>
                     <th class="table-borderless"></th>
@@ -71,6 +71,7 @@
             </thead>
             <tbody>
                 <tr class="addrow">
+                    <input type="hidden" name="item_id[]">
                     <td><input type="text" id="kind-1" data-field-name="code"
                             class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"></td>
                     <td><input type="text" id="kind-name-1" data-field-name="name"
@@ -80,16 +81,19 @@
                             class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="karat[]">
                     </td>
                     <td><input type="text" id="shares-1" data-field-name="shares"
-                            class="form-control " autofill="off"  name="shares[]">
+                            class="form-control " autofill="off"  name="actual_shares[]">
                     </td>
                     <td>
-                        <select class="form-control" name="unit[]" id="unit-1">
+                        <select class="form-control unit" name="unit[]" id="unit-1">
                             <option value="gram"> جرام</option>
                             <option value="kilogram">كيلو جرام</option>
                             <option value="ounce">أونصة </option>
                         </select>
                     </td>
                     <td><input type="text" class="form-control quantity" id="quantity-1" name="quantity[]"
+                            value="1">
+                    </td>
+                    <td><input type="text" class="form-control weight" id="weight-1" name="weight[]"
                             value="1">
                     </td>
                     <td><input type="text" class="form-control salary" id="salary-1" name="salary[]" value="0">

@@ -80,17 +80,17 @@
                     <tr class="addrow">
                         <td><input type="text" id="kind-{{ $loop->index }}" data-field-name="code"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"
-                                value="{{ $details->kind }}"></td>
+                                value="{{ $details->item->code }}"></td>
                         <td><input type="text" id="kind-name-{{ $loop->index }}" data-field-name="name"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off"
-                                name="kind_name[]" value="{{ $details->kind_name }}">
+                                name="kind_name[]" value="{{ $details->item->name }}">
                         </td>
                         <td><input type="text" id="kind-karat-{{ $loop->index }}" data-field-name="karat"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="karat[]"
-                                value="{{ $details->karat }}">
+                                value="{{ $details->item->karat }}">
                         </td>
                         <td><input type="text" id="shares-1" data-field-name="shares" class="form-control "
-                                autofill="off" name="shares[]" value="{{ $details->shares }}">
+                                autofill="off" name="shares[]" value="{{ $details->actual_shares }}">
                         </td>
                         <td>
                             <select class="form-control" name="unit[]" id="unit-{{ $loop->index }}">
@@ -102,6 +102,9 @@
                         </td>
                         <td><input type="text" class="form-control quantity" id="quantity-{{ $loop->index }}"
                                 name="quantity[]" value="{{ $details->quantity }}">
+                        </td>
+                        <td><input type="text" class="form-control weight" id="weight-{{ $loop->index }}"
+                                name="weight[]" value="{{ $details->weight }}">
                         </td>
                         <td><input type="text" class="form-control salary" id="salary-{{ $loop->index }}"
                                 name="salary[]" value="{{ $details->salary }}"></td>

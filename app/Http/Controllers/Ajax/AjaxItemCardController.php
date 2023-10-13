@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemCardStoreRequest;
 use App\Http\Requests\ItemCardUpdateRequest;
 use App\Http\Services\ItemCardService;
+use App\Http\Services\ItemDailyJournalService;
 use App\Models\Items;
 use DB;
 use Illuminate\Http\Request;
@@ -181,6 +182,13 @@ class AjaxItemCardController extends Controller
             'levelNum' => $itemCard->level_num,
             'parentId' => $itemCard->parent_id,
         ]);
+    }
+
+    public function fetchDepartmentItems(Request $request)
+    {
+        $items = (new ItemDailyJournalService())->getDepartmentItems($request->department_id, $request->field_name, $request->value);
+
+        return $items;
     }
 
     public function fetchItemCards(Request $request)

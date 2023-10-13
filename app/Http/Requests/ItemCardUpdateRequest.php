@@ -27,6 +27,7 @@ class ItemCardUpdateRequest extends FormRequest
             'fare' => 'nullable|numeric',
             'name' => 'required',
             'karat' => 'nullable',
+            'shares' => 'nullable',
             'desc_1' => 'nullable|string',
             'desc_2' => 'nullable|string',
             'desc_3' => 'nullable|string',
