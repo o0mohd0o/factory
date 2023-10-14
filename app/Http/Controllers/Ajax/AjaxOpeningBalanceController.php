@@ -6,6 +6,7 @@ use App\Events\OpeningBalanceCreateEvent;
 use App\Events\OpeningBalanceDeleteEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOpeningBalanceRequest;
+use App\Http\Services\GeneralService;
 use App\Http\Services\ItemDailyJournalService;
 use App\Http\Traits\OpeningBalanceTrait;
 use App\Http\Traits\WeightTrait;
@@ -32,7 +33,7 @@ class AjaxOpeningBalanceController extends Controller
     {
         try {
             $openingBalance = OpeningBalance::with(['details.item'])
-                ->when($request->department_id, function ($query) use($request) {
+                ->when($request->department_id, function ($query) use ($request) {
                     return $query->where('department_id', $request->department_id);
                 })
                 ->when($request->ordering == 'last', function ($query) {
@@ -87,18 +88,14 @@ class AjaxOpeningBalanceController extends Controller
 
 
             $dataDetails = [];
-            
+
             //End of remove duplicate kinds from input to use it to sum its weights
             //Loop through the input using the count of kinds
-            for ($i = 0; $i < count($data['item_id']); $i++) {
-                $dataDetails[$i]['item_id'] = $data['item_id'][$i];
-                $dataDetails[$i]['actual_shares'] = $data['actual_shares'][$i];
-                $dataDetails[$i]['unit'] = $data['unit'][$i];
-                $dataDetails[$i]['quantity'] = $data['quantity'][$i];
-                $dataDetails[$i]['salary'] = $data['salary'][$i];
-                $dataDetails[$i]['total_cost'] = $data['total_cost'][$i];
-                $dataDetails[$i]['weight'] = $data['weight'][$i];
-            }
+            $dataDetails = (new GeneralService())->prepareTableDateToUse(
+                $data,
+                ['item_id','actual_shares','unit','quantity','salary','total_cost','weight'],
+                count($data['item_id'])
+            );
 
             $openingBalance = $department->openingBalances()->create($data);
             $openingBalanceDetails = $openingBalance->details()->createMany($dataDetails);
@@ -148,33 +145,38 @@ class AjaxOpeningBalanceController extends Controller
 
     public function update(StoreOpeningBalanceRequest $request, OpeningBalance $openingBalance)
     {
-        $openingBalance->load(['department', 'details']);
+        $openingBalance->load(['department', 'details.item']);
 
         //Check if the opening balance used before
         //If it is used before we can not edit or delete it.
-        $openingBalanceMovementReport = $this->checkIfTheOpeningBalanceUsed($openingBalance);
-        if ($openingBalanceMovementReport['used']) {
-            return response()->json([
-                'status' => 'error',
-                'message' => __('Sorry, This opening balance has been used.You can not edit or delete it.')
-            ], 404);
-        }
-
+        $data = $request->validated();
+        
 
         try {
             DB::beginTransaction();
             //Delete opening balance and their details
+            $dataDetails = (new GeneralService())->prepareTableDateToUse(
+                $data,
+                ['item_id','actual_shares','unit','quantity','salary','total_cost','weight'],
+                count($data['item_id'])
+            );
+            $openingBalance->update($data);
             $openingBalance->details()->delete();
-            $openingBalance->delete();
-
-            //Remove the opening balance credits
-            foreach ($openingBalanceMovementReport['items'] as $item) {
-                $item['kind']->previous_weight = $item['kind']->current_weight;
-                $item['kind']->current_weight -= $item['removedWeight'];
-                $item['kind']->save();
-                //Fire opening balance delete event
-                OpeningBalanceDeleteEvent::dispatch($item['kind'], 'edit', $item['removedWeight'], $openingBalance->id, $openingBalance->department);
+            $openingBalanceDetails = $openingBalance->details()->createMany($dataDetails);
+            foreach ($openingBalanceDetails as $openingBalanceDetail) {
+                $this->itemDailyJournalService->createEntery(
+                    $openingBalance->date,
+                    $openingBalanceDetail->item_id,
+                    $openingBalance->department->id,
+                    $openingBalanceDetail->id,
+                    get_class($openingBalanceDetail),
+                    debit: $openingBalanceDetail->weight,
+                    credit: 0,
+                    actual_shares: $openingBalanceDetail->actual_shares,
+                );
             }
+
+            
 
             //Call store function and passing nesseccary arguments to it.
             $this->store($request, $openingBalance->department);

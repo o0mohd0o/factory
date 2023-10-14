@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 
 class AjaxOfficeTransferController extends Controller
 {
-    use WeightTrait, OpeningBalanceTrait;
+    use WeightTrait;
 
     public function index(Request $request)
     {

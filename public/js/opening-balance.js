@@ -66,7 +66,7 @@ $(document).ready(function () {
                 .val(totalCost);
             let unitTimesQuantity = 0;
             switch (
-                $(this).closest("tr").find("td>input[name='unit[]']").val()
+                $(this).closest("tr").find("td>select[name='unit[]']").val()
             ) {
                 case "gram":
                     unitTimesQuantity = $(this)
@@ -95,6 +95,7 @@ $(document).ready(function () {
                         .val();
                     break;
             }
+
             $(this)
                 .closest("tr")
                 .find("td>input[name='weight[]']")

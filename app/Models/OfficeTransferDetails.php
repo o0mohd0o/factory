@@ -12,18 +12,18 @@ class OfficeTransferDetails extends Model
 
     protected $table = 'office_transfers_details';
 
+    
     protected $fillable = [
-        'kind',
-        'kind_name',
-        'karat',
-        'shares',
+        'item_id',
+        'actual_shares',
         'unit',
         'quantity',
+        'weight',
         'total_cost',
         'salary',
-        'office_transfer_id ',
+        'office_transfer_id',
     ];
-
+   
     /**
      * Get the openingBalance that owns the OpeningBalanceDetails
      *
@@ -33,4 +33,15 @@ class OfficeTransferDetails extends Model
     {
         return $this->belongsTo(OfficeTransfer::class, 'office_transfer_id', 'id');
     }
+
+       /**
+     * Get the item that  the Transfer goes to
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function item()
+    {
+        return $this->belongsTo(Items::class, 'item_id', 'id');
+    }
+
 }

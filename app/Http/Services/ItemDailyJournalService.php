@@ -80,4 +80,17 @@ class ItemDailyJournalService
         ]);
         return $entry;
     }
+
+    public function canDeleteDoc($itemId, $departmentId, $actualShares, $weightToDelete) : bool {
+        DB::statement("SET SQL_MODE=''");
+        return ItemDailyJournal::query()
+            ->select(
+                'id',
+                DB::raw("sum(debit)-sum(credit) as current_weight"),
+            )
+            ->department($departmentId)
+            ->where('item_id', $itemId)
+            ->where('actual_shares', $actualShares)
+            ->value('current_weight') >= $weightToDelete;
+    }
 }
