@@ -63,11 +63,11 @@ class AjaxGoldTransformController extends Controller
 
     public function create()
     {
-        $lastId = DB::table('gold_transforms')->max('id');
+        $newBondNum = DB::table('gold_transforms')->max('id');
 
         return response()->json([
             view('components.gold-transform.create', [
-                'lastId' => $lastId + 1 ?? '1',
+                'newBondNum' => $newBondNum,
             ])->render()
         ]);
     }
@@ -95,11 +95,11 @@ class AjaxGoldTransformController extends Controller
             'usedItems.departmentItem',
             'goldLoss',
         ]);
-        $lastId = DB::table('gold_transforms')->max('id');
+        $newBondNum = DB::table('gold_transforms')->max('id');
         return response()->json([
             view('components.gold-transform.edit', [
                 'goldTransform' => $goldTransform,
-                'lastId' => $lastId + 1,
+                'newBondNum' => $newBondNum + 1,
             ])->render()
         ]);
     }

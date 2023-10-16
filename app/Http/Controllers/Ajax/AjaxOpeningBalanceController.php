@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Actions\GenerateNewBondNumAction;
 use App\Events\OpeningBalanceCreateEvent;
 use App\Events\OpeningBalanceDeleteEvent;
 use App\Http\Controllers\Controller;
@@ -23,11 +24,14 @@ class AjaxOpeningBalanceController extends Controller
 {
     use WeightTrait, OpeningBalanceTrait;
 
-    protected $itemDailyJournalService;
 
-    public function __construct(ItemDailyJournalService $itemDailyJournalService)
+    protected $itemDailyJournalService;
+    public $generateNewBondAction;
+
+    public function __construct(GenerateNewBondNumAction $generateNewBondAction, ItemDailyJournalService $itemDailyJournalService)
     {
         $this->itemDailyJournalService = $itemDailyJournalService;
+        $this->generateNewBondAction = $generateNewBondAction;
     }
     public function index(Request $request)
     {
@@ -67,11 +71,11 @@ class AjaxOpeningBalanceController extends Controller
 
     public function create()
     {
-        $lastId = DB::table('opening_balances')->max('id');
+        $newBondNum = $this->generateNewBondAction->generateNewBondNum((new OpeningBalance())->getTable());
 
         return response()->json([
             view('components.opening-balances.create', [
-                'lastId' => $lastId + 1 ?? '1',
+                'newBondNum' => $newBondNum,
             ])->render()
         ]);
     }
@@ -93,7 +97,7 @@ class AjaxOpeningBalanceController extends Controller
             //Loop through the input using the count of kinds
             $dataDetails = (new GeneralService())->prepareTableDateToUse(
                 $data,
-                ['item_id','actual_shares','unit','quantity','salary','total_cost','weight'],
+                ['item_id', 'actual_shares', 'unit', 'quantity', 'salary', 'total_cost', 'weight'],
                 count($data['item_id'])
             );
 
@@ -133,12 +137,12 @@ class AjaxOpeningBalanceController extends Controller
     public function edit(OpeningBalance $openingBalance)
     {
         $openingBalance->load(['department', 'details.item']);
-        $lastId = DB::table('opening_balances')->max('id');
+        $newBondNum = DB::table('opening_balances')->max('id');
         return response()->json([
             view('components.opening-balances.edit', [
                 'openingBalance' => $openingBalance,
                 'department' => $openingBalance->department,
-                'lastId' => $lastId + 1,
+                'newBondNum' => $newBondNum + 1,
             ])->render()
         ]);
     }
@@ -150,14 +154,14 @@ class AjaxOpeningBalanceController extends Controller
         //Check if the opening balance used before
         //If it is used before we can not edit or delete it.
         $data = $request->validated();
-        
+
 
         try {
             DB::beginTransaction();
             //Delete opening balance and their details
             $dataDetails = (new GeneralService())->prepareTableDateToUse(
                 $data,
-                ['item_id','actual_shares','unit','quantity','salary','total_cost','weight'],
+                ['item_id', 'actual_shares', 'unit', 'quantity', 'salary', 'total_cost', 'weight'],
                 count($data['item_id'])
             );
             $openingBalance->update($data);
@@ -176,7 +180,7 @@ class AjaxOpeningBalanceController extends Controller
                 );
             }
 
-            
+
 
             //Call store function and passing nesseccary arguments to it.
             $this->store($request, $openingBalance->department);

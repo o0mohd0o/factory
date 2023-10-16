@@ -48,10 +48,10 @@ class AjaxQrcodeController extends Controller
 
     public function create()
     {
-        $lastId = DB::table('print_qrcodes')->max('id');
+        $newBondNum = DB::table('print_qrcodes')->max('id');
         return response()->json([
             view('components.qrcodes.create', [
-                'lastId' => $lastId + 1 ?? '1',
+                'newBondNum' => $newBondNum,
             ])->render()
         ]);
     }
@@ -104,11 +104,11 @@ class AjaxQrcodeController extends Controller
     public function edit(PrintQrcode $qrcode)
     {
         $qrcode->load(['details', 'details.item']);
-        $lastId = DB::table('print_qrcodes')->max('id');
+        $newBondNum = DB::table('print_qrcodes')->max('id');
         return response()->json([
             view('components.qrcodes.edit', [
                 'qrcode' => $qrcode,
-                'lastId' => $lastId + 1,
+                'newBondNum' => $newBondNum + 1,
             ])->render()
         ]);
     }

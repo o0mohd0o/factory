@@ -60,11 +60,11 @@ class AjaxOfficeTransferController extends Controller
 
     public function create()
     {
-        $lastId = DB::table('office_transfers')->max('id');
+        $newBondNum = DB::table('office_transfers')->max('id');
 
         return response()->json([
             view('components.office-transfers.create', [
-                'lastId' => $lastId + 1 ?? '1',
+                'newBondNum' => $newBondNum,
             ])->render()
         ]);
     }
@@ -154,12 +154,12 @@ class AjaxOfficeTransferController extends Controller
     public function edit(OfficeTransfer $officeTransfer)
     {
         $officeTransfer->load(['department', 'details']);
-        $lastId = DB::table('office_transfers')->max('id');
+        $newBondNum = DB::table('office_transfers')->max('id');
         return response()->json([
             view('components.office-transfers.edit', [
                 'officeTransfer' => $officeTransfer,
                 'department' => $officeTransfer->department,
-                'lastId' => $lastId + 1,
+                'newBondNum' => $newBondNum + 1,
             ])->render()
         ]);
     }

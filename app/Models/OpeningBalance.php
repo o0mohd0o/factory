@@ -12,6 +12,7 @@ class OpeningBalance extends Model
     use HasFactory, Userstamps;
 
     protected $fillable = [
+        'bond_num',
         'date',
         'inventory_record_date',
         'person_on_charge',

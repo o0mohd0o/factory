@@ -9,7 +9,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="value">{{ __('Document ID') }}</label>
-                    <input type="text" value="{{ $lastId }}" class="form-control" readonly>
+                    <input type="text" value="{{ $newBondNum }}" class="form-control" readonly>
                 </div>
             </div>
             <div class="col-sm-3">
