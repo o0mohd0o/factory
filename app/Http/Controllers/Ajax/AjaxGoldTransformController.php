@@ -19,11 +19,18 @@ use Illuminate\Support\Facades\DB;
 
 class AjaxGoldTransformController extends Controller
 {
+
+    
+    protected $itemDailyJournalService;
+    public $generateNewBondAction;
     public $goldTransformService;
 
-    public function __construct(GoldTransformService $goldTransformService)
+    public function __construct(GoldTransformService $goldTransformService,GenerateNewBondNumAction $generateNewBondAction, ItemDailyJournalService $itemDailyJournalService)
     {
+        $this->itemDailyJournalService = $itemDailyJournalService;
+        $this->generateNewBondAction = $generateNewBondAction;
         $this->goldTransformService = $goldTransformService;
+
     }
 
     public function index(Request $request)
@@ -63,7 +70,7 @@ class AjaxGoldTransformController extends Controller
 
     public function create()
     {
-        $newBondNum = DB::table('gold_transforms')->max('id');
+        $newBondNum = $this->generateNewBondAction->generateNewBondNum((new GoldTransform())->getTable());
 
         return response()->json([
             view('components.gold-transform.create', [
@@ -95,11 +102,9 @@ class AjaxGoldTransformController extends Controller
             'usedItems.departmentItem',
             'goldLoss',
         ]);
-        $newBondNum = DB::table('gold_transforms')->max('id');
         return response()->json([
             view('components.gold-transform.edit', [
                 'goldTransform' => $goldTransform,
-                'newBondNum' => $newBondNum + 1,
             ])->render()
         ]);
     }

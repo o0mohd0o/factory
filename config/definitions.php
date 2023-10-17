@@ -2,7 +2,7 @@
 
 return [
     "doctypes" => [
-        'App\Models\OpeningBalanceDetails' => "Opening Balance",
+        'App\Models\OpeningBalance' => "Opening Balance",
         'App\Models\Transfer' => "Transfer",
     ]
 ];

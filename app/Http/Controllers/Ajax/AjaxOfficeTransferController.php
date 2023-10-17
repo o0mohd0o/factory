@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Actions\GenerateNewBondNumAction;
 use App\Events\OfficeTransferCreateEvent;
 use App\Events\OfficeTransferDeleteEvent;
 use App\Http\Controllers\Controller;
@@ -22,6 +23,14 @@ class AjaxOfficeTransferController extends Controller
 {
     use WeightTrait;
 
+    protected $itemDailyJournalService;
+    public $generateNewBondAction;
+
+    public function __construct(GenerateNewBondNumAction $generateNewBondAction, ItemDailyJournalService $itemDailyJournalService)
+    {
+        $this->itemDailyJournalService = $itemDailyJournalService;
+        $this->generateNewBondAction = $generateNewBondAction;
+    }
     public function index(Request $request)
     {
         try {
@@ -60,7 +69,7 @@ class AjaxOfficeTransferController extends Controller
 
     public function create()
     {
-        $newBondNum = DB::table('office_transfers')->max('id');
+        $newBondNum = $this->generateNewBondAction->generateNewBondNum((new OfficeTransfer())->getTable());
 
         return response()->json([
             view('components.office-transfers.create', [
@@ -154,12 +163,10 @@ class AjaxOfficeTransferController extends Controller
     public function edit(OfficeTransfer $officeTransfer)
     {
         $officeTransfer->load(['department', 'details']);
-        $newBondNum = DB::table('office_transfers')->max('id');
         return response()->json([
             view('components.office-transfers.edit', [
                 'officeTransfer' => $officeTransfer,
                 'department' => $officeTransfer->department,
-                'newBondNum' => $newBondNum + 1,
             ])->render()
         ]);
     }

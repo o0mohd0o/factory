@@ -137,12 +137,10 @@ class AjaxOpeningBalanceController extends Controller
     public function edit(OpeningBalance $openingBalance)
     {
         $openingBalance->load(['department', 'details.item']);
-        $newBondNum = DB::table('opening_balances')->max('id');
         return response()->json([
             view('components.opening-balances.edit', [
                 'openingBalance' => $openingBalance,
                 'department' => $openingBalance->department,
-                'newBondNum' => $newBondNum + 1,
             ])->render()
         ]);
     }
@@ -180,10 +178,6 @@ class AjaxOpeningBalanceController extends Controller
                     actual_shares: $openingBalanceDetail->actual_shares,
                 );
             }
-
-            //Call store function and passing nesseccary arguments to it.
-            $this->store($request, $openingBalance->department);
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

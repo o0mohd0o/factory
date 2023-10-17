@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Ajax;
 
-
+use App\Actions\GenerateNewBondNumAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QrcodeRequest;
 
@@ -14,6 +14,14 @@ use Illuminate\Http\Request;
 class AjaxQrcodeController extends Controller
 {
 
+    protected $itemDailyJournalService;
+    public $generateNewBondAction;
+
+    public function __construct(GenerateNewBondNumAction $generateNewBondAction, ItemDailyJournalService $itemDailyJournalService)
+    {
+        $this->itemDailyJournalService = $itemDailyJournalService;
+        $this->generateNewBondAction = $generateNewBondAction;
+    }
     public function index(Request $request)
     {
         try {
@@ -48,7 +56,7 @@ class AjaxQrcodeController extends Controller
 
     public function create()
     {
-        $newBondNum = DB::table('print_qrcodes')->max('id');
+        $newBondNum = $this->generateNewBondAction->generateNewBondNum((new OpeningBalance())->getTable());
         return response()->json([
             view('components.qrcodes.create', [
                 'newBondNum' => $newBondNum,
@@ -104,11 +112,9 @@ class AjaxQrcodeController extends Controller
     public function edit(PrintQrcode $qrcode)
     {
         $qrcode->load(['details', 'details.item']);
-        $newBondNum = DB::table('print_qrcodes')->max('id');
         return response()->json([
             view('components.qrcodes.edit', [
                 'qrcode' => $qrcode,
-                'newBondNum' => $newBondNum + 1,
             ])->render()
         ]);
     }

@@ -89,7 +89,7 @@
                     </td>
                     <td>{{ $itemStatement->date }}</td>
 
-                    <td>{{ $itemStatement->doc_id }}</td>
+                    <td>{{ $itemStatement->doc->bond_num }}</td>
                     <td>{{ __(Config::get("definitions.doctypes.{$itemStatement->doc_type}", '')) }}</td>
             @endforeach
             <tr>
