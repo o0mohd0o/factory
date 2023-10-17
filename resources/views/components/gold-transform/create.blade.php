@@ -118,15 +118,15 @@
                             <input type="hidden" name="new_item_id[]">
 
                             <td><input type="text" data-field-name="code" class="form-control new-items-autocomplete"
-                                    autofill="off" autocomplete="off" name="new_item"></td>
+                                    autofill="off" autocomplete="off" name="new_item" required></td>
                             <td><input type="text" class="form-control new-items-autocomplete" autofill="off"
-                                    data-field-name="name" autocomplete="off" name="new_item_name"></td>
+                                    data-field-name="name" autocomplete="off" name="new_item_name" required></td>
 
                             <td><input type="number" min="0" class="form-control" autofill="off"
-                                    name="new_item_karat" autocomplete="off" data-field-name="karat" readonly></td>
+                                    name="new_item_karat" autocomplete="off" data-field-name="karat" readonly required></td>
 
                             <td><input type="number" min="" class="form-control" autofill="off"
-                                    data-field-name="shares" autocomplete="off" name="new_item_shares[]" required>
+                                    data-field-name="shares" autocomplete="off" name="new_item_shares[]" required required>
                             </td>
 
                             <td><input type="number" min="0" step="any" class="form-control"
