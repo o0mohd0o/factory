@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Actions\GenerateNewBondNumAction;
+use App\Http\Services\ItemDailyJournalService;
 use App\Models\Department;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,32 +27,39 @@ class StoreOfficeTransferRequest extends FormRequest
     public function rules()
     {
         return [
-            'department_id' => 'required|exists:departments,id',
-            'date' => 'required|date_format:Y-m-d',
             'type'=>'required|in:to,from',
+            'bond_num' => 'required|unique:office_transfers,bond_num',
+            // 'department_id' => 'required|exists:departments,id',
+            'date' => 'required|date_format:Y-m-d',
             'person_on_charge' => 'required|string',
-            'kind' => 'array|required|min:1',
-            'kind_name' => 'array|required|min:1',
-            'karat' => 'array|required',
-            'karat.*' => 'nullable|string',
-            'shares' => 'array|required',
-            'shares.*' => 'nullable|numeric',
+            'item_id' => 'array|required',
+            'item_id.*' => 'required|exists:items,id',
+            'weight' => 'array|required',
+            'weight.*' => 'required|numeric',
+            'actual_shares' => 'array|required',
+            'actual_shares.*' => 'nullable|numeric',
             'quantity' => 'array|required|min:1',
             'unit' => 'array|required',
-            'kind.*' => 'required|string',
-            'kind_name.*' => 'required|string',
             'quantity.*' => 'required|min:1',
             'unit.*' => 'required|in:gram,kilogram,ounce',
             'salary' => 'array',
             'salary.*' => 'nullable',
             'total_cost' => 'array',
             'total_cost.*' => 'nullable',
+            'weight_to_transfer' => 'required_if:type,to|numeric|lte:' . (new ItemDailyJournalService())->getDepartmentItemCurrentWeight(Department::first()?->id, $this->item_id, $this->actual_shares),
         ];
     }
 
-    function prepareForValidation() {
-         $this->merge([
-            'department_id' => Department::first()->id
+   /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'bond_num' => (new GenerateNewBondNumAction())->generateNewBondNum('office_transfers'),
+            // 'department_id' => Department::first()?->id,
         ]);
-    }
+    } 
 }

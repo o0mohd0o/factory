@@ -33,6 +33,7 @@ class AjaxOpeningBalanceController extends Controller
         $this->itemDailyJournalService = $itemDailyJournalService;
         $this->generateNewBondAction = $generateNewBondAction;
     }
+
     public function index(Request $request)
     {
         try {
@@ -109,7 +110,7 @@ class AjaxOpeningBalanceController extends Controller
                     $openingBalanceDetail->item_id,
                     $department->id,
                     $openingBalance->id,
-                    get_class($openingBalanceDetail),
+                    get_class($openingBalance),
                     debit: $openingBalanceDetail->weight,
                     credit: 0,
                     actual_shares: $openingBalanceDetail->actual_shares,

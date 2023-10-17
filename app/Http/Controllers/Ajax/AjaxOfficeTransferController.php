@@ -7,7 +7,9 @@ use App\Events\OfficeTransferCreateEvent;
 use App\Events\OfficeTransferDeleteEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOfficeTransferRequest;
-use App\Http\Traits\OpeningBalanceTrait;
+use App\Http\Services\GeneralService;
+use App\Http\Services\ItemDailyJournalService;
+use App\Http\Traits\officeTransferTrait;
 use App\Http\Traits\WeightTrait;
 use App\Models\Department;
 use App\Models\DepartmentItem;
@@ -42,10 +44,10 @@ class AjaxOfficeTransferController extends Controller
                     return $query->latest();
                 })
                 ->when($request->ordering == 'next', function ($query) use ($request) {
-                    return $query->where('id', '>', $request->id);
+                    return $query->where('bond_num', '>', $request->bond_num);
                 })
                 ->when($request->ordering == 'previous', function ($query) use ($request) {
-                    return $query->where('id', '<', $request->id)->latest();
+                    return $query->where('bond_num', '<', $request->bond_num)->latest();
                 })
                 ->when(!$request->ordering, function ($query) {
                     return $query->latest();
@@ -81,7 +83,6 @@ class AjaxOfficeTransferController extends Controller
 
     public function store(StoreOfficeTransferRequest $request)
     {
-
         $department = Department::first();
         $data = $request->validated();
 
@@ -94,48 +95,26 @@ class AjaxOfficeTransferController extends Controller
 
             //End of remove duplicate kinds from input to use it to sum its weights
             //Loop through the input using the count of kinds
-            for ($i = 0; $i < count($data['kind']); $i++) {
-                $dataDetails[$i]['kind'] = $data['kind'][$i];
-                $dataDetails[$i]['kind_name'] = $data['kind_name'][$i];
-                $dataDetails[$i]['karat'] = $data['karat'][$i];
-                $dataDetails[$i]['shares'] = $data['shares'][$i];
-                $dataDetails[$i]['unit'] = $data['unit'][$i];
-                $dataDetails[$i]['quantity'] = $data['quantity'][$i];
-                $dataDetails[$i]['salary'] = $data['salary'][$i];
-                $dataDetails[$i]['total_cost'] = $data['total_cost'][$i];
-                $dataDetails[$i]['weight'] = $this->unitToGram($data['unit'][$i], $dataDetails[$i]['quantity']);
-            }
+            $dataDetails = (new GeneralService())->prepareTableDateToUse(
+                $data,
+                ['item_id', 'actual_shares', 'unit', 'quantity', 'salary', 'total_cost', 'weight'],
+                count($data['item_id'])
+            );
 
-            for ($i = 0; $i < count($data['kind']); $i++) {
-                try {
-                    $item = $department->items()->where('kind', $dataDetails[$i]['kind'])
-                        ->where('shares', $dataDetails[$i]['shares'])
-                        ->firstOrFail();
+            $officeTransfer = $department->officeTransfers()->create($data);
+            $officeTransferDetails = $officeTransfer->details()->createMany($dataDetails);
 
-                    if ($request->type == 'to' && $item->current_weight < $dataDetails[$i]['weight']) {
-                        throw new Exception(__("Insuficient Balance"), 403);
-                    }
-
-                    $item->update([
-                        'previous_weight' => $item->current_weight,
-                        'current_weight' => $request->type == 'from' ? $item->current_weight + $dataDetails[$i]['weight'] : $item->current_weight - $dataDetails[$i]['weight'],
-                    ]);
-                } catch (ModelNotFoundException $e) {
-                    if ($request->type == 'from') {
-                        $item = $department->items()->create([
-                            'kind' => $dataDetails[$i]['kind'],
-                            'shares' => $dataDetails[$i]['shares'],
-                            'karat' => $dataDetails[$i]['karat'],
-                            'kind_name' => $dataDetails[$i]['kind_name'],
-                            'previous_weight' => 0,
-                            'current_weight' =>  $dataDetails[$i]['weight'],
-                        ]);
-                    }else{
-                        throw new Exception(__("Insuficient Balance"), 403);
-                    }
-                }
-                //Fire office transfer create event
-                OfficeTransferCreateEvent::dispatch($item, 'create', $dataDetails[$i]['weight'], $officeTransfer->id, $department, $request->type);
+            foreach ($officeTransferDetails as $officeTransferDetail) {
+                $this->itemDailyJournalService->createEntery(
+                    $officeTransfer->date,
+                    $officeTransferDetail->item_id,
+                    $department->id,
+                    $officeTransfer->id,
+                    get_class($officeTransfer),
+                    debit:  $officeTransferDetail->weight,
+                    credit: 0,
+                    actual_shares: $officeTransferDetail->actual_shares,
+                );
             }
 
 
@@ -177,7 +156,7 @@ class AjaxOfficeTransferController extends Controller
 
         //Check if the office transfer used before
         //If it is used before we can not edit or delete it.
-        $officeTransferMovementReport = $this->checkIfTheOpeningBalanceUsed($officeTransfer);
+        $officeTransferMovementReport = $this->checkIfTheofficeTransferUsed($officeTransfer);
         if ($officeTransferMovementReport['used'] && $officeTransfer->type == 'from') {
             return response()->json([
                 'status' => 'error',
@@ -226,7 +205,7 @@ class AjaxOfficeTransferController extends Controller
 
         //Check if the office transfer used before
         //If it is used before we can not edit or delete it.
-        $officeTransferMovementReport = $this->checkIfTheOpeningBalanceUsed($officeTransfer, weightStrict:false);
+        $officeTransferMovementReport = $this->checkIfTheofficeTransferUsed($officeTransfer, weightStrict:false);
         if ($officeTransferMovementReport['used']&& $officeTransfer->type == 'from') {
             return response()->json([
                 'status' => 'error',

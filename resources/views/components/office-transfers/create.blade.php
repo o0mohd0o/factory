@@ -49,6 +49,7 @@
                     <th>{{ __('Shares') }}</th>
                     <th>{{ __('Unit') }}</th>
                     <th>{{ __('QTY') }}</th>
+                    <th>{{ __('Weight') }}</th>
                     <th>{{ __('Salary') }}</th>
                     <th>{{ __('Total Cost') }}</th>
                     <th class="table-borderless"></th>
@@ -56,6 +57,7 @@
             </thead>
             <tbody>
                 <tr class="addrow">
+                    <input type="hidden" name="item_id[]">
                     <td><input type="text" id="kind-1" data-field-name="code"
                             class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"></td>
                     <td><input type="text" id="kind-name-1" data-field-name="name"
@@ -65,10 +67,10 @@
                             class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="karat[]">
                     </td>
                     <td><input type="text" id="shares-1" data-field-name="shares" class="form-control "
-                            autofill="off" name="shares[]">
+                            autofill="off" name="actual_shares[]">
                     </td>
                     <td>
-                        <select class="form-control" name="unit[]" id="unit-1">
+                        <select class="form-control unit" name="unit[]" id="unit-1">
                             <option value="gram"> جرام</option>
                             <option value="kilogram">كيلو جرام</option>
                             <option value="ounce">أونصة </option>
@@ -77,10 +79,10 @@
                     <td><input type="text" class="form-control quantity" id="quantity-1" name="quantity[]"
                             value="1">
                     </td>
+                    <td><input type="text" class="form-control weight" id="weight-1" name="weight[]" value="1">
+                    </td>
                     <td><input type="text" class="form-control salary" id="salary-1" name="salary[]" value="0">
                     </td>
-                    <td><input type="text" class="form-control total-cost" id="total-cost-1" name="total_cost[]"
-                            value="0" readonly></td>
                     <td><input type="text" class="form-control total-cost" id="total-cost-1" name="total_cost[]"
                             value="0" readonly></td>
                     <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
@@ -104,6 +106,27 @@
 <script src="{{ asset('js/office-transfer.js') }}"></script>
 <script>
     $(document).ready(function() {
+
+        $(".office-transfer-autocomplete-table")
+            .off()
+            .on("keydown", "input", function(e) {
+                if ($(this).attr('type') != 'submit') {
+                    if (e.which == 40 || e.which == 13) {
+                        if (e.which == 13) {
+                            $(this).closest('td').next().find('input, button, select').focus();
+                            $(this).closest('td').next().find('input').select();
+                            e.preventDefault();
+                        }
+                    }
+                }
+
+            });
+
+        $(".office-transfer-autocomplete-table")
+            .on("click", "input", function(e) {
+                $(this).select();
+            });
+
         $('#office-transfer-form').on('submit', function(e) {
             e.preventDefault();
             let url = $(this).attr('action');

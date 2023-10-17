@@ -7,6 +7,7 @@ $(document).ready(function () {
 
     var basePath;
     basePath = $("#base_path").val();
+
     $("#office-transfer-autocomplete-table").on(
         "click",
         "tbody > tr > td > a.add-row",
@@ -15,9 +16,9 @@ $(document).ready(function () {
             let tr = $(this).closest("tr");
             var clone = tr.clone();
             let actionTdCell = `<a href="#" class="add-row m-1">
-    <i class="fas fa-plus-square fs-2" style="color: green;"></i>
-</a>
-<a href="#" class="remove-row m-1"><i class="fas fa-window-close text-danger fs-2"></i></a>`;
+        <i class="fas fa-plus-square fs-2" style="color: green;"></i>
+    </a>
+    <a href="#" class="remove-row m-1"><i class="fas fa-window-close text-danger fs-2"></i></a>`;
             clone.find(":last-child").html(actionTdCell);
             clone.find("input:not(.new-item-qty)").val("");
             tr.after(clone);
@@ -42,17 +43,66 @@ $(document).ready(function () {
         return idArr[idArr.length - 1];
     }
 
+    function getCurrentElement(element) {
+        var id, idArr;
+        id = element.attr("id");
+        idArr = id.split("-");
+        return idArr[0];
+    }
+
     $("#office-transfer-autocomplete-table").on(
         "change",
-        ".salary, .quantity",
+        ".salary, .quantity, .unit",
         function () {
             let totalCost =
-            $(this).closest("tr").find("td>input[name='quantity[]']").val() * $(this).closest("tr").find("td>input[name='salary[]']").val();
-            $(this).closest("tr").find("td>input[name='total_cost[]']").val(totalCost);
-       }
+                $(this)
+                    .closest("tr")
+                    .find("td>input[name='quantity[]']")
+                    .val() *
+                $(this).closest("tr").find("td>input[name='salary[]']").val();
+            $(this)
+                .closest("tr")
+                .find("td>input[name='total_cost[]']")
+                .val(totalCost);
+            let unitTimesQuantity = 0;
+            switch (
+                $(this).closest("tr").find("td>select[name='unit[]']").val()
+            ) {
+                case "gram":
+                    unitTimesQuantity = $(this)
+                        .closest("tr")
+                        .find("td>input[name='weight[]']")
+                        .val();
+                    break;
+                case "kilogram":
+                    unitTimesQuantity =
+                        $(this)
+                            .closest("tr")
+                            .find("td>input[name='quantity[]']")
+                            .val() * 1000;
+                    break;
+                case "ounce":
+                    unitTimesQuantity =
+                        $(this)
+                            .closest("tr")
+                            .find("td>input[name='quantity[]']")
+                            .val() * 31.1;
+                    break;
+                default:
+                    unitTimesQuantity = $(this)
+                        .closest("tr")
+                        .find("td>input[name='weight[]']")
+                        .val();
+                    break;
+            }
+
+            $(this)
+                .closest("tr")
+                .find("td>input[name='weight[]']")
+                .val(unitTimesQuantity);
+        }
     );
 
-    
     function handleAutocomplete() {
         var fieldName, currentEle;
         currentEle = $(this);
@@ -121,10 +171,26 @@ $(document).ready(function () {
                     var rowNo, data;
                     rowNo = getId(currentEle);
                     data = selectedData.item.data;
-                    $(this).closest("tr").find("td>input[name='kind[]']").val(data.code);
-                    $(this).closest("tr").find("td>input[name='kind_name[]']").val(data.name);
-                    $(this).closest("tr").find("td>input[name='karat[]']").val(data.karat);
-                    $(this).closest("tr").find("td>input[name='shares[]']").val(data.karat);
+                    $(this)
+                        .closest("tr")
+                        .find("input[name='item_id[]']")
+                        .val(data.id);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='kind[]']")
+                        .val(data.code);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='kind_name[]']")
+                        .val(data.name);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='karat[]']")
+                        .val(data.karat);
+                    $(this)
+                        .closest("tr")
+                        .find("td>input[name='actual_shares[]']")
+                        .val(data.shares);
                 }
             },
         });
@@ -132,16 +198,13 @@ $(document).ready(function () {
 
     // Add New row
     function registerEvents() {
-        $("body")
-            .off()
-            .on("keydown", ".addrow", function (e) {
-                if (e.keyCode == 40 || e.keyCode == 13) {
-                    if (e.keyCode == 13) {
-                        e.preventDefault();
-                    }
-                    addNewRow();
-                }
-            });
+        $(".office-transfer-autocomplete-table").on(
+            "click",
+            "input",
+            function (e) {
+                $(this).select();
+            }
+        );
         $(document).on("focus", ".autocomplete_txt", handleAutocomplete);
         // $(document).on('focus','.autocomplete_department', handleDeptTo);
     }

@@ -116,6 +116,26 @@
 <script src="{{ asset('js/office-transfer.js') }}"></script>
 <script>
     $(document).ready(function() {
+        $(".office-transfer-autocomplete-table")
+            .off()
+            .on("keydown", "input", function(e) {
+                if ($(this).attr('type') != 'submit') {
+                    if (e.which == 40 || e.which == 13) {
+                        if (e.which == 13) {
+                            $(this).closest('td').next().find('input, button, select').focus();
+                            $(this).closest('td').next().find('input').select();
+                            e.preventDefault();
+                        }
+                    }
+                }
+
+            });
+
+        $(".office-transfer-autocomplete-table")
+            .on("click", "input", function(e) {
+                $(this).select();
+            });
+
         $('#office-transfer-form').on('submit', function(e) {
             e.preventDefault();
             let url = $(this).attr('action');

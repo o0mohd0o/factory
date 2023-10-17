@@ -4,9 +4,9 @@
 
 <div class="row p-1" style="direction: rtl;">
     <div class="col-2">
-        <button class="office-transfer-navigator" data-id="{{ $officeTransfer->id }}" data-ordering="first"> <i
+        <button class="office-transfer-navigator" data-bond-num="{{ $officeTransfer->bond_num }}" data-ordering="first"> <i
                 class="fas fa-step-forward"></i> </button>
-        <button class="office-transfer-navigator" data-id="{{ $officeTransfer->id }}" data-ordering="previous"> <i
+        <button class="office-transfer-navigator" data-bond-num="{{ $officeTransfer->bond_num }}" data-ordering="previous"> <i
                 class="fas fa-arrow-right"></i> </button>
     </div>
 
@@ -14,9 +14,9 @@
     <div class="col-8"></div>
 
     <div class="col-2" style="direction: ltr;">
-        <button class="office-transfer-navigator" data-id="{{ $officeTransfer->id }}" data-ordering="last"> <i
+        <button class="office-transfer-navigator" data-bond-num="{{ $officeTransfer->bond_num }}" data-ordering="last"> <i
                 class="fas fa-step-backward"></i> </button>
-        <button class="office-transfer-navigator" data-id="{{ $officeTransfer->id }}" data-ordering="next"> <i
+        <button class="office-transfer-navigator" data-bond-num="{{ $officeTransfer->bond_num }}" data-ordering="next"> <i
                 class="fas fa-arrow-left"></i> </button>
     </div>
 
@@ -131,11 +131,11 @@
 
         $('.office-transfer-navigator').on('click', function(e) {
             e.preventDefault();
-            let id = $(this).data('id');
+            let bond_num = $(this).data('bond-num');
             let ordering = $(this).data('ordering');
             axios.get("{{ route('ajax.officeTransfers.index') }}", {
                 params: {
-                    id: id,
+                    bond_num: bond_num,
                     ordering: ordering,
                 }
             }).then((response) => {
