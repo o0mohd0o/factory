@@ -26,7 +26,7 @@
             <div class="col-sm-1">
                 <div class="form-group">
                     <label for="value">{{ __('Document ID') }}</label>
-                    <input type="text" value="{{ $goldTransform->id }}" class="form-control" readonly>
+                    <input type="text" value="{{ $goldTransform->bond_num }}" class="form-control" readonly>
                 </div>
             </div>
             <div class="col-sm-2">

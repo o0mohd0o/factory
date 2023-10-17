@@ -69,7 +69,7 @@
                          <tbody class="fs-5">
                              @foreach ($outcomingTransfers as $transfer)
                                  <tr>
-                                     <td>{{ $transfer->id }}</td>
+                                     <td>{{ $transfer->bond_num }}</td>
                                      <td>{{ $transfer->item->code }}</td>
                                      <td>{{ $transfer->item->name }}</td>
                                      <td>{{ $transfer->item->karat }}</td>
@@ -155,7 +155,7 @@
                      <tbody class="fs-4">
                          @foreach ($incomingTransfers as $transfer)
                              <tr>
-                                 <td>{{ $transfer->id }}</td>
+                                 <td>{{ $transfer->bond_num }}</td>
                                  <td>{{ $transfer->item->code }}</td>
                                  <td>{{ $transfer->item->name }}</td>
                                  <td>{{ $transfer->item->karat }}</td>

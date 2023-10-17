@@ -13,6 +13,7 @@ class GoldTransform extends Model
     use HasFactory, SoftDeletes, Userstamps;
 
     protected $fillable = [
+        'bond_num',
         'date',
         'worker_id',
         'department_id',

@@ -11,6 +11,7 @@ class OfficeTransfer extends Model
     use HasFactory;
 
     protected $fillable = [
+        'bond_num',
         'date',
         'person_on_charge',
         'type',

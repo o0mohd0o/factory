@@ -29,7 +29,7 @@
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="value">{{ __('Document ID') }}</label>
-                        <input type="text" value="{{ $officeTransfer->id }}" class="form-control" readonly>
+                        <input type="text" value="{{ $officeTransfer->bond_num }}" class="form-control" readonly>
                     </div>
                 </div>
                 <div class="col-sm-3">

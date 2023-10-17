@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Wildside\Userstamps\Userstamps;
 
@@ -24,7 +25,7 @@ class OpeningBalance extends Model
     {
         return $query->where('date', $date);
     }
-    
+
     /**
      * Get the department that owns the OpeningBalance
      *
@@ -46,12 +47,10 @@ class OpeningBalance extends Model
     }
 
     /**
-     * Get all of the reports for the OpeningBalance
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Get all of the doc enteries.
      */
-    public function reports()
+    public function dailyJournal(): MorphMany
     {
-        return $this->hasMany(OpeningBalanceReport::class, 'doc_num', 'id');
+        return $this->morphMany(ItemDailyJournal::class, 'doc');
     }
 }

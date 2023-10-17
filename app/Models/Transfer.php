@@ -10,6 +10,7 @@ class Transfer extends Model
 {
     use HasFactory, Userstamps;
     protected $fillable = [
+        'bond_num',
         'item_id',
         'transfer_from',//from department id
         'transfer_to',//to department id

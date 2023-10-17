@@ -108,7 +108,7 @@ class AjaxOpeningBalanceController extends Controller
                     $openingBalance->date,
                     $openingBalanceDetail->item_id,
                     $department->id,
-                    $openingBalanceDetail->id,
+                    $openingBalance->id,
                     get_class($openingBalanceDetail),
                     debit: $openingBalanceDetail->weight,
                     credit: 0,
@@ -166,21 +166,20 @@ class AjaxOpeningBalanceController extends Controller
             );
             $openingBalance->update($data);
             $openingBalance->details()->delete();
+            $openingBalance->dailyJournal()->delete();
             $openingBalanceDetails = $openingBalance->details()->createMany($dataDetails);
             foreach ($openingBalanceDetails as $openingBalanceDetail) {
                 $this->itemDailyJournalService->createEntery(
                     $openingBalance->date,
                     $openingBalanceDetail->item_id,
                     $openingBalance->department->id,
-                    $openingBalanceDetail->id,
+                    $openingBalance->id,
                     get_class($openingBalanceDetail),
                     debit: $openingBalanceDetail->weight,
                     credit: 0,
                     actual_shares: $openingBalanceDetail->actual_shares,
                 );
             }
-
-
 
             //Call store function and passing nesseccary arguments to it.
             $this->store($request, $openingBalance->department);

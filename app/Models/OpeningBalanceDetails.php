@@ -42,5 +42,4 @@ class OpeningBalanceDetails extends Model
     {
         return $this->belongsTo(Items::class, 'item_id', 'id');
     }
-
 }
