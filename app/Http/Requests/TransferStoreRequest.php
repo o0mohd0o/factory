@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Actions\GenerateNewBondNumAction;
+use App\Http\Services\GeneralService;
 use App\Http\Services\ItemDailyJournalService;
 use App\Models\ItemDailyJournal;
 use Illuminate\Foundation\Http\FormRequest;
@@ -28,6 +30,7 @@ class TransferStoreRequest extends FormRequest
     public function rules()
     {
         return [
+            'bond_num' => 'required|unique:transfers,bond_num',
             'date' => 'required|date_format:Y-m-d',
             'person_on_charge' => 'required|string',
             'transfer_from' => 'required|exists:departments,id',
@@ -46,7 +49,8 @@ class TransferStoreRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'date' => Carbon::today()->format('Y-m-d')
+            'date' => Carbon::today()->format('Y-m-d'),
+            'bond_num' => (new GenerateNewBondNumAction())->generateNewBondNum('transfers'),
         ]);
     }
 }

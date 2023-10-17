@@ -201,32 +201,12 @@ class AjaxOpeningBalanceController extends Controller
 
     public function delete(OpeningBalance $openingBalance)
     {
-        $openingBalance->load(['department', 'details.item']);
-
-        //Check if the opening balance used before
-        //If it is used before we can not edit or delete it.
-        $openingBalanceMovementReport = $this->checkIfTheOpeningBalanceUsed($openingBalance);
-        if ($openingBalanceMovementReport['used']) {
-            return response()->json([
-                'status' => 'error',
-                'message' => __('Sorry, This opening balance has been used.You can not edit or delete it.')
-            ], 404);
-        }
-
-
         try {
             DB::beginTransaction();
             //Delete opening balance and their details
             $openingBalance->details()->delete();
+            $openingBalance->dailyJournal()->delete();
             $openingBalance->delete();
-            //Remove the opening balance credits
-            foreach ($openingBalanceMovementReport['items'] as $item) {
-                $item['kind']->previous_weight = $item['kind']->current_weight;
-                $item['kind']->current_weight -= $item['removedWeight'];
-                $item['kind']->save();
-                //Fire opening balance delete event
-                OpeningBalanceDeleteEvent::dispatch($item['kind'], 'delete', $item['removedWeight'], $openingBalance->id, $openingBalance->department);
-            }
 
             DB::commit();
         } catch (\Throwable $th) {

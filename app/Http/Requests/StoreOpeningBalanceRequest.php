@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Actions\GenerateNewBondNumAction;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOpeningBalanceRequest extends FormRequest
@@ -43,6 +44,19 @@ class StoreOpeningBalanceRequest extends FormRequest
             'salary.*' => 'nullable',
             'total_cost' => 'array',
             'total_cost.*' => 'nullable',
+            'bond_num' => 'required|unique:opening_balances,bond_num',
         ];
     }
+
+   /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'bond_num' => (new GenerateNewBondNumAction())->generateNewBondNum('opening_balances'),
+        ]);
+    } 
 }
