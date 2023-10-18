@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OfficeTransfer extends Model
@@ -51,5 +52,13 @@ class OfficeTransfer extends Model
     public function reports()
     {
         return $this->hasMany(OfficeTransfersReport::class, 'doc_num', 'id');
+    }
+    
+    /**
+     * Get all of the doc enteries.
+     */
+    public function dailyJournal(): MorphMany
+    {
+        return $this->morphMany(ItemDailyJournal::class, 'doc');
     }
 }
