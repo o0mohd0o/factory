@@ -155,8 +155,6 @@ class AjaxOfficeTransferController extends Controller
         try {
             DB::beginTransaction();
 
-            $officeTransfer = $officeTransfer->department->officeTransfers()->create($data);
-
             $dataDetails = [];
 
             //End of remove duplicate kinds from input to use it to sum its weights
