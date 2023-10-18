@@ -67,6 +67,7 @@
                         <th>{{ __('Shares') }}</th>
                         <th>{{ __('Unit') }}</th>
                         <th>{{ __('QTY') }}</th>
+                        <th>{{ __('Weight') }}</th>
                         <th>{{ __('Salary') }}</th>
                         <th>{{ __('Total Cost') }}</th>
                     </tr>
@@ -74,10 +75,10 @@
                 <tbody>
                     @foreach ($officeTransfer->details as $details)
                         <tr>
-                            <td> {{ $details->kind }}</td>
-                            <td> {{ $details->kind_name }}</td>
-                            <td> {{ $details->karat }}</td>
-                            <td> {{ $details->shares }}</td>
+                            <td> {{ $details->item->code }}</td>
+                            <td> {{ $details->item->name }}</td>
+                            <td> {{ $details->item->karat }}</td>
+                            <td> {{ $details->actual_shares }}</td>
                             <td>
                                 <select class="form-control" disabled>
                                     <option value="gram" {{ $details->unit == 'gram' ? 'Selected' : '' }}> جرام
@@ -91,6 +92,7 @@
 
                             </td>
                             <td> {{ $details->quantity }}</td>
+                            <td> {{ $details->weight }}</td>
                             <td> {{ $details->salary }}</td>
                             <td>{{ $details->total_cost }} </td>
                         </tr>

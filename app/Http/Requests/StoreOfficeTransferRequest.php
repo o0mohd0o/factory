@@ -46,7 +46,6 @@ class StoreOfficeTransferRequest extends FormRequest
             'salary.*' => 'nullable',
             'total_cost' => 'array',
             'total_cost.*' => 'nullable',
-            'weight_to_transfer' => 'required_if:type,to|numeric|lte:' . (new ItemDailyJournalService())->getDepartmentItemCurrentWeight(Department::first()?->id, $this->item_id, $this->actual_shares),
         ];
     }
 

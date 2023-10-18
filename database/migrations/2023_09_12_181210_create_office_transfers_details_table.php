@@ -15,16 +15,14 @@ class CreateOfficeTransfersDetailsTable extends Migration
     {
         Schema::create('office_transfers_details', function (Blueprint $table) {
             $table->id();
-            $table->string('kind');
-            $table->string('kind_name');
-            $table->string('karat')->nullable();
-            $table->string('shares')->nullable();
+            $table->foreignId('item_id')->constrained('items');
+            $table->double('actual_shares')->unsigned()->nullable();
             $table->string('unit')->default('gram');
-            $table->string('quantity');
+            $table->unsignedBigInteger('quantity')->default(1);
+            $table->unsignedBigInteger('weight');
             $table->string('salary')->default(0);
             $table->string('total_cost')->default(0);
             $table->foreignId('office_transfer_id')->constrained('office_transfers')->onDelete('cascade');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

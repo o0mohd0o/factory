@@ -52,6 +52,7 @@
                     <th>{{ __('Shares') }}</th>
                     <th>{{ __('Unit') }}</th>
                     <th>{{ __('QTY') }}</th>
+                    <th>{{ __('Weight') }}</th>
                     <th>{{ __('Salary') }}</th>
                     <th>{{ __('Total Cost') }}</th>
                     <th class="table-borderless"></th>
@@ -61,41 +62,53 @@
             <tbody>
                 @foreach ($officeTransfer->details as $key => $details)
                     <tr class="addrow">
-                        <td><input type="text" id="kind-{{ $loop->index }}" data-field-name="code"
+                        <input type="hidden" name="item_id[]" value="{{ $details->item_id }}">
+                        <td><input type="text" id="kind-1" data-field-name="code"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="kind[]"
-                                value="{{ $details->kind }}"></td>
-                        <td><input type="text" id="kind-name-{{ $loop->index }}" data-field-name="name"
+                                value="{{ $details->item->code }}"></td>
+                        <td><input type="text" id="kind-name-1" data-field-name="name"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off"
-                                name="kind_name[]" value="{{ $details->kind_name }}">
+                                name="kind_name[]" value="{{ $details->item->name }}">
                         </td>
-                        <td><input type="text" id="kind-karat-{{ $loop->index }}" data-field-name="karat"
+                        <td><input type="text" id="kind-karat-1" data-field-name="karat"
                                 class="form-control autocomplete_txt" autofill="off" autocomplete="off" name="karat[]"
-                                value="{{ $details->karat }}">
+                                value="{{ $details->item->karat }}">
                         </td>
-                        <td><input type="text" id="shares-1" data-field-name="shares" class="form-control "
-                                autofill="off" name="shares[]" value="{{ $details->shares }}">
+                        <td><input type="text" id="shares-1" data-field-name="shares"
+                                value="{{ $details->actual_shares }}" class="form-control " autofill="off"
+                                name="actual_shares[]">
                         </td>
                         <td>
-                            <select class="form-control" name="unit[]" id="unit-{{ $loop->index }}">
-                                <option value="gram" @if ($details->unit == 'gram') selected @endif> جرام</option>
-                                <option value="kilogram" @if ($details->unit == 'kilogram') selected @endif>كيلو جرام
+                            <select class="form-control unit" name="unit[]" id="unit-1">
+                                <option value="gram" {{ $details->unit == 'gram' ? 'Selected' : '' }}> جرام
                                 </option>
-                                <option value="ounce" @if ($details->unit == 'ounce') selected @endif>أونصة </option>
+                                <option value="kilogram" {{ $details->unit == 'kilogram' ? 'Selected' : '' }}>كيلو
+                                    جرام
+                                </option>
+                                <option value="ounce" {{ $details->unit == 'ounce' ? 'Selected' : '' }}>أونصة
+                                </option>
                             </select>
+
                         </td>
-                        <td><input type="text" class="form-control quantity" id="quantity-{{ $loop->index }}"
-                                name="quantity[]" value="{{ $details->quantity }}">
+                        <td><input type="text" class="form-control quantity" id="quantity-1" name="quantity[]"
+                                value="{{ $details->quantity }}" value="1">
                         </td>
-                        <td><input type="text" class="form-control salary" id="salary-{{ $loop->index }}"
-                                name="salary[]" value="{{ $details->salary }}"></td>
-                        <td><input type="text" class="form-control total-cost" id="total-cost-{{ $loop->index }}"
-                                name="total_cost[]" value="{{ $details->total_cost }}" readonly></td>
+                        <td><input type="text" class="form-control weight" id="weight-1" name="weight[]"
+                                value="{{ $details->weight }}" value="1">
+                        </td>
+                        <td><input type="text" class="form-control salary" id="salary-1" name="salary[]"
+                                value="{{ $details->salary }}">
+                        </td>
+                        <td><input type="text" class="form-control total-cost" id="total-cost-1"
+                                name="total_cost[]" value="{{ $details->total_cost }} " value="0" readonly>
+                        </td>
                         <td class="table-borderless d-flex"> <a href="#" class="add-row m-1">
                                 <i class="fas fa-plus-square fs-2" style="color: green;"></i>
-                                @if ($key > 0)
-                                    <a href="#" class="remove-row m-1"><i
-                                            class="fas fa-window-close text-danger fs-2"></i></a>
-                                @endif
+                            </a>
+                            @if ($key > 0)
+                                <a href="#" class="remove-row m-1"><i
+                                        class="fas fa-window-close text-danger fs-2"></i></a>
+                            @endif
                             </a>
                         </td>
                     </tr>

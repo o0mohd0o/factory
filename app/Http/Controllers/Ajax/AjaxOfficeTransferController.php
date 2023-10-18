@@ -33,10 +33,11 @@ class AjaxOfficeTransferController extends Controller
         $this->itemDailyJournalService = $itemDailyJournalService;
         $this->generateNewBondAction = $generateNewBondAction;
     }
+
     public function index(Request $request)
     {
         try {
-            $officeTransfer = OfficeTransfer::with(['details'])
+            $officeTransfer = OfficeTransfer::with(['details.item'])
                 ->when($request->department_id, function ($query) use ($request) {
                     return $query->where('department_id', $request->department_id);
                 })
@@ -60,11 +61,9 @@ class AjaxOfficeTransferController extends Controller
             ], 404);
         }
 
-
         return response()->json([
             view('components.office-transfers.index', [
                 'officeTransfer' => $officeTransfer,
-                // 'department' => $department,
             ])->render()
         ]);
     }
@@ -101,6 +100,7 @@ class AjaxOfficeTransferController extends Controller
                 count($data['item_id'])
             );
 
+            abort_if($request->type == 'to' && !(new GeneralService())->canTransferItemFromDepartment($department->id, $dataDetails), 422, __("Weights to transfer is less than current department item weight."));
             $officeTransfer = $department->officeTransfers()->create($data);
             $officeTransferDetails = $officeTransfer->details()->createMany($dataDetails);
 
@@ -111,14 +111,11 @@ class AjaxOfficeTransferController extends Controller
                     $department->id,
                     $officeTransfer->id,
                     get_class($officeTransfer),
-                    debit:  $officeTransferDetail->weight,
-                    credit: 0,
+                    debit: $request->type == 'to' ? 0 : $officeTransferDetail->weight,
+                    credit: $request->type == 'from' ? 0 : $officeTransferDetail->weight,
                     actual_shares: $officeTransferDetail->actual_shares,
                 );
             }
-
-
-            $officeTransfer->details()->createMany($dataDetails);
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -174,7 +171,7 @@ class AjaxOfficeTransferController extends Controller
             //Remove the office transfer credits
             foreach ($officeTransferMovementReport['items'] as $item) {
                 $item['kind']->previous_weight = $item['kind']->current_weight;
-                $itemWeightToRemoveOrAdd = $officeTransfer->type == 'from'?- $item['removedWeight']: $item['removedWeight'];
+                $itemWeightToRemoveOrAdd = $officeTransfer->type == 'from' ? -$item['removedWeight'] : $item['removedWeight'];
                 $item['kind']->current_weight += $itemWeightToRemoveOrAdd;
                 $item['kind']->save();
                 //Fire office transfer delete event
@@ -205,8 +202,8 @@ class AjaxOfficeTransferController extends Controller
 
         //Check if the office transfer used before
         //If it is used before we can not edit or delete it.
-        $officeTransferMovementReport = $this->checkIfTheofficeTransferUsed($officeTransfer, weightStrict:false);
-        if ($officeTransferMovementReport['used']&& $officeTransfer->type == 'from') {
+        $officeTransferMovementReport = $this->checkIfTheofficeTransferUsed($officeTransfer, weightStrict: false);
+        if ($officeTransferMovementReport['used'] && $officeTransfer->type == 'from') {
             return response()->json([
                 'status' => 'error',
                 'message' => __('Sorry, This office transfer has been used.You can not edit or delete it.')
@@ -222,7 +219,7 @@ class AjaxOfficeTransferController extends Controller
             //Remove the office transfer credits
             foreach ($officeTransferMovementReport['items'] as $item) {
                 $item['kind']->previous_weight = $item['kind']->current_weight;
-                $itemWeightToRemoveOrAdd = $officeTransfer->type == 'from'?- $item['removedWeight']: $item['removedWeight'];
+                $itemWeightToRemoveOrAdd = $officeTransfer->type == 'from' ? -$item['removedWeight'] : $item['removedWeight'];
                 $item['kind']->current_weight += $itemWeightToRemoveOrAdd;
                 $item['kind']->save();
                 //Fire office transfer delete event
