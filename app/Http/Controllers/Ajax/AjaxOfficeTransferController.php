@@ -88,8 +88,6 @@ class AjaxOfficeTransferController extends Controller
         try {
             DB::beginTransaction();
 
-            $officeTransfer = $department->officeTransfers()->create($data);
-
             $dataDetails = [];
 
             //End of remove duplicate kinds from input to use it to sum its weights
@@ -149,7 +147,7 @@ class AjaxOfficeTransferController extends Controller
 
     public function update(StoreOfficeTransferRequest $request, OfficeTransfer $officeTransfer)
     {
-        $officeTransfer->load(['department', 'details']);
+        $officeTransfer->load(['department', 'details.item']);
         $data = $request->validated();
 
         try {
@@ -199,34 +197,11 @@ class AjaxOfficeTransferController extends Controller
 
     public function delete(OfficeTransfer $officeTransfer)
     {
-        $officeTransfer->load(['department', 'details']);
-
-        //Check if the office transfer used before
-        //If it is used before we can not edit or delete it.
-        $officeTransferMovementReport = $this->checkIfTheofficeTransferUsed($officeTransfer, weightStrict: false);
-        if ($officeTransferMovementReport['used'] && $officeTransfer->type == 'from') {
-            return response()->json([
-                'status' => 'error',
-                'message' => __('Sorry, This office transfer has been used.You can not edit or delete it.')
-            ], 404);
-        }
-
-
         try {
             DB::beginTransaction();
-            //Delete office transfer and their details
             $officeTransfer->details()->delete();
+            $officeTransfer->dailyJournal()->delete();
             $officeTransfer->delete();
-            //Remove the office transfer credits
-            foreach ($officeTransferMovementReport['items'] as $item) {
-                $item['kind']->previous_weight = $item['kind']->current_weight;
-                $itemWeightToRemoveOrAdd = $officeTransfer->type == 'from' ? -$item['removedWeight'] : $item['removedWeight'];
-                $item['kind']->current_weight += $itemWeightToRemoveOrAdd;
-                $item['kind']->save();
-                //Fire office transfer delete event
-                OfficeTransferDeleteEvent::dispatch($item['kind'], 'delete', $itemWeightToRemoveOrAdd, $officeTransfer->id, $officeTransfer->department, $officeTransfer->type);
-            }
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

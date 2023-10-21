@@ -64,14 +64,14 @@
         </div>
         <div class="separator"><span>تحويل</span></div>
         <div class="content">
-            <p><span>من القسم :</span> <span>{{$transferItem->transfer_from_name}} </span></p>
-            <p><span> إلي القسم : </span><span>{{$transferItem->transfer_to_name}}</span></p>
-            <p><span>العيار : </span><span>{{$transferItem->shares_to_transfer}}</span></p>
+            <p><span>من القسم :</span> <span>{{$transferItem->fromDepartment->name}} </span></p>
+            <p><span> إلي القسم : </span><span>{{$transferItem->toDepartment->name}}</span></p>
+            <p><span>العيار : </span><span>{{$transferItem->actual_shares}}</span></p>
             <p><span>الوزن : </span><span>{{$transferItem->weight_to_transfer}}</span></p>
             <p>
                 <span>الصنف : </span>
-                <span>{{$transferItem->kind}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span>{{$transferItem->kind_name}}</span>
+                <span>{{$transferItem->item->code}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span>{{$transferItem->item->name}}</span>
             </p>
         </div>
     </div>

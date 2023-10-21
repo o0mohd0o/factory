@@ -137,7 +137,7 @@ class AjaxTransferController extends Controller
                 'message' => $th->getMessage(),
             ], 500);
         }
-        
+
         session()->put('person_on_charge', $data['person_on_charge']);
 
         return response()->json([
@@ -156,7 +156,9 @@ class AjaxTransferController extends Controller
         }
 
         $transferId = Storage::disk('local')->get('printTransfer.txt');
-        $transferItem = Transfer::where('id', $transferId)
+        $transferItem = Transfer::query()
+            ->with(['fromDepartment', 'toDepartment', 'item'])
+            ->where('id', $transferId)
             ->firstOrFail();
         $transferDateArr = explode(" ", $transferItem->created_at);
         $date = $transferDateArr[0];

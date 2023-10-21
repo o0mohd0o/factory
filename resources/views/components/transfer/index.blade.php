@@ -161,7 +161,7 @@
                                  <td>{{ $transfer->item->karat }}</td>
                                  <td class="text-danger">{{ $transfer->actual_shares }}</td>
                                  <td>{{ $transfer->weight_to_transfer }}</td>
-                                 <td>{{ $transfer->transfer_from_name }}</td>
+                                 <td>{{ $transfer->fromDepartment->name }}</td>
                                  <td>{{ $transfer->person_on_charge }}</td>
                              </tr>
                          @endforeach

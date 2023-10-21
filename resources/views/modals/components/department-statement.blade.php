@@ -31,24 +31,15 @@
             @endphp
             @foreach ($itemStatements as $key => $itemStatement)
                 @php
+                    $previousItemWeight = $currentItemWeight;
                     if ($itemStatement->debit) {
                         $debitIn21 = ($itemStatement->debit * $itemStatement->actual_shares) / 875;
                         $totalDebitIn21 += $debitIn21;
-                        if ($key == 0) {
-                            $currentItemWeight += $itemStatement->debit;
-                        } else {
-                            $previousItemWeight -= $itemStatement->debit;
-                            $currentItemWeight += $itemStatement->debit;
-                        }
+                        $currentItemWeight += $itemStatement->debit;
                     } else {
                         $creditIn21 = ($itemStatement->credit * $itemStatement->actual_shares) / 875;
                         $totalCreditIn21 += $creditIn21;
-                        if ($key == 0) {
-                            $currentItemWeight -= $itemStatement->credit;
-                        } else {
-                            $currentItemWeight -= $itemStatement->credit;
-                            $previousItemWeight += $itemStatement->credit;
-                        }
+                        $currentItemWeight -= $itemStatement->credit;
                     }
                 @endphp
                 <tr class="fs-5">
