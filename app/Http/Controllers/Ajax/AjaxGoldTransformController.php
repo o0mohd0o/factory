@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use App\Actions\GenerateNewBondNumAction;
 use App\Events\GoldTransformCreateEvent;
 use App\Events\GoldTransformDeleteEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GoldTransformStoreRequest;
 use App\Http\Services\GoldTransformService;
+use App\Http\Services\ItemDailyJournalService;
 use App\Http\Traits\WeightTrait;
 use App\Models\Department;
 use App\Models\DepartmentItem;
@@ -38,7 +40,7 @@ class AjaxGoldTransformController extends Controller
         try {
             $goldTransform = GoldTransform::with([
                 'newItems.item',
-                'usedItems.departmentItem',
+                'usedItems.item',
                 'goldLoss',
             ])
                 ->when($request->ordering == 'last', function ($query) {

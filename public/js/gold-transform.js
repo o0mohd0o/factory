@@ -50,7 +50,7 @@ $(document).ready(function () {
                     data: {
                         value: data.term,
                         field_name: fieldName,
-                        department: $("#gold-transform-department").val(),
+                        department_id: $("#gold-transform-department").val(),
                     },
                     success: function (res) {
                         var result;
@@ -64,18 +64,20 @@ $(document).ready(function () {
                             result = $.map(res, function (obj) {
                                 let label = "";
                                 if (
-                                    obj["shares"] == "null" ||
-                                    !obj["shares"] ||
-                                    obj["shares"] == undefined
+                                    obj["karat"] == "null" ||
+                                    !obj["karat"] ||
+                                    obj["karat"] == undefined
                                 ) {
-                                    label =
-                                        obj["kind"] + "-" + obj["kind_name"];
+                                    label = obj["code"] + "-" + obj["name"];
                                 } else {
                                     label =
-                                        obj["kind"] +
+                                        obj["code"] +
                                         "-" +
-                                        obj["kind_name"] +
+                                        obj["name"] +
                                         " عيار ( " +
+                                        obj["karat"] +
+                                        ")"+
+                                        " أسهم ( " +
                                         obj["shares"] +
                                         ")";
                                 }
@@ -121,22 +123,21 @@ $(document).ready(function () {
                     $(this)
                         .closest("tr")
                         .find("td>input[name='used_item']")
-                        .val(data.kind);
+                        .val(data.code);
                     $(this)
                         .closest("tr")
                         .find("td>input[name='used_item_name']")
-                        .val(data.kind_name);
+                        .val(data.name);
                     $(this)
                         .closest("tr")
                         .find("td>input[name='used_item_shares']")
-                        .val(data.shares);
+                        .val(data.actual_shares);
                     $(this)
                         .closest("tr")
                         .find(
                             "td>input[name='used_item_weight_before_transform']"
                         )
                         .val(data.current_weight);
-                    // $("#transfered-item-id").val(data.id);
                 }
             },
         });
@@ -227,7 +228,7 @@ $(document).ready(function () {
                     $(this)
                         .closest("tr")
                         .find("td>input[name='new_item_shares[]']")
-                        .val(data.karat);
+                        .val(data.shares);
                 }
             },
         });

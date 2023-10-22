@@ -123,10 +123,12 @@
                                     data-field-name="name" autocomplete="off" name="new_item_name" required></td>
 
                             <td><input type="number" min="0" class="form-control" autofill="off"
-                                    name="new_item_karat" autocomplete="off" data-field-name="karat" readonly required></td>
+                                    name="new_item_karat" autocomplete="off" data-field-name="karat" readonly
+                                    required></td>
 
                             <td><input type="number" min="" class="form-control" autofill="off"
-                                    data-field-name="shares" autocomplete="off" name="new_item_shares[]" required required>
+                                    data-field-name="shares" autocomplete="off" name="new_item_shares[]" required
+                                    required>
                             </td>
 
                             <td><input type="number" min="0" step="any" class="form-control"
@@ -198,6 +200,26 @@
 <script src="{{ asset('js/gold-transform.js') }}"></script>
 <script>
     $(document).ready(function() {
+        $(".new-items-autocomplete-table, .used-items-autocomplete-table")
+            .off()
+            .on("keydown", "input", function(e) {
+                if ($(this).attr('type') != 'submit') {
+                    if (e.which == 40 || e.which == 13) {
+                        if (e.which == 13) {
+                            $(this).closest('td').next().find('input, button, select').focus();
+                            $(this).closest('td').next().find('input').select();
+                            e.preventDefault();
+                        }
+                    }
+                }
+
+            });
+
+        $(".new-items-autocomplete-table, .used-items-autocomplete-table")
+            .on("click", "input", function(e) {
+                $(this).select();
+            });
+
         $('#gold-transform-form').on('submit', function(e) {
             e.preventDefault();
             let url = $(this).attr('action');

@@ -11,7 +11,8 @@ class GoldLoss extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'department_id',
+        'item_id',
+        'actual_shares',
         'total_used_gold_in_21',
         'loss_weight_in_21',
         'worker_id',

@@ -15,7 +15,8 @@ class CreateGoldLossesTable extends Migration
     {
         Schema::create('gold_losses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained();
+            $table->foreignId('item_id')->constrained('items');
+            $table->double('actual_shares')->unsigned()->nullable();
             $table->double('loss_weight_in_21');
             $table->double('total_used_gold_in_21');
             $table->unsignedBigInteger('worker_id')->nullable();

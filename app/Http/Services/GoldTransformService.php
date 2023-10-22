@@ -18,13 +18,14 @@ use Illuminate\Validation\ValidationException;
 
 class GoldTransformService
 {
-    function prepareUsedItems(array $usedItems, array $usedWeights): array
+    function prepareUsedItems(array $usedItems, array $usedWeights, array $usedItemShares): array
     {
         $usedItemsData = [];
         for ($i = 0; $i < count($usedItems); $i++) {
             array_push($usedItemsData, [
                 'department_item_id' => $usedItems[$i],
-                'weight' => $usedWeights[$i]
+                'weight' => $usedWeights[$i],
+                'used_item_shares' => $usedItemShares[$i],
             ]);
         }
         return $usedItemsData;
@@ -33,7 +34,7 @@ class GoldTransformService
     function prepareNewItems(array $newItems, array $newWeights, array $newItemsShares, ?array $quantity, ?array $stone_weight): array
     {
         $newItemsData = [];
-        for ($i = 0; $i < count($newItems); $i++) {
+        for  ($i = 0; $i < count($newItems); $i++) {
             array_push($newItemsData, [
                 'item_id'  => $newItems[$i],
                 'actual_shares' => $newItemsShares[$i],
@@ -49,12 +50,11 @@ class GoldTransformService
      * calculate gold transform loss,
      * return gold transform loss in 21
      */
-    public function getGoldLoss(array $usedItems, array $usedWeights, array $newWeights, array $newGoldItemsShares): ?float
+    public function getGoldLoss(array $usedWeights, array $usedShares, array $newWeights, array $newGoldItemsShares): ?float
     {
-        $departmentUsedItems = DepartmentItem::find($usedItems);
         $totalUsedGoldWeight = 0;
-        foreach ($usedItems as $key => $usedItemid) {
-            $totalUsedGoldWeight += ($departmentUsedItems->where('id', $usedItemid)->first()?->shares * $usedWeights[$key]);
+        for ($i=0; $i < count($usedWeights); $i++) { 
+            $totalUsedGoldWeight += $usedShares[$i] * $usedWeights[$i];
         }
 
         $totalNewGoldWeight = 0;
@@ -95,11 +95,10 @@ class GoldTransformService
     {
         try {
             DB::beginTransaction();
-            $this->deleteGoldTransformItemsWeights($goldTransform);
             $goldTransform->usedItems()->delete();
             $goldTransform->newItems()->delete();
-            $goldTransform->delete();
             $goldTransform->goldLoss()->delete();
+            $goldTransform->delete();
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -109,9 +108,11 @@ class GoldTransformService
 
     public function createGoldTransform($request): ?GoldTransform
     {
+        dd($request->all());
         $usedItemsData = $this->prepareUsedItems(
             $request->used_item_id,
             $request->weight_to_use,
+            $request->used_item_shares,
         );
 
         $newItemsData = $this->prepareNewItems(
@@ -123,8 +124,8 @@ class GoldTransformService
         );
 
         $goldLoss = $this->getGoldLoss(
-            $request->used_item_id,
             $request->weight_to_use,
+            $request->used_item_shares,
             $request->new_item_weight,
             $request->new_item_shares,
         );
@@ -134,17 +135,6 @@ class GoldTransformService
             $goldTransform =  $this->saveGoldTransform($request->date, $request->worker_id, $request->department_id);
             $this->saveGoldTransformNewItems($goldTransform, $newItemsData);
             $this->saveGoldTransformUsedItems($goldTransform, $usedItemsData);
-            $this->removeUsedItemsWeightsFromDepartment(
-                $request->used_item_id,
-                $request->weight_to_use,
-            );
-            $this->addNewItemsInDepartment(
-                $request->new_item_id,
-                $request->new_item_weight,
-                $request->new_item_shares,
-                $request->department_id
-            );
-            
             if ($goldLoss) {
                 $goldTransform->load(['usedItems.departmentItem']);
                 $goldTransform->goldLoss()->create([
@@ -166,80 +156,6 @@ class GoldTransformService
 
         return $goldTransform;
     }
-
-    public function removeUsedItemsWeightsFromDepartment(array $usedItems, array $usedWeights): void
-    {
-        for ($i = 0; $i < count($usedItems); $i++) {
-            $departmentUsedItem = DepartmentItem::find($usedItems[$i]);
-            $departmentUsedItem->update(
-                [
-                    'previous_weight' => $departmentUsedItem->current_weight,
-                    'current_weight' => $departmentUsedItem->current_weight - $usedWeights[$i],
-                ]
-            );
-        }
-    }
-
-    public function addNewItemsInDepartment(array $newItemsIds, array $newWeights, array $newGoldItemsShares, int $departmentId): void
-    {
-        $newItems = Items::find($newItemsIds);
-        $department = Department::find($departmentId);
-        for ($i = 0; $i < count($newItemsIds); $i++) {
-            $newItem = $newItems->where('id', $newItemsIds[$i])->first();
-            $item = $department->items()->where('kind', $newItem?->code)
-                ->where('shares', $newGoldItemsShares[$i])
-                ->first();
-
-            if ($item) {
-                # code...
-                $item->update([
-                    'previous_weight' => $item->current_weight,
-                    'current_weight' => $item->current_weight + $newWeights[$i],
-                ]);
-            } else {
-                $item = $department->items()->create([
-                    'kind' => $newItem->code,
-                    'shares' => $newGoldItemsShares[$i],
-                    'karat' => $newItem->karat,
-                    'kind_name' => $newItem->name,
-                    'previous_weight' => 0,
-                    'current_weight' =>  $newWeights[$i],
-                ]);
-            }
-        }
-    }
-
-    public function deleteGoldTransformItemsWeights($goldTransform): void
-    {
-        foreach ($goldTransform->newItems as $newItem) {
-            try {
-                $departmentItem = DepartmentItem::query()
-                    ->department($goldTransform->department_id)
-                    ->where('kind', $newItem->item->code)
-                    ->when(
-                        !$newItem->actual_shares,
-                        fn ($query) => $query->whereNull('shares'),
-                        fn ($query) => $query->where('shares', $newItem->actual_shares)
-                    )
-                    ->whereRaw('current_weight >= ' . $newItem->weight - 0.01)
-                    ->firstOrFail();
-
-                $departmentItem->previous_weight = $departmentItem->current_weight;
-                $departmentItem->current_weight -= $newItem->weight;
-                $departmentItem->save();
-            } catch (\Throwable $th) {
-                ValidationException::withMessages(['invalid action' => __("This Item Has been used Before")]);
-            }
-        }
-
-        foreach ($goldTransform->usedItems as $usedItem) {
-            $usedItem->load('departmentItem');
-            $usedItem->departmentItem->previous_weight = $usedItem->departmentItem->current_weight;
-            $usedItem->departmentItem->current_weight += $usedItem->weight;
-            $usedItem->departmentItem->save();
-        }
-    }
-
 
     public function getGoldLosses(
         ?int $departmentId,

@@ -31,12 +31,11 @@ class GoldTransformStoreRequest extends FormRequest
             'date' => 'required|date_format:Y-m-d',
             'worker_id' => 'nullable|exists:workers,id',
             'used_item_id' => 'array|required',
-            'used_item_id.*' => [
-                'required',
-                Rule::exists('department_items', 'id')->where(fn (Builder $query) => $query->where('department_id', $this->department_id))
-            ],
+            'used_item_id.*' => ['required', Rule::exists('item_daily_journals', 'item_id')],
             'weight_to_use' => 'array|required',
             'weight_to_use.*' => ['required', 'numeric', 'min:0'],
+            'used_item_shares' => 'array|required',
+            'used_item_shares.*' => ['nullable', 'numeric'],
             'new_item_id' => 'array|required',
             'new_item_id.*' => 'required|exists:items,id',
             'new_item_shares' => 'array|required',
