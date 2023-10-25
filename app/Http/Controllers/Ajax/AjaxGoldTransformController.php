@@ -7,6 +7,7 @@ use App\Events\GoldTransformCreateEvent;
 use App\Events\GoldTransformDeleteEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GoldTransformStoreRequest;
+use App\Http\Requests\GoldTransformUpdateRequest;
 use App\Http\Services\GoldTransformService;
 use App\Http\Services\ItemDailyJournalService;
 use App\Http\Traits\WeightTrait;
@@ -101,7 +102,7 @@ class AjaxGoldTransformController extends Controller
     {
         $goldTransform->load([
             'newItems.item',
-            'usedItems.departmentItem',
+            'usedItems.item',
             'goldLoss',
         ]);
         return response()->json([
@@ -111,13 +112,11 @@ class AjaxGoldTransformController extends Controller
         ]);
     }
 
-    public function update(GoldTransformStoreRequest $request, GoldTransform $goldTransform)
+    public function update(GoldTransformUpdateRequest $request, GoldTransform $goldTransform)
     {
         try {
             DB::beginTransaction();
-            $goldTransform->load(['newItems.item', 'usedItems', 'goldLoss']);
-            $this->goldTransformService->delete($goldTransform);
-            $goldTransform = $this->goldTransformService->createGoldTransform($request);
+            $this->goldTransformService->updateGoldTransform($request, $goldTransform);
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -131,7 +130,6 @@ class AjaxGoldTransformController extends Controller
 
     public function delete(GoldTransform $goldTransform)
     {
-        $goldTransform->load(['newItems.item', 'usedItems', 'goldLoss']);
         $this->goldTransformService->delete($goldTransform);
         return response()->json([
             'status' => 'success',

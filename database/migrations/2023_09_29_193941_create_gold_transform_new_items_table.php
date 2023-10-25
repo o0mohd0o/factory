@@ -21,7 +21,6 @@ class CreateGoldTransformNewItemsTable extends Migration
             $table->double('weight');
             $table->integer('quantity')->default(1);
             $table->double('stone_weight')->nullable();
-            $table->softDeletes();
             $table->timestamps();
         });
     }

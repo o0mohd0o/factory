@@ -18,7 +18,6 @@ class CreateGoldTransformUsedItemsTable extends Migration
             $table->foreignId('gold_transform_id')->constrained('gold_transforms');
             $table->foreignId('item_id')->constrained('items');
             $table->double('weight');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

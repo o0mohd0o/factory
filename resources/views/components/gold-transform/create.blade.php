@@ -9,7 +9,7 @@
             <div class="col-sm-1">
                 <div class="form-group">
                     <label for="value">{{ __('Document ID') }}</label>
-                    <input type="text" value="{{ $newBondNum }}" class="form-control" readonly>
+                    <input type="text" name="bond_num" value="{{ $newBondNum }}" class="form-control" readonly>
                 </div>
             </div>
             <div class="col-sm-2">
@@ -78,7 +78,7 @@
                                     data-field-name="name" autocomplete="off" name="used_item_name"></td>
 
                             <td><input type="number" min="0" class="form-control used-items-autocomplete"
-                                    autofill="off" data-field-name="shares" autocomplete="off" name="used_item_shares"
+                                    autofill="off" data-field-name="shares" autocomplete="off" name="used_item_shares[]"
                                     readonly></td>
 
                             <td><input type="number" min="0" class="form-control"
@@ -200,21 +200,6 @@
 <script src="{{ asset('js/gold-transform.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $(".new-items-autocomplete-table, .used-items-autocomplete-table")
-            .off()
-            .on("keydown", "input", function(e) {
-                if ($(this).attr('type') != 'submit') {
-                    if (e.which == 40 || e.which == 13) {
-                        if (e.which == 13) {
-                            $(this).closest('td').next().find('input, button, select').focus();
-                            $(this).closest('td').next().find('input').select();
-                            e.preventDefault();
-                        }
-                    }
-                }
-
-            });
-
         $(".new-items-autocomplete-table, .used-items-autocomplete-table")
             .on("click", "input", function(e) {
                 $(this).select();

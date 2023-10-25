@@ -76,7 +76,7 @@ $(document).ready(function () {
                                         obj["name"] +
                                         " عيار ( " +
                                         obj["karat"] +
-                                        ")"+
+                                        ")" +
                                         " أسهم ( " +
                                         obj["shares"] +
                                         ")";
@@ -130,7 +130,7 @@ $(document).ready(function () {
                         .val(data.name);
                     $(this)
                         .closest("tr")
-                        .find("td>input[name='used_item_shares']")
+                        .find("td>input[name='used_item_shares[]']")
                         .val(data.actual_shares);
                     $(this)
                         .closest("tr")
@@ -251,10 +251,13 @@ $(document).ready(function () {
         function (e) {
             var usedGold = 0;
             var newGold = 0;
+
             $("#used-items-autocomplete-table>tbody>tr").each(function (e) {
                 usedGold +=
                     Number(
-                        $(this).find('td>input[name="used_item_shares"]').val()
+                        $(this)
+                            .find('td>input[name="used_item_shares[]"]')
+                            .val()
                     ) *
                     Number(
                         $(this).find('td>input[name="weight_to_use[]"]').val()
@@ -269,10 +272,11 @@ $(document).ready(function () {
                         $(this).find('td>input[name="new_item_weight[]"]').val()
                     );
             });
+
             let sharesDifference = usedGold - newGold;
             let differenceInCalibIn21 = sharesDifference / 875;
             let differenceInCalibIn24 = sharesDifference / 1000;
-            console.log(usedGold, newGold);
+
             $("#gold-transform-loss>tbody>tr>td.loss-calib-in-21").html(
                 roundToDecimals(
                     differenceInCalibIn21 >= 0.01 ? differenceInCalibIn21 : 0

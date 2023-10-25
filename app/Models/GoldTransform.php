@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Wildside\Userstamps\Userstamps;
 
 class GoldTransform extends Model
 {
-    use HasFactory, SoftDeletes, Userstamps;
+    use HasFactory, Userstamps;
 
     protected $fillable = [
         'bond_num',
@@ -21,14 +22,14 @@ class GoldTransform extends Model
 
     public function scopeDay($query, $date)
     {
-         $query->where('date', $date);
+        $query->where('date', $date);
     }
 
     public function scopeDepartment($query, $department)
     {
-         $query->where('department_id', $department);
+        $query->where('department_id', $department);
     }
-    
+
     /**
      * Get the department that owns the OpeningBalance
      *
@@ -68,8 +69,8 @@ class GoldTransform extends Model
     {
         return $this->hasMany(GoldTransformUsedItem::class, 'gold_transform_id', 'id');
     }
-    
-      /**
+
+    /**
      * Get the gold transform's gold loss.
      */
     public function goldLoss(): MorphOne
@@ -85,5 +86,13 @@ class GoldTransform extends Model
     public function reports()
     {
         return $this->hasMany(OpeningBalanceReport::class, 'doc_num', 'id');
+    }
+
+    /**
+     * Get all of the doc enteries.
+     */
+    public function dailyJournal(): MorphMany
+    {
+        return $this->morphMany(ItemDailyJournal::class, 'doc');
     }
 }

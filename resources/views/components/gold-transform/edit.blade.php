@@ -66,8 +66,6 @@
 
                             <th>{{ __('Shares') }}</th>
 
-                            <th>{{ __('Item Current Balance') }}</th>
-
                             <th>{{ __('Used Weight') }}</th>
 
                             <th class="table-borderless"></th>
@@ -77,23 +75,20 @@
                         @foreach ($goldTransform->usedItems as $key => $usedItem)
                             <tr class="used-items-addrow">
                                 <input type="hidden" class="item-id" name="used_item_id[]"
-                                    value="{{ $usedItem->departmentItem->id }}">
+                                    value="{{ $usedItem->item->id }}">
 
                                 <td><input type="text" data-field-name="code"
                                         class="form-control used-items-autocomplete" autofill="off" autocomplete="off"
-                                        name="used_item" value="{{ $usedItem->departmentItem->kind }}"></td>
+                                        name="used_item" value="{{ $usedItem->item->code }}"></td>
                                 <td><input type="text" class="form-control used-items-autocomplete" autofill="off"
                                         data-field-name="name" autocomplete="off" name="used_item_name"
-                                        value="{{ $usedItem->departmentItem->kind_name }}"></td>
+                                        value="{{ $usedItem->item->name }}"></td>
 
                                 <td><input type="number" min="0" class="form-control used-items-autocomplete"
                                         autofill="off" data-field-name="shares" autocomplete="off"
-                                        name="used_item_shares" value="{{ $usedItem->departmentItem->shares }}"
+                                        name="used_item_shares[]" value="{{ $usedItem->item->shares }}"
                                         readonly></td>
 
-                                <td><input type="number" min="0" class="form-control"
-                                        name="used_item_weight_before_transform"
-                                        value="{{ $usedItem->departmentItem->current_weight }}" readonly></td>
                                 <td><input type="number" min="0" step="any"
                                         class="form-control weight-to-use" name="weight_to_use[]"
                                         value="{{ $usedItem->weight }}" required>

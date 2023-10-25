@@ -9,10 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GoldLoss extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
     protected $fillable = [
-        'item_id',
-        'actual_shares',
         'total_used_gold_in_21',
         'loss_weight_in_21',
         'worker_id',

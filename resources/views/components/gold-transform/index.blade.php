@@ -89,11 +89,11 @@
                     <tbody>
                         @foreach ($goldTransform->usedItems as $usedItem)
                             <tr>
-                                <th>{{ $usedItem->departmentItem->kind }}</th>
+                                <th>{{ $usedItem->item->code }}</th>
 
-                                <th>{{ $usedItem->departmentItem->kind_name }}</th>
+                                <th>{{ $usedItem->item->name }}</th>
 
-                                <th>{{ $usedItem->departmentItem->shares }}</th>
+                                <th>{{ $usedItem->item->shares }}</th>
 
                                 <th>{{ $usedItem->weight }}</th>
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class GoldTransformStoreRequest extends FormRequest
+class GoldTransformUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,7 @@ class GoldTransformStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'bond_num' => 'required|unique:gold_transforms,bond_num',
+            'bond_num' => 'required|unique:gold_transforms,bond_num,'.$this->route('goldTransform')->id,
             'transfer_to_department_id' => 'nullable|exists:departments,id',
             'department_id' => 'required|exists:departments,id',
             'date' => 'required|date_format:Y-m-d',
@@ -52,7 +52,7 @@ class GoldTransformStoreRequest extends FormRequest
 
     public function prepareForValidation()  {
         $this->merge([
-            'bond_num' => $this->route('goldTransform')?$this->route('goldTransform')->bond_num:$this->bond_num,
+            'bond_num' => $this->route('goldTransform')->bond_num,
         ]);
     }
 }

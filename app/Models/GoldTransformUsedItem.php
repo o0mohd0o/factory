@@ -14,17 +14,17 @@ class GoldTransformUsedItem extends Model
 
     protected $fillable = [
         'gold_transform_id',
-        'department_item_id',
+        'item_id',
         'weight',
     ];
 
     /**
-     * Get the departmentItem that owns the GoldTransformUsedItem
+     * Get the item that owns the GoldTransformUsedItem
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function departmentItem(): BelongsTo
+    public function item(): BelongsTo
     {
-        return $this->belongsTo(DepartmentItem::class, 'department_item_id');
+        return $this->belongsTo(Items::class, 'item_id');
     }
 }

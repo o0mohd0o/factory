@@ -26,6 +26,10 @@ class Items extends Model
         'desc_5',
     ];
 
+    public function scopeIsNotMain($query)  {
+        $query->doesntHave('childs');
+    }
+
     /**
      * Get all of the childs for the Items
      *
