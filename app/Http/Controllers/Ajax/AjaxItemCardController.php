@@ -16,7 +16,7 @@ use Illuminate\Validation\Rule;
 class AjaxItemCardController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $items = Items::where('level_num', 1)->get();
 
@@ -81,8 +81,10 @@ class AjaxItemCardController extends Controller
             })
             ->get();
 
+        $parentsItems = ItemCardService::getParentsObjects($items->first());
         return response()->json([
             view('components.item-cards.index', [
+                'parentsItems' => $parentsItems,
                 'items' => $items,
                 'levelNum' => $data['level_num'],
                 'parentId' => $data['level_num'] == 1 ? null : $data['parent_id']

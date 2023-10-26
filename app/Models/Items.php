@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Http\Services\ItemCardService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Items extends Model
 {
@@ -26,7 +27,8 @@ class Items extends Model
         'desc_5',
     ];
 
-    public function scopeIsNotMain($query)  {
+    public function scopeIsNotMain($query)
+    {
         $query->doesntHave('childs');
     }
 
@@ -53,5 +55,15 @@ class Items extends Model
     public function usedBefore()
     {
         return ItemCardService::usedBefore($this);
+    }
+
+    /**
+     * Get the parentItem that owns the Items
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parentItem(): BelongsTo
+    {
+        return $this->belongsTo(Items::class, 'id', 'parent_id');
     }
 }

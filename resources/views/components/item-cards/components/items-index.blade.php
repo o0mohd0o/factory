@@ -2,6 +2,20 @@
     <div class="col-2"></div>
     <div class="col-8">
         <h2 class="text-center text-primary bg-white rounded py-1">{{ __('Level') . '' . $levelNum }}</h1>
+            @if (isset($parentsItems))
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb fs-2 parent-items-nav">
+                        @for ($i = count($parentsItems) - 1; $i > 0; $i--)
+                            <li class="breadcrumb-item"><a class="next-items" data-query-type="next"
+                                    data-level-num="{{ $parentsItems[$i]?->level_num + 1 }}"
+                                    data-parent-id="{{ $parentsItems[$i]?->id }}" data-id="{{ $parentsItems[$i]?->id }}"
+                                    href="#">{{ $parentsItems[$i]?->name }}</a></li>
+                        @endfor
+                        <li class="breadcrumb-item active" aria-current="page">
+                            {{ $parentsItems[0]?->name }}</li>
+                    </ol>
+                </nav>
+            @endif
             <table class="table text-center fs-4" id="items-table">
                 <thead>
                     <tr class="table-primary">
@@ -36,10 +50,9 @@
                             @if ($levelNum >= 1 && $levelNum < 5)
                                 <td>
                                     {{-- @if (!$item->usedBefore()) --}}
-                                        <a class="next-items" data-query-type="next" href=""
-                                            data-level-num="{{ $levelNum + 1 }}"
-                                            data-parent-id="{{ $item->id }}" data-id="{{ $item->id }}"><i
-                                                class="fas fa-chevron-circle-left"></i></a>
+                                    <a class="next-items" data-query-type="next" href=""
+                                        data-level-num="{{ $levelNum + 1 }}" data-parent-id="{{ $item->id }}"
+                                        data-id="{{ $item->id }}"><i class="fas fa-chevron-circle-left"></i></a>
                                     {{-- @endif --}}
                                 </td>
                             @endif
@@ -81,7 +94,7 @@
                     let errors = error.response.data;
                     if (error.response.status == 422) {
                         $.each(errors.errors, function(key, value) {
-                            toastr.error( value);
+                            toastr.error(value);
                         });
                     } else {
                         toastr.error(error.response.data.message);
@@ -90,7 +103,7 @@
             }
         );
 
-        $("#items-table").on(
+        $("#items-table, .parent-items-nav").on(
             "click",
             ".next-items, .previous-items",
             function(e) {
@@ -110,7 +123,7 @@
                     let errors = error.response.data;
                     if (error.response.status == 422) {
                         $.each(errors.errors, function(key, value) {
-                            toastr.error( value);
+                            toastr.error(value);
                         });
                     } else {
                         toastr.error(error.response.data.message);

@@ -73,4 +73,15 @@ class ItemCardService
 
         return false;
     }
+
+    public static function getParentsObjects(?Items $item): ?array
+    {
+        $parentItem = Items::find($item?->parent_id);
+        $parents = [];
+        while ($parentItem) {
+            array_push($parents, $parentItem);
+            $parentItem = Items::find($parentItem->parent_id);
+        }
+        return $parents;
+    }
 }
