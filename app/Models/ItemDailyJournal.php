@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\DB;
 use Wildside\Userstamps\Userstamps;
 
 class ItemDailyJournal extends Model
@@ -25,14 +26,31 @@ class ItemDailyJournal extends Model
         'doc_type',
     ];
 
+    public function getWeightAttribute()
+    {
+        return isset($this->attributes['debit']) && $this->attributes['debit'] ? $this->attributes['debit'] : -$this->attributes['credit'];
+    }
     public function scopeEnteryDateBetween($query, ?string $from, ?string $to)
     {
         $query->when($from, fn ($query) => $query->where('date', '>=', $from))
             ->when($to, fn ($query) => $query->where('date', '<=', $to));
     }
 
-    function scopeDepartment($query, $departmentID)  {
-        $query->where('department_id', $departmentID);
+    function scopeDepartment($query, $departmentID)
+    {
+        $query->when($departmentID, fn ($query) => $query->where('department_id', $departmentID));
+    }
+
+    function scopePurityDifference($query)
+    {
+        $query->join('items', 'item_daily_journals.item_id', 'items.id')
+            ->whereColumn('item_daily_journals.actual_shares', "!=", "items.shares")
+            ->selectRaw(
+                '
+            *,
+             ifnull(item_daily_journals.actual_shares,0)-ifnull(items.shares,0) as purity_difference
+             '
+            );
     }
 
     /**
@@ -65,7 +83,7 @@ class ItemDailyJournal extends Model
         return $this->belongsTo(Department::class, 'related_department_id', 'id');
     }
 
-     /**
+    /**
      * Get the worker that owns the workerDailyJournal
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -75,12 +93,11 @@ class ItemDailyJournal extends Model
         return $this->belongsTo(Worker::class, 'worker_id', 'id');
     }
 
-       /**
+    /**
      * Get the parent doc model
      */
     public function doc(): MorphTo
     {
         return $this->morphTo();
     }
-
 }

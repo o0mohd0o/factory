@@ -29,8 +29,8 @@
                             {{ __('Reports') }}
                             <ul class="dropdown-menu">
                                 @if (auth()->user()->can('purity_differnce'))
-                                    <li data-type="department-karat-difference-report" data-bs-toggle="modal"
-                                        data-bs-target="#department-report-karat-difference-query">
+                                    <li data-type="purity-difference-report" data-bs-toggle="modal"
+                                        data-bs-target="#purity-difference-query">
                                         {{ __('Purity Differnce') }}</li>
                                 @endif
                                 @if (auth()->user()->can('balance_summary'))

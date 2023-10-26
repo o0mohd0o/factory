@@ -1,8 +1,7 @@
 <!-- Modal -->
-<div class="modal fade" id="department-report-karat-difference-query" tabindex="-1" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="purity-difference-query" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form method="POST" id="department-report-karat-difference-form" action="{{ route('departments.karatDifferenceReports.show') }}">
+        <form method="POST" id="purity-difference-form" action="{{ route('reports.purityDifference.show') }}">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -13,6 +12,7 @@
                     <div class="mb-3">
                         <label for="department" class="form-label">{{ __('Department Name') }}</label>
                         <select name="department_id" class="form-select">
+                            <option value=""></option>
                             @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ $department->name }}</option>
                             @endforeach
@@ -21,15 +21,16 @@
                     <div class="mb-3">
                         <div class="form-group">
                             <label for="value">{{ __('From Date') }}</label>
-                            <input type="text" name="from" class="form-control from-date-picker" data-date-format="yyyy-mm-dd"
+                            <input type="text" name="from" class="form-control from-date-picker"
+                                data-date-format="yyyy-mm-dd"
                                 value="{{ \Carbon\Carbon::yesterday()->format('Y-m-d') }}">
                         </div>
                     </div>
                     <div class="mb-3">
                         <div class="form-group">
                             <label for="value">{{ __('To Date') }}</label>
-                            <input type="text" name="to" class="form-control to-date-picker" data-date-format="yyyy-mm-dd"
-                                value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}">
+                            <input type="text" name="to" class="form-control to-date-picker"
+                                data-date-format="yyyy-mm-dd" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}">
                         </div>
                     </div>
 
@@ -56,11 +57,11 @@
             format: "YYYY-MM-DD",
         });
 
-        $('#department-report-karat-difference-form').on('submit', function(e) {
+        $('#purity-difference-form').on('submit', function(e) {
             e.preventDefault();
             let data = new FormData(this);
             let url = $(this).attr('action');
-            $('#department-report-karat-difference-query').modal('toggle');
+            $('#purity-difference-query').modal('toggle');
             axios.post(url, data).then((response) => {
                 $('#report-show-section').html(response.data);
                 console.log(response.data);

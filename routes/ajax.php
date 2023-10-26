@@ -118,12 +118,12 @@ Route::get('/item-cards/fetch-all-items', [AjaxItemCardController::class, 'fetch
 
 //Reports
 Route::post('departments/statement/show', [AjaxReportController::class, 'departmentStatement'])->name('reports.departmentStatement.show');
-//department Daily Reports
-Route::post('departments/daily-reports/show', [AjaxReportController::class, 'dailyReports'])->name('departments.dailyReports.show');
 //department Daily Reports in total
 Route::post('departments/daily-reports-in-total/show', [AjaxReportController::class, 'dailyReportsInTotal'])->name('departments.dailyReportsInTotal.show');
-//department karat difference Reports in total
-Route::post('departments/karat-difference-reports/show', [AjaxReportController::class, 'karatDifferenceReports'])->name('departments.karatDifferenceReports.show');
+//department Daily Reports
+Route::post('departments/daily-reports/show', [AjaxReportController::class, 'dailyReports'])->name('departments.dailyReports.show');
+//department purity difference Reports in total
+Route::post('departments/purity-difference-reports/show', [AjaxReportController::class, 'purityDifference'])->name('reports.purityDifference.show');
 //department Gold Losses Reports in total
 Route::post('departments/gold-losses/show', [AjaxReportController::class, 'goldLosses'])->name('departments.goldLosses.show');
 

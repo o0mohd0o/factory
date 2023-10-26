@@ -13,10 +13,6 @@ class Department extends Model
         'main_department'
     ];
 
-    public function getCurrentBalanceAttribute()
-    {
-        return $this->items()->sum('current_weight');
-    }
 
     /**
      * Get all of the incoming transfers for the Department
@@ -38,37 +34,6 @@ class Department extends Model
         return $this->hasMany(Transfer::class, 'transfer_from', 'id');
     }
 
-    
-
-    /**
-     * Get all of the items for the Department
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function items()
-    {
-        return $this->hasMany(DepartmentItem::class, 'department_id', 'id');
-    }
-    /**
-     * Get all of the outcomingTransfers reports for the Department
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function outcomingTransfersReports()
-    {
-        return $this->hasMany(TransferReport::class, 'transfer_from', 'id');
-    }
-    /**
-     * Get all of the incomingTransfers reports for the Department
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function incomingTransfersReports()
-    {
-        return $this->hasMany(TransferReport::class, 'transfer_to', 'id');
-    }
-
- 
     /**
      * Get all of the openingBalances for the Department
      *
@@ -89,35 +54,7 @@ class Department extends Model
         return $this->hasMany(OpeningBalance::class, 'department_id', 'id');
     }
 
-    /**
-     * Get all of the openingBalancesReports for the Department
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function openingBalancesReports()
-    {
-        return $this->hasMany(OpeningBalanceReport::class, 'transfer_to', 'id');
-    }
-
-    /**
-     * Get all of the dailyReports for the Department
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function dailyReports()
-    {
-        return $this->hasMany(DepartmentDailyReport::class, 'department_id', 'id');
-    }
-
-/**
-     * Get all of the OfficeTransferReport for the Department
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function officeTransfersReports()
-    {
-        return $this->hasMany(OfficeTransferReport::class, 'department_id', 'id');
-    }
+ 
      /**
      * Get all of the incoming Office transfers for the Department
      *

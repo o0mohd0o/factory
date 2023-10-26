@@ -4,20 +4,24 @@ namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\GoldTransformService;
+use App\Http\Services\ItemDailyJournalService;
 use App\Models\Department;
-use App\Models\DepartmentDailyReport;
-use App\Models\GoldLoss;
 use App\Models\ItemDailyJournal;
-use App\Models\Report;
-use App\Models\Transfer;
-use App\Models\TransferReport;
 use App\Models\Worker;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class AjaxReportController extends Controller
 {
+    public $goldTransformService;
+    public $itemDailyJournalService;
+
+    public function __construct(GoldTransformService $goldTransformService, ItemDailyJournalService $itemDailyJournalService)
+    {
+        $this->goldTransformService = $goldTransformService;
+        $this->itemDailyJournalService = $itemDailyJournalService;
+    }
+
     public function departmentStatement(Request $request)
     {
         $data = $request->validate([
@@ -52,17 +56,9 @@ class AjaxReportController extends Controller
             'day' => 'required|date_format:Y-m-d',
         ]);
 
-        //get the query date from the database if the request date is not found in the reports
-        $lastReportBeforeQueryDate = DepartmentDailyReport::where('date', '<=', $data['day'])->latest()->first();
-        $reportDate = $lastReportBeforeQueryDate ? $lastReportBeforeQueryDate->date : $data['day'];
-
-        $departments = Department::with(['dailyReports' => function ($query) use ($reportDate) {
-            return $query->day($reportDate);
-        }])->get();
-
+       
         return response()->json([
             view('modals.department-daily-report-show', [
-                'departments' => $departments,
                 'day' => $data['day'],
             ])->render()
         ]);
@@ -75,49 +71,48 @@ class AjaxReportController extends Controller
             'day' => 'required|date_format:Y-m-d',
         ]);
 
-        //get the query date from the database if the request date is not found in the reports
-        $lastReportBeforeQueryDate = DepartmentDailyReport::where('date', '<=', $data['day'])->latest()->first();
-        $reportDate = $lastReportBeforeQueryDate ? $lastReportBeforeQueryDate->date : $data['day'];
+       
+        $departmentsOpeningBalances = $this->itemDailyJournalService->getDepartmentsBalanceCalibIn21(
+            fromDate:null,
+            toDate: Carbon::parse($request->day)->subDay()->format('Y-m-d'),
+        );
 
-        $isSameDay = $reportDate == $data['day'] ? true : false;
-
-        $departments = Department::with(['dailyReports' => function ($query) use ($reportDate) {
-            return $query->day($reportDate);
-        }])->get();
+        $departmentsTotalDayBalance = $this->itemDailyJournalService->getDepartmentsBalanceCalibIn21(
+            fromDate:$request->day,
+            toDate: $request->day,
+        );
 
         return response()->json([
             view('modals.department-daily-report-in-total-show', [
-                'departments' => $departments,
-                'isSameDay' => $isSameDay,
+                'departmentsOpeningBalances' => $departmentsOpeningBalances,
+                'departmentsTotalDayBalance' => $departmentsTotalDayBalance,
                 'day' => $data['day'],
             ])->render()
         ]);
     }
 
-    public function karatDifferenceReports(Request $request)
+    public function purityDifference(Request $request)
     {
         $data = $request->validate([
-            'department_id' => 'required|exists:departments,id',
-            'from' => 'required|date_format:Y-m-d',
-            'to' => 'required|date_format:Y-m-d',
+            'department_id' => 'nullable|exists:departments,id',
+            'from' => 'nullable|date_format:Y-m-d',
+            'to' => 'nullable|date_format:Y-m-d',
         ]);
 
-        $department = Department::findOrFail($data['department_id']);
+        $department = Department::find($data['department_id']);
 
-        $transferReports = TransferReport::Where('transfer_from', $data['department_id'])
-            ->whereRaw('cast(shares as signed) > cast(shares_to_transfer as signed)')
-            ->datePeriod($data['from'], $data['to'])
-            ->orderBy('date', 'desc')
-            ->get()
-            ->groupBy('date');
-
+        $purityDifferences = $this->itemDailyJournalService->getPurityDifference(
+            $request->from,
+            $request->to,
+            $request->department_id,
+        );
 
         return response()->json([
-            view('modals.department-karat-difference-report-show', [
+            view('modals.purity-difference-report-show', [
                 'department' => $department,
-                'transferReports' => $transferReports,
-                'to' => $data['to'],
-                'from' => $data['from'],
+                'purityDifferences' => $purityDifferences,
+                'to' => $request->to,
+                'from' => $request->from,
             ])->render()
         ]);
     }
@@ -132,7 +127,7 @@ class AjaxReportController extends Controller
             'to' => 'nullable|date_format:Y-m-d',
         ]);
 
-        $goldLosses  = (new GoldTransformService())->getGoldLosses(
+        $goldLosses  = $this->goldTransformService->getGoldLosses(
             $request->department_id,
             $request->worker_id,
             $request->from,

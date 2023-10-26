@@ -1,15 +1,15 @@
 <!-- Modal -->
-<div class="modal fade" id="department-karat-difference-report-show" tabindex="-1" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="purity-difference-report-show" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
 
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h5 class="modal-title" id="exampleModalLabel"> فروق العيار - {{ $department->name }}</h5>
+                <h5 class="modal-title" id="exampleModalLabel"> فروق العيار - {{ $department?->name }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body section-to-print">
-                <h2 class="text-center">فروق العيار - {{ $department->name }}</h2>
+                <h2 class="text-center">فروق العيار - {{ $department?->name }}</h2>
                 <h3 class="text-center">
                     {{ __('From Date') }}
                     <span class="text-primary">{{ $from }}</span>
@@ -17,8 +17,8 @@
                     <span class="text-primary">{{ $to }}</span>
                 </h3>
 
-                @include('modals.components.transfer-karat-difference-report', [
-                    'transferReports' => $transferReports,
+                @include('modals.components.purity-difference-report', [
+                    'purityDifferences' => $purityDifferences,
                     'department' => $department,
                 ])
 
@@ -34,8 +34,8 @@
 
 <script>
     $(document).ready(function() {
-        $("#department-karat-difference-report-show").modal('show');
-        $('#print').on('click', function (){
+        $("#purity-difference-report-show").modal('show');
+        $('#print').on('click', function() {
             window.print();
         })
     });

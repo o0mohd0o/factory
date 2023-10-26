@@ -30,18 +30,46 @@
                             <tr>
                                 <td class="fs-3">{{ $department->name }}</td>
                                 <td class="fs-4">
-                                    {{ $isSameDay ? $department->dailyReports->sum('previous_balance') : $department->dailyReports->sum('current_balance') }}
+                                    {{ roundAndFormat($departmentsOpeningBalances->where('department_id')->first()?->balance, 2, 3) }}
                                 </td>
                                 <td class="fs-4 text-success">
-                                    {{ $isSameDay ? $department->dailyReports->sum('credit') : 0 }}</td>
+                                    {{ roundAndFormat($departmentsTotalDayBalance->where('department_id', $department->id)->first()?->total_credit, 2, 3) }}
+                                </td>
                                 <td class="fs-4 text-danger">
-                                    {{ $isSameDay ? $department->dailyReports->sum('debit') : 0 }}</td>
+                                    {{ roundAndFormat($departmentsTotalDayBalance->where('department_id', $department->id)->first()?->total_debit, 2, 3) }}
+                                </td>
                                 <td class="fs-4 text-primary">
-                                    {{ $department->dailyReports->sum('current_balance') }}
+                                    {{ roundAndFormat(
+                                        $departmentsOpeningBalances->where('department_id', $department->id)->first()?->balance +
+                                            $departmentsTotalDayBalance->where('department_id', $department->id)->first()?->total_debit -
+                                            $departmentsTotalDayBalance->where('department_id', $department->id)->first()?->total_credit,
+                                        2,
+                                        3,
+                                    ) }}
                                 </td>
                             </tr>
                         @endforeach
-
+                        <tr>
+                            <td class="fs-3"></td>
+                            <td class="fs-3">
+                                {{ roundAndFormat($departmentsOpeningBalances->sum('balance'), 2, 3) }}
+                            </td>
+                            <td class="fs-3 text-success">
+                                {{ roundAndFormat($departmentsTotalDayBalance->sum('total_credit'), 2, 3) }}
+                            </td>
+                            <td class="fs-3 text-danger">
+                                {{ roundAndFormat($departmentsTotalDayBalance->sum('total_debit'), 2, 3) }}
+                            </td>
+                            <td class="fs-3 text-primary">
+                                {{ roundAndFormat(
+                                    $departmentsOpeningBalances->sum('balance') +
+                                        $departmentsTotalDayBalance->sum('total_debit') -
+                                        $departmentsTotalDayBalance->sum('total_credit'),
+                                    2,
+                                    3,
+                                ) }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -60,7 +88,7 @@
 <script>
     $(document).ready(function() {
         $("#department-daily-report-in-total-show").modal('show');
-        $('#print').on('click', function (){
+        $('#print').on('click', function() {
             window.print();
         })
     });

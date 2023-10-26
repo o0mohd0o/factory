@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 //use App\Http\Controllers\HomeController;
 //use App\Http\Controllers\ItemsCardController;
-use App\Models\DepartmentDailyReport;
 use App\Models\DepartmentItem;
 use Illuminate\Support\Carbon;
 
@@ -57,27 +56,6 @@ Auth::routes();
 //Get item cards from hesabat app
 //Route::get('items/hesabat/card-item', [ItemsCardController::class, 'cardItem'])->name('items.cardItem');
 
-
-//I make this functin due to tareklance server error on task scheduling
-Route::get('cron-jobs/departments/generate-daily-report', function () {
-    $departmentsItems = DepartmentItem::with(['department'])
-        ->where('current_weight', '>', 0)
-        ->get();
-
-    foreach ($departmentsItems as $item) {
-        DepartmentDailyReport::create([
-            'previous_balance' => $item->current_weight,
-            'current_balance' => $item->current_weight,
-            'kind' => $item->kind,
-            'date' => Carbon::today()->format('Y-m-d'),
-            'kind_name' => $item->kind_name,
-            'karat' => $item->karat,
-            'department_id' => $item->department_id,
-            'department_name' => $item->department->name,
-        ]);
-    }
-    \Log::channel('departmentsDailyReports')->info("Successfully excuted departments daily reports.");
-})->name('cronJobs.departmentsDailyReports');
 
 Auth::routes();
 
