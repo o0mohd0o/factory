@@ -12,7 +12,7 @@
                                     href="#">{{ $parentsItems[$i]?->name }}</a></li>
                         @endfor
                         <li class="breadcrumb-item active" aria-current="page">
-                            {{ $parentsItems[0]?->name }}</li>
+                            {{ isset($parentsItems[0]) ? $parentsItems[0]?->name : __('Level') . '' . $levelNum }}</li>
                     </ol>
                 </nav>
             @endif
