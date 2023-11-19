@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Ajax;
 use App\Actions\GenerateNewBondNumAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QrcodeRequest;
-
+use App\Http\Services\ItemDailyJournalService;
 use App\Models\PrintQrcode;
-use DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AjaxQrcodeController extends Controller
 {
@@ -56,7 +56,7 @@ class AjaxQrcodeController extends Controller
 
     public function create()
     {
-        $newBondNum = $this->generateNewBondAction->generateNewBondNum((new OpeningBalance())->getTable());
+        $newBondNum = $this->generateNewBondAction->generateNewBondNum((new PrintQrcode())->getTable());
         return response()->json([
             view('components.qrcodes.create', [
                 'newBondNum' => $newBondNum,

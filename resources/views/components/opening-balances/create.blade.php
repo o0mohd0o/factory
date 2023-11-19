@@ -121,20 +121,20 @@
 <script src="{{ asset('js/opening-balance.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $(".opening-balance-autocomplete-table")
-             .off()
-             .on("keydown", "input", function(e) {
-                 if ($(this).attr('type') != 'submit') {
-                     if (e.which == 40 || e.which == 13) {
-                         if (e.which == 13) {
-                             $(this).closest('td').next().find('input, button, select').focus();
-                             $(this).closest('td').next().find('input').select();
-                             e.preventDefault();
-                         }
-                     }
-                 }
+        // $(".opening-balance-autocomplete-table")
+        //      .off()
+        //      .on("keydown", "input", function(e) {
+        //          if ($(this).attr('type') != 'submit') {
+        //              if (e.which == 40 || e.which == 13) {
+        //                  if (e.which == 13) {
+        //                      $(this).closest('td').next().find('input, button, select').focus();
+        //                      $(this).closest('td').next().find('input').select();
+        //                      e.preventDefault();
+        //                  }
+        //              }
+        //          }
 
-             });
+        //      });
 
          $(".opening-balance-autocomplete-table")
              .on("click", "input", function(e) {
